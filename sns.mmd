@@ -1,0 +1,66 @@
+---
+title: dfx sns
+---
+flowchart LR
+    subgraph crate::lib::sns
+    crate::lib::sns::create_config::create_config:::easliy_importable
+    crate::lib::sns::validate_config::validate_config:::easliy_importable
+    crate::lib::sns::deploy::deploy_sns:::easliy_importable
+    %% crate::lib::sns::CONFIG_FILE_NAME
+
+    %% lib_sns_create_config --> crate::Environment
+    %% lib_sns_create_config --> crate::lib::error::DfxResult
+    %% lib_sns_deploy --> crate::lib::error::DfxResult
+    %% lib_sns_validate_config --> crate::lib::error::DfxResult
+    end
+    sns_import --> envvar_DFX_IC_COMMIT
+    crate::lib::info::replica_rev --> envvar_DFX_ASSET_REPLICA_REV
+    crate::lib::sns::create_config::create_config --> crate::lib::call_bundled::call_bundled:::easliy_importable
+    crate::lib::sns::validate_config::validate_config --> crate::lib::call_bundled::call_bundled
+    crate::lib::sns::deploy::deploy_sns --> crate::lib::call_bundled::call_bundled
+
+    subgraph crate
+        direction RL
+        %% crate::lib::error::DfxResult
+        crate::lib::info::replica_rev
+        crate::lib::nns::install_nns::download_sns_wasms --> download_ic_repo_wasm:::dfx_core_candidate --> download_gz:::dfx_core_candidate
+        crate::lib::project::import::import_canister_definitions
+        crate::lib::project::network_mappings::get_network_mappings:::dfx_core_candidate
+        crate::lib::call_bundled::call_bundled --> get_cache
+        subgraph crate::Environment
+            direction BT
+            get_config
+            get_cache
+        end
+    end
+
+    subgraph crate::commands
+    sns_deploy:::easliy_importable --> get_config
+    sns_config_create:::easliy_importable --> get_config
+    sns_config_create --> crate::lib::sns::create_config::create_config
+    %% sns_config_create --> crate::lib::sns::CONFIG_FILE_NAME
+    sns_config_validate:::easliy_importable --> get_config
+    sns_config_validate --> crate::lib::sns::validate_config::validate_config
+    %% sns_config_validate --> crate::lib::sns::CONFIG_FILE_NAME
+    sns_deploy:::easliy_importable --> crate::lib::sns::deploy::deploy_sns
+    sns_deploy --> get_config
+    %% sns_deploy --> crate::lib::sns::CONFIG_FILE_NAME
+
+    sns_import:::easliy_importable --> get_config
+    sns_import --> crate::lib::info::replica_rev
+    sns_import --> crate::lib::project::import::import_canister_definitions
+    sns_import --> crate::lib::project::network_mappings::get_network_mappings
+
+    %% sns_download --> crate::Environment ?? not used
+    sns_download:::easliy_importable --> crate::lib::info::replica_rev
+    sns_download --> crate::lib::nns::install_nns::download_sns_wasms:::easliy_importable
+    %% sns_config_create --> crate::lib::error::DfxResult
+    %% sns_config_mod --> crate::Environment
+    %% sns_config_mod --> crate::lib::error::DfxResult
+    %% sns_config_validate --> crate::lib::error::DfxResult
+    %% sns_deploy --> crate::lib::error::DfxResult
+    %% sns_download --> crate::lib::error::DfxResult
+    %% sns_import --> crate::lib::error::DfxResult
+    end
+    classDef easliy_importable fill:#0f9
+    classDef dfx_core_candidate fill:#FFA500

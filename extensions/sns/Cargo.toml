@@ -11,6 +11,14 @@ publish = true
 
 [dependencies]
 dfx-core.workspace = true
+dfx-extensions-utils.workspace = true
+
+anyhow.workspace = true
+clap.workspace = true
+fn-error-context.workspace = true
+slog.workspace = true
+tokio.workspace = true
+futures-util = "0.3.28"
 
 [package.metadata.release]
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.

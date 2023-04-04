@@ -1,7 +1,8 @@
 [workspace]
 members = [
     "extensions/sns",
-    "extensions/nns"
+    "extensions/nns",
+    "extensions-utils"
 ]
 
 [workspace.package]
@@ -15,6 +16,14 @@ repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
 dfx-core = { git = "https://github.com/dfinity/sdk" }
+dfx-extensions-utils.path = "./extensions-utils"
+
+anyhow = "1.0.70"
+clap = { version = "4.2.1", features = ["derive", "env"] }
+fn-error-context = "0.2.1"
+slog = "2.7.0"
+tokio = "1.27.0"
+url = "2.3.1"
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]

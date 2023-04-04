@@ -1,5 +1,4 @@
 //! Code for the command line `dfx sns config`.
-use crate::lib::{environment::Environment, error::DfxResult};
 use clap::Parser;
 
 mod create;
@@ -11,7 +10,7 @@ pub struct ConfigOpts {}
 
 /// SNS config command line arguments.
 #[derive(Parser)]
-#[clap(name("config"))]
+#[command(name("config"))]
 pub struct SnsConfigOpts {
     /// `dfx sns config` subcommand arguments.
     #[clap(subcommand)]
@@ -28,9 +27,9 @@ enum SubCommand {
 }
 
 /// Executes `dfx sns config` and its subcommands.
-pub fn exec(env: &dyn Environment, opts: SnsConfigOpts) -> DfxResult {
+pub fn exec(opts: SnsConfigOpts) -> anyhow::Result<()> {
     match opts.subcmd {
-        SubCommand::Create(v) => create::exec(env, v),
-        SubCommand::Validate(v) => validate::exec(env, v),
+        SubCommand::Create(v) => create::exec(v),
+        SubCommand::Validate(v) => validate::exec(v),
     }
 }

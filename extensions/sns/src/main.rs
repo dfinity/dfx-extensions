@@ -1,30 +1,25 @@
-//! Command line interface for `dfx sns`.
-#![warn(clippy::missing_docs_in_private_items)]
-use crate::{
-    commands::sns::config::SnsConfigOpts,
-    commands::sns::download::SnsDownloadOpts,
-    commands::sns::import::SnsImportOpts,
-    lib::{environment::Environment, error::DfxResult},
-};
-
-use clap::Parser;
-
 //! Code for decentralizing dapps
 #![warn(clippy::missing_docs_in_private_items)]
+pub mod commands;
 pub mod create_config;
 pub mod deploy;
+pub mod download_wasms;
 pub mod validate_config;
 
 /// The default location of an SNS configuration file.
 pub const CONFIG_FILE_NAME: &str = "sns.yml";
-mod config;
-mod deploy;
-mod download;
-mod import;
+
+// #![warn(clippy::missing_docs_in_private_items)]
+use crate::{
+    commands::config::SnsConfigOpts, commands::deploy::DeployOpts,
+    commands::download::SnsDownloadOpts, commands::import::SnsImportOpts,
+};
+
+use clap::Parser;
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
-#[clap(name("sns"))]
+#[command(name("sns"))]
 pub struct SnsOpts {
     /// Arguments and flags for subcommands.
     #[clap(subcommand)]
@@ -35,25 +30,27 @@ pub struct SnsOpts {
 #[derive(Parser)]
 enum SubCommand {
     /// Subcommands for working with configuration.
-    #[clap(hide(true))]
+    #[command()]
     Config(SnsConfigOpts),
     /// Subcommand for creating an SNS.
-    #[clap(hide(true))]
-    Deploy(deploy::DeployOpts),
+    #[command()]
+    Deploy(DeployOpts),
     /// Subcommand for importing sns API definitions and canister IDs.
-    #[clap(hide(true))]
+    #[command()]
     Import(SnsImportOpts),
     /// Subcommand for downloading SNS WASMs.
-    #[clap(hide(true))]
+    #[command()]
     Download(SnsDownloadOpts),
 }
 
 /// Executes `dfx sns` and its subcommands.
-pub fn exec(env: &dyn Environment, cmd: SnsOpts) -> DfxResult {
-    match cmd.subcmd {
-        SubCommand::Config(v) => config::exec(env, v),
-        SubCommand::Import(v) => import::exec(env, v),
-        SubCommand::Deploy(v) => deploy::exec(env, v),
-        SubCommand::Download(v) => download::exec(env, v),
-    }
+fn main() -> anyhow::Result<()> {
+    let opts = SnsOpts::parse();
+    match opts.subcmd {
+        SubCommand::Config(v) => commands::config::exec(v),
+        SubCommand::Import(v) => commands::import::exec(v),
+        SubCommand::Deploy(v) => commands::deploy::exec(v),
+        SubCommand::Download(v) => commands::download::exec(v),
+    }?;
+    Ok(())
 }

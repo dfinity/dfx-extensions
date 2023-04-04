@@ -2,15 +2,13 @@
 use anyhow::bail;
 use fn_error_context::context;
 use std::ffi::OsString;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
-use crate::lib::call_bundled::call_bundled;
-use crate::lib::error::DfxResult;
-use dfx_core::config::cache::Cache;
+use dfx_extensions_utils::call_bundled;
 
 /// Creates an SNS.  This requires funds but no proposal.
 #[context("Failed to deploy SNS with config: {}", path.display())]
-pub fn deploy_sns(cache: &dyn Cache, path: &Path) -> DfxResult<String> {
+pub fn deploy_sns(cache_path: PathBuf, path: &Path) -> anyhow::Result<String> {
     // Note: It MAY be possible to get the did file location using existing sdk methods.
     let did_file = "candid/nns-sns-wasm.did";
     if !Path::new(did_file).exists() {
@@ -32,7 +30,7 @@ pub fn deploy_sns(cache: &dyn Cache, path: &Path) -> DfxResult<String> {
         OsString::from("--save-to"),
         OsString::from(canister_ids_file),
     ];
-    call_bundled(cache, "sns", &args).map(|stdout| {
+    call_bundled(cache_path, "sns", &args).map(|stdout| {
         format!(
             "Deployed SNS:\nSNS config: {}\nCanister ID file: {}\n\n{}",
             path.display(),

@@ -1,0 +1,94 @@
+use crate::error::dfx_executable::DfxError;
+use anyhow::anyhow;
+use fn_error_context::context;
+use semver::Version;
+
+use std::ffi::OsStr;
+use std::path::{Path, PathBuf};
+use std::process::{self, Command};
+
+/// Calls a bundled command line tool.
+///
+/// # Returns
+/// - On success, returns stdout as a string.
+/// - On error, returns an error message including stdout and stderr.
+#[context("Calling {} CLI, or, it returned an error.", command)]
+pub fn call_bundled<S, I>(cache_path: PathBuf, command: &str, args: I) -> anyhow::Result<String>
+where
+    I: IntoIterator<Item = S>,
+    S: AsRef<OsStr>,
+{
+    let binary = cache_path.join(command);
+
+    let mut command = Command::new(&binary);
+    command.args(args);
+    // The sns command line tool itself calls dfx; it should call this dfx.
+    // The sns command line tool should not rely on commands not packaged with dfx.
+    // The same applies to other bundled binaries.
+    command.env("PATH", binary.parent().unwrap_or_else(|| Path::new(".")));
+    command
+        .stdin(process::Stdio::null())
+        .output()
+        .map_err(anyhow::Error::from)
+        .and_then(|output| {
+            if output.status.success() {
+                Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+            } else {
+                let args: Vec<_> = command
+                    .get_args()
+                    .into_iter()
+                    .map(OsStr::to_string_lossy)
+                    .collect();
+                Err(anyhow!(
+                    "Call failed:\n{:?} {}\nStdout:\n{}\n\nStderr:\n{}",
+                    command.get_program(),
+                    args.join(" "),
+                    String::from_utf8_lossy(&output.stdout),
+                    String::from_utf8_lossy(&output.stderr)
+                ))
+            }
+        })
+}
+
+pub fn replica_rev() -> Result<String, DfxError> {
+    let args = ["info", "replica-rev"];
+    let rev = Command::new("dfx")
+        .args(args)
+        .output()
+        .map_err(DfxError::DfxExecutableError)?
+        .stdout
+        .iter()
+        .map(|c| *c as char)
+        .collect::<String>()
+        .trim()
+        .to_string();
+    if rev.len() != 40 {
+        return Err(DfxError::MalformedCommandOutput {
+            command: args.join(" ").to_string(),
+            output: rev,
+        });
+    }
+    Ok(rev)
+}
+
+pub fn dfx_version() -> Result<String, DfxError> {
+    let args = ["--version"];
+    let version_cmd_output = Command::new("dfx")
+        .args(args)
+        .output()
+        .map_err(DfxError::DfxExecutableError)?
+        .stdout
+        .iter()
+        .map(|c| *c as char)
+        .collect::<String>();
+    if let Some(version) = version_cmd_output.split_whitespace().last() {
+        Version::parse(&version) // make sure the output is really a version
+            .map_err(DfxError::DfxVersionMalformed)
+            .map(|v| v.to_string())
+    } else {
+        Err(DfxError::MalformedCommandOutput {
+            command: args.join(" ").to_string(),
+            output: version_cmd_output,
+        })
+    }
+}

@@ -1,0 +1,25 @@
+[package]
+name = "sns"
+version = "0.0.0"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+# Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
+# Nothing will actually be published (unless `cargo publish` is executed (and it shouldn't)).
+publish = true
+
+[dependencies]
+dfx-core.workspace = true
+
+[package.metadata.release]
+# Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
+publish = false
+# list of replacements to be made after issuing `cargo release -p nns SEMVER`
+pre-release-replacements = [
+  {file="CHANGELOG.md", search="Unreleased", replace="{{version}}"},
+  {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
+  {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}"},
+  {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n\n## [Unreleased] - ReleaseDate", exactly=1},
+  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD", exactly=1},
+]

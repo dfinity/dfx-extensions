@@ -59,8 +59,12 @@ jobs:
         run: |
           cargo dist manifest --tag=${{ github.ref_name }} --artifacts=all --no-local-paths --output-format=json > dist-manifest.json
           echo "dist manifest ran successfully"
+          # temp hack until it is possible to customize output archive format,
+          # see: https://github.com/axodotdev/cargo-dist/issues/17
+          file_contents=$(<dist-manifest.json)
+          echo "${file_contents//.tar.xz/.tar.gz}" > dist-manifest.json
           cat dist-manifest.json
-        
+
           # Create the Github Release™ based on what cargo-dist thinks it should be
           ANNOUNCEMENT_TITLE=$(cat dist-manifest.json | jq --raw-output ".announcement_title")
           IS_PRERELEASE=$(cat dist-manifest.json | jq --raw-output ".announcement_is_prerelease")
@@ -114,6 +118,18 @@ jobs:
 
           # Parse out what we just built and upload it to the Github Release™
           cat dist-manifest.json | jq --raw-output ".artifacts[]?.path | select( . != null )" > uploads.txt
+
+          # temp hack until it is possible to customize output archive format,
+          # see: https://github.com/axodotdev/cargo-dist/issues/17
+          echo "changing compression format from .tar.xz to .tar.gz ..."
+          FILES=$(cat uploads.txt)
+          rm uploads.txt
+          for i in $FILES; do
+            xz -d -v $i
+            gzip --best --keep --force --no-name ${i//.tar.xz/.tar}
+            echo ${i//.tar.xz/.tar.gz} >> uploads.txt
+          done
+
           echo "uploading..."
           cat uploads.txt
           gh release upload ${{ github.ref_name }} $(cat uploads.txt)

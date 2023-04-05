@@ -11,6 +11,26 @@ publish = true
 
 [dependencies]
 dfx-core.workspace = true
+dfx-extensions-utils.workspace = true
+ic-agent = "*"
+ic-utils = "*"
+candid = "*"
+
+anyhow.workspace = true
+backoff = "0.4.0"
+clap.workspace = true
+crc32fast = "1.3.2"
+fn-error-context.workspace = true
+futures-util.workspace = true
+hex = "0.4.3"
+reqwest.workspace = true
+rust_decimal = "1.29.1"
+serde.workspace = true
+sha2 = "0.10.6"
+slog.workspace = true
+tempfile.workspace = true
+tokio.workspace = true
+
 
 [package.metadata.release]
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled

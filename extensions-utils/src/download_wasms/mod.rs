@@ -1,3 +1,6 @@
+pub mod sns;
+pub mod nns;
+
 use anyhow::Context;
 use dfx_core::fs;
 use flate2::read::GzDecoder;

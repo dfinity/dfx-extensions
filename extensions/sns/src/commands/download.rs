@@ -1,5 +1,5 @@
 //! Code for the command line `dfx sns import`
-use crate::download_wasms::download_sns_wasms;
+use dfx_extensions_utils::download_sns_wasms;
 use dfx_extensions_utils::replica_rev;
 
 use clap::Parser;

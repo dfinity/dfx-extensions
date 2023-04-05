@@ -1,5 +1,9 @@
 use crate::error::dfx_executable::DfxError;
 use anyhow::anyhow;
+use dfx_core::config::cache::{
+    binary_command_from_version, delete_version, get_binary_path_from_version, is_version_installed,
+};
+use dfx_core::error::cache::CacheError;
 use fn_error_context::context;
 use semver::Version;
 
@@ -71,6 +75,26 @@ pub fn replica_rev() -> Result<String, DfxError> {
     Ok(rev)
 }
 
+pub fn webserver_port() -> Result<u16, DfxError> {
+    let args = ["info", "webserver-port"];
+    let output = Command::new("dfx")
+        .args(args)
+        .output()
+        .map_err(DfxError::DfxExecutableError)?
+        .stdout
+        .iter()
+        .map(|c| *c as char)
+        .collect::<String>();
+    let port = output.trim().parse::<u16>();
+    if port.is_err() {
+        return Err(DfxError::MalformedCommandOutput {
+            command: args.join(" ").to_string(),
+            output: output.to_string(),
+        });
+    }
+    Ok(port.unwrap())
+}
+
 pub fn dfx_version() -> Result<String, DfxError> {
     let args = ["--version"];
     let version_cmd_output = Command::new("dfx")
@@ -90,5 +114,42 @@ pub fn dfx_version() -> Result<String, DfxError> {
             command: args.join(" ").to_string(),
             output: version_cmd_output,
         })
+    }
+}
+
+pub struct Cache {
+    dfx_verison: String,
+}
+
+impl Cache {
+    pub fn from_version(version: &str) -> Result<Self, DfxError> {
+        let dfx_verison = version.to_string();
+        let cache = Self { dfx_verison };
+        if !is_version_installed(&version).map_err(DfxError::DfxCacheError)? {
+            return Err(DfxError::DfxCacheNotInstalled(version.to_string()));
+        }
+        Ok(cache)
+    }
+}
+
+impl dfx_core::config::cache::Cache for Cache {
+    fn version_str(&self) -> String {
+        self.dfx_verison.clone()
+    }
+
+    fn is_installed(&self) -> Result<bool, CacheError> {
+        is_version_installed(&self.version_str())
+    }
+
+    fn delete(&self) -> Result<(), CacheError> {
+        delete_version(&self.version_str()).map(|_| {})
+    }
+
+    fn get_binary_command_path(&self, binary_name: &str) -> Result<PathBuf, CacheError> {
+        get_binary_path_from_version(&self.version_str(), binary_name)
+    }
+
+    fn get_binary_command(&self, binary_name: &str) -> Result<std::process::Command, CacheError> {
+        binary_command_from_version(&self.version_str(), binary_name)
     }
 }

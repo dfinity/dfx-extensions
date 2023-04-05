@@ -15,20 +15,16 @@ dfx-core.workspace = true
 anyhow.workspace = true
 flate2 = { version = "1.0.25", default-features = false, features = ["zlib-ng"] }
 fn-error-context.workspace = true
+futures-util.workspace = true
 hyper-rustls = { version = "0.23.0", features = ["webpki-roots", "http2"] }
-reqwest = { version = "0.11.16", default-features = false, features = [
-    "blocking",
-    "json",
-    "rustls-tls",
-    "native-tls-vendored",
-] }
+reqwest.workspace = true
 rustls = "0.20.4"
 semver = "1.0.17"
 serde = "1.0.159"
 serde_json = "1.0.95"
-slog.workspace = true
-tempfile = "3.5.0"
-thiserror = "1.0.40"
-url.workspace = true
 slog-async = "2.4.0"
 slog-term = "2.9.0"
+slog.workspace = true
+tempfile.workspace = true
+thiserror = "1.0.40"
+url.workspace = true

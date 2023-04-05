@@ -1,11 +1,22 @@
 //! Code for the command line: `dfx nns install`
-use crate::lib::error::DfxResult;
-use crate::lib::nns::install_nns::{get_and_check_replica_url, get_with_retries, install_nns};
-use crate::Environment;
-use dfx_core::network::root_key::fetch_root_key_when_local;
+use std::sync::Arc;
 
-use anyhow::anyhow;
+use crate::install_nns::{get_and_check_replica_url, get_with_retries, install_nns};
+use dfx_core::{
+    config::{
+        cache::get_binary_path_from_version,
+        model::dfinity::{Config, NetworksConfig},
+    },
+    network::{
+        provider::{create_network_descriptor, LocalBindDetermination},
+        root_key::fetch_root_key_when_local,
+    },
+};
+
 use clap::Parser;
+use dfx_extensions_utils::{dfx_version, new_logger, webserver_port, Cache};
+use ic_agent::agent::http_transport::ReqwestHttpReplicaV2Transport;
+use ic_agent::Agent;
 
 /// Installs the NNS canisters, Internet Identity and the NNS frontend dapp
 ///
@@ -24,36 +35,54 @@ use clap::Parser;
 #[clap(about)]
 pub struct InstallOpts {
     /// Initialize ledger canister with these test accounts
-    #[clap(long, multiple_values(true))]
+    #[arg(long, action = clap::ArgAction::Append)]
     ledger_accounts: Vec<String>,
 }
 
 /// Executes `dfx nns install`.
-pub async fn exec(env: &dyn Environment, opts: InstallOpts) -> DfxResult {
-    let agent = env
-        .get_agent()
-        .ok_or_else(|| anyhow!("Cannot get HTTP client from environment."))?;
-    let network_descriptor = env.get_network_descriptor();
-    let networks_config = env.get_networks_config();
-    let logger = env.get_logger();
-    let cache = env.get_cache();
+pub async fn exec(opts: InstallOpts) -> anyhow::Result<()> {
+    let agent = Agent::builder()
+        .with_transport(
+            ReqwestHttpReplicaV2Transport::create(format!(
+                "http://127.0.0.1:{}",
+                webserver_port()?
+            ))
+            .unwrap(),
+        )
+        .with_identity(ic_agent::identity::AnonymousIdentity)
+        .build()?;
+    let networks_config = NetworksConfig::new()?;
+    let logger = new_logger();
+    let cache: Cache = Cache::from_version(&dfx_version()?)?;
+
+    let config = Config::from_current_dir()?;
+    if config.is_none() {
+        anyhow::bail!("No config file found. Please run `dfx config create` first.");
+    }
+    let network_descriptor = create_network_descriptor(
+        Some(Arc::new(config.unwrap())),
+        Arc::new(networks_config.clone()),
+        Some("local".to_string()),
+        Some(logger.clone()),
+        LocalBindDetermination::ApplyRunningWebserverPort, // TODO: is this the correct choice?
+    )?;
 
     // Wait for the server to be ready...
-    let nns_url = get_and_check_replica_url(network_descriptor, logger)?;
+    let nns_url = get_and_check_replica_url(&network_descriptor, &logger)?;
     get_with_retries(&nns_url).await?;
 
-    fetch_root_key_when_local(agent, network_descriptor).await?;
+    fetch_root_key_when_local(&agent, &network_descriptor).await?;
 
-    let ic_nns_init_path = cache.get_binary_command_path("ic-nns-init")?;
+    let ic_nns_init_path = get_binary_path_from_version(&dfx_version()?, "ic-nns-init")?;
 
     install_nns(
-        agent,
-        network_descriptor,
-        networks_config.as_ref(),
-        cache.as_ref(),
+        &agent,
+        &network_descriptor,
+        &networks_config,
+        &cache,
         &ic_nns_init_path,
         &opts.ledger_accounts,
-        logger,
+        &logger,
     )
     .await
 }

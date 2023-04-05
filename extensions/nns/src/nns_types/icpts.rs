@@ -11,8 +11,6 @@ use serde::{Deserialize, Serialize};
 use std::fmt;
 use std::str::FromStr;
 
-use crate::lib::error::DfxResult;
-
 #[derive(
     Serialize,
     Deserialize,
@@ -135,7 +133,7 @@ impl ICPTs {
         Decimal::from_i128_with_scale(self.e8s as i128, 8)
     }
 
-    pub fn from_decimal(mut dec: Decimal) -> DfxResult<Self> {
+    pub fn from_decimal(mut dec: Decimal) -> anyhow::Result<Self> {
         dec *= Decimal::from(ICP_SUBDIVIDABLE_BY);
         let int = u64::try_from(dec.round())?;
         Ok(Self::from_e8s(int))

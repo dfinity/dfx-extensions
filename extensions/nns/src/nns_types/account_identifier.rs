@@ -13,7 +13,9 @@ use std::convert::{TryFrom, TryInto};
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
+#[allow(dead_code)]
 const SUB_ACCOUNT_ZERO: Subaccount = Subaccount([0; 32]);
+#[allow(dead_code)]
 const ACCOUNT_DOMAIN_SEPERATOR: &[u8] = b"\x0Aaccount-id";
 
 /// While this is backed by an array of length 28, it's canonical representation
@@ -29,6 +31,7 @@ pub struct AccountIdentifier {
 }
 
 impl AccountIdentifier {
+    #[allow(dead_code)]
     pub fn new(account: Principal, sub_account: Option<Subaccount>) -> AccountIdentifier {
         let mut hash = Sha224::new();
         hash.update(ACCOUNT_DOMAIN_SEPERATOR);
@@ -67,6 +70,7 @@ impl AccountIdentifier {
 
     /// Converts this account identifier into a binary "address".
     /// The address is CRC32(identifier) . identifier.
+    #[allow(dead_code)]
     pub fn to_address(self) -> [u8; 32] {
         let mut result = [0u8; 32];
         result[0..4].copy_from_slice(&self.generate_checksum());

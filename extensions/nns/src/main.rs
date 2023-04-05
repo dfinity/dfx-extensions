@@ -1,14 +1,12 @@
 //! Code for the command line `dfx nns`.
 #![warn(clippy::missing_docs_in_private_items)]
-use crate::lib::agent::create_agent_environment;
-use crate::lib::environment::Environment;
-use crate::lib::error::DfxResult;
 
 use clap::Parser;
 use tokio::runtime::Runtime;
 
-mod import;
-mod install;
+mod commands;
+mod install_nns;
+mod nns_types;
 
 /// Options for `dfx nns` and its subcommands.
 #[derive(Parser)]
@@ -23,19 +21,19 @@ pub struct NnsOpts {
 #[derive(Parser)]
 enum SubCommand {
     /// Import NNS API definitions and canister IDs.
-    Import(import::ImportOpts),
+    Import(commands::import::ImportOpts),
     /// Install an NNS on the local dfx server.
-    Install(install::InstallOpts),
+    Install(commands::install::InstallOpts),
 }
 
 /// Executes `dfx nns` and its subcommands.
-pub fn exec(env: &dyn Environment, opts: NnsOpts) -> DfxResult {
-    let env = create_agent_environment(env, None)?;
+pub fn main() -> anyhow::Result<()> {
+    let opts = NnsOpts::parse();
     let runtime = Runtime::new().expect("Unable to create a runtime");
     runtime.block_on(async {
         match opts.subcmd {
-            SubCommand::Import(v) => import::exec(&env, v).await,
-            SubCommand::Install(v) => install::exec(&env, v).await,
+            SubCommand::Import(v) => commands::import::exec(v).await,
+            SubCommand::Install(v) => commands::install::exec(v).await,
         }
     })
 }

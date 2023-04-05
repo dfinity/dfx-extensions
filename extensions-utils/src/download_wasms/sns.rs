@@ -3,7 +3,8 @@ use std::path::Path;
 use anyhow;
 use fn_error_context::context;
 use futures_util::future::try_join_all;
-use dfx_extensions_utils::download_ic_repo_wasm;
+
+use crate::download_ic_repo_wasm;
 
 /// Downloads all the core SNS wasms.
 #[context("Failed to download SNS wasm files.")]

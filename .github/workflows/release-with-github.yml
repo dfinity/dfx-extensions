@@ -30,6 +30,8 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    outputs:
+      nev_version: ${{ steps.determine_version.outputs.NEW_VERSION }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -45,13 +47,15 @@ jobs:
           cargo binstall cargo-release -y
           cargo binstall ripgrep -y
       - name: Determine new version number by dry-running `cargo-release`
+        id: determine_version
         continue-on-error: true
         run: |
           cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
           cat cargo-release-output.txt
           NEW_VERSION=$(cat cargo-release-output.txt | rg "Upgrading .* from .* to (.*)" -r '$1' | tr -d ' ')
           echo $NEW_VERSION
-          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
+          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
           rm cargo-release-output.txt
       - name: Switch to release branch, and push it
         run: |
@@ -69,3 +73,8 @@ jobs:
         run: |
           TITLE="chore(${{ inputs.whichCrate }}): ${{ inputs.semverBump }} release v${{ env.NEW_VERSION }}"
           gh pr create --base main --fill --title "$TITLE"
+  call-release-binaries-workflow:
+    needs: create-release
+    uses: ./.github/workflows/release.yml
+    with:
+      release_tag: ${{ inputs.whichCrate }}-v${{needs.create-release.outputs.nev_version}}

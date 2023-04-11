@@ -1,0 +1,71 @@
+name: Release with GitHub Action
+
+permissions:
+  contents: write
+  pull-requests: write
+
+on:
+  workflow_dispatch:
+    inputs:
+      whichCrate:
+        description: 'Which crate you wish to release?'
+        required: true
+        type: choice
+        options:
+        - nns
+        - sns
+      semverBump:
+        description: 'Specify SemVer version you wish to bump (see: https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#bump-level)'
+        required: true
+        type: choice
+        options:
+        - release
+        - patch
+        - minor
+        - major
+        - alpha
+        - beta
+        - rc
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Install dependencies
+        run: |
+          wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
+          tar -xvzf cargo-binstall-x86_64-unknown-linux-musl.tgz
+          rm cargo-binstall-x86_64-unknown-linux-musl.tgz
+          mv cargo-binstall $HOME/.cargo/bin
+          cargo binstall cargo-release -y
+          cargo binstall ripgrep -y
+      - name: Determine new version number by dry-running `cargo-release`
+        continue-on-error: true
+        run: |
+          cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
+          cat cargo-release-output.txt
+          NEW_VERSION=$(cat cargo-release-output.txt | rg "Upgrading .* from .* to (.*)" -r '$1' | tr -d ' ')
+          echo $NEW_VERSION
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+          rm cargo-release-output.txt
+      - name: Switch to release branch, and push it
+        run: |
+          BRANCH_NAME="release/${{ inputs.whichCrate }}/${{ inputs.semverBump }}/v${{ env.NEW_VERSION }}"
+          git checkout -b "$BRANCH_NAME"
+          git push --set-upstream origin "$BRANCH_NAME"
+      - name: Execute `cargo-release`
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverBump }}
+      - name: Open the release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TITLE="chore(${{ inputs.whichCrate }}): ${{ inputs.semverBump }} release v${{ env.NEW_VERSION }}"
+          gh pr create --base main --fill --title "$TITLE"

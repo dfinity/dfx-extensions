@@ -12,7 +12,7 @@
 # artifacts have been successfully uploaded. This allows you to
 # choose what to do with partial successes and avoids spamming
 # anyone with notifications before the release is actually ready.
-name: Release
+name: Release binaries
 
 permissions:
   contents: write
@@ -37,6 +37,11 @@ permissions:
 # If there's a prerelease-style suffix to the version then the Github Release™
 # will be marked as a prerelease.
 on:
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true
+        type: string
   push:
     tags:
       - '*-?v[0-9]+*'
@@ -47,17 +52,36 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       has-releases: ${{ steps.create-release.outputs.has-releases }}
+      release-tag: ${{ steps.determine-release-tag.outputs.TAG }}
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Determine correct tag
+        id: determine-release-tag
+        run: |
+          echo 'INFO: Release tag received from input: ${{ inputs.release_tag }}'
+          echo 'INFO: GitHub context ref_name: ${{ github.ref_name }}'
+          if [[ "${{ github.workflow }}" == "Release with GitHub Action" ]]
+          then
+            echo "INFO: This run has been triggered from other workflow"
+            TAG=${{ inputs.release_tag }}
+          else
+            echo "INFO: This run has been triggered from pushing the tag"
+            TAG=${{ github.ref_name }}
+          fi
+          echo "INFO: The release tag is: $TAG"
+          echo "TAG=$TAG" >> "$GITHUB_ENV"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG }}
       - name: Install Rust
         run: rustup update 1.66.1 --no-self-update && rustup default 1.66.1
       - name: Install cargo-dist
         run: curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.0.5/cargo-dist-v0.0.5-installer.sh | sh
       - id: create-release
         run: |
-          cargo dist manifest --tag=${{ github.ref_name }} --artifacts=all --no-local-paths --output-format=json > dist-manifest.json
+          cargo dist manifest --tag=${{ env.TAG }} --artifacts=all --no-local-paths --output-format=json > dist-manifest.json
           echo "dist manifest ran successfully"
           # temp hack until it is possible to customize output archive format,
           # see: https://github.com/axodotdev/cargo-dist/issues/17
@@ -69,11 +93,11 @@ jobs:
           ANNOUNCEMENT_TITLE=$(cat dist-manifest.json | jq --raw-output ".announcement_title")
           IS_PRERELEASE=$(cat dist-manifest.json | jq --raw-output ".announcement_is_prerelease")
           cat dist-manifest.json | jq --raw-output ".announcement_github_body" > new_dist_announcement.md
-          gh release create ${{ github.ref_name }} --draft --prerelease="$IS_PRERELEASE" --title="$ANNOUNCEMENT_TITLE" --notes-file=new_dist_announcement.md
+          gh release create ${{ env.TAG }} --draft --prerelease="$IS_PRERELEASE" --title="$ANNOUNCEMENT_TITLE" --notes-file=new_dist_announcement.md
           echo "created announcement!"
 
           # Upload the manifest to the Github Release™
-          gh release upload ${{ github.ref_name }} dist-manifest.json
+          gh release upload ${{ env.TAG }} dist-manifest.json
           echo "uploaded manifest!"
 
           # Disable all the upload-artifacts tasks if we have no actual releases
@@ -100,19 +124,23 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Get correct tag
+        run: echo "TAG=${{ needs.create-release.outputs.release-tag }}" >> $GITHUB_ENV
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG }}
       - name: Install Rust
         run: rustup update 1.66.1 --no-self-update && rustup default 1.66.1
       - name: Install cargo-dist
         run: ${{ matrix.install-dist }}
       - name: Run cargo-dist
         # This logic is a bit janky because it's trying to be a polyglot between
-        # powershell and bash since this will run on windows, macos, and linux!
+        # powershell and bash since this will run on macos, and linux!
         # The two platforms don't agree on how to talk about env vars but they
         # do agree on 'cat' and '$()' so we use that to marshal values between commands.
         run: |
           # Actually do builds and make zips and whatnot
-          cargo dist build --tag=${{ github.ref_name }} --output-format=json ${{ matrix.dist-args }} > dist-manifest.json
+          cargo dist build --tag=${{ env.TAG }} --output-format=json ${{ matrix.dist-args }} > dist-manifest.json
           echo "dist ran successfully"
           cat dist-manifest.json
 
@@ -131,8 +159,7 @@ jobs:
           done
 
           echo "uploading..."
-          cat uploads.txt
-          gh release upload ${{ github.ref_name }} $(cat uploads.txt)
+          gh release upload ${{ env.TAG }} $(cat uploads.txt)
           echo "uploaded!"
 
   # Mark the Github Release™ as a non-draft now that everything has succeeded!
@@ -144,7 +171,9 @@ jobs:
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Get correct tag
+        run: echo "TAG=${{ needs.create-release.outputs.release-tag }}" >> $GITHUB_ENV
       - uses: actions/checkout@v3
       - name: mark release as non-draft
         run: |
-          gh release edit ${{ github.ref_name }} --draft=false
+          gh release edit ${{ env.TAG }} --draft=false

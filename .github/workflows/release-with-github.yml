@@ -108,6 +108,6 @@ jobs:
           TAG="${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}"
           HEAD="release/$TAG"
           TITLE="chore(${{ inputs.whichCrate }}): release v${{ needs.create-release.outputs.nev_version }}"
-          BODY="PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          BODY="$BODY\nLink to release: https://github.com/dfinity/dfx-extensions/releases/tag/$TAG"
-          gh pr create --base main --head "$HEAD" --title "$TITLE" --body "$BODY"
+          echo "PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> BODY.md
+          echo "Link to release: https://github.com/dfinity/dfx-extensions/releases/tag/$TAG" >> BODY.md
+          gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md

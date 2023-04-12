@@ -19,6 +19,7 @@ on:
         required: true
         type: choice
         options:
+        - custom
         - release
         - patch
         - minor
@@ -26,10 +27,16 @@ on:
         - alpha
         - beta
         - rc
+      semverVersion:
+        description: 'Specify exact SemVer version (corresponds to [version] listed here: https://github.com/crate-ci/cargo-release/blob/master/docs/reference.md#bump-level). Works only when you have selected [custom] in previous dropdox.'
+        default: ''
+        required: false
+        type: string
 
 jobs:
   create-release:
     runs-on: ubuntu-latest
+    if: ${{ !(inputs.semverBump == 'custom' && inputs.semverVersion == '') }}
     outputs:
       nev_version: ${{ steps.determine_version.outputs.NEW_VERSION }}
     steps:
@@ -50,31 +57,57 @@ jobs:
         id: determine_version
         continue-on-error: true
         run: |
-          cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
+          if [[ "${{ inputs.semverBump }}" == "custom" ]]
+          then
+            cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverVersion }} &> cargo-release-output.txt
+          else
+            cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
+          fi
           cat cargo-release-output.txt
           NEW_VERSION=$(cat cargo-release-output.txt | rg "Upgrading .* from .* to (.*)" -r '$1' | tr -d ' ')
           echo $NEW_VERSION
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
           rm cargo-release-output.txt
-      - name: Switch to release branch, and push it
+      - name: Switch to the release branch, and push it
         run: |
-          BRANCH_NAME="release/${{ inputs.whichCrate }}/${{ inputs.semverBump }}/v${{ env.NEW_VERSION }}"
+          BRANCH_NAME="release/${{ inputs.whichCrate }}-v${{ env.NEW_VERSION }}"
           git checkout -b "$BRANCH_NAME"
           git push --set-upstream origin "$BRANCH_NAME"
+      - name: Set up git config
+        run: |
+          git config author.email "${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com"
+          git config author.name "${{ github.event.sender.login }}"
+          git config committer.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config committer.name "GitHub Actions Bot"
+          git config user.email "${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com"
+          git config user.name "${{ github.event.sender.login }}"
       - name: Execute `cargo-release`
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverBump }}
-      - name: Open the release PR
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          TITLE="chore(${{ inputs.whichCrate }}): ${{ inputs.semverBump }} release v${{ env.NEW_VERSION }}"
-          gh pr create --base main --fill --title "$TITLE"
+        if: ${{ inputs.semverBump != 'custom' }}
+        run: cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverBump }}
+      - name: Execute `cargo-release`
+        if: ${{ inputs.semverBump == 'custom' }}
+        run: cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverVersion }}
+
+
   call-release-binaries-workflow:
     needs: create-release
     uses: ./.github/workflows/release.yml
     with:
-      release_tag: ${{ inputs.whichCrate }}-v${{needs.create-release.outputs.nev_version}}
+      release_tag: ${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}
+
+  create-release-pr:
+    needs: [create-release, call-release-binaries-workflow]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Open the release PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}"
+          HEAD="release/$TAG"
+          TITLE="chore(${{ inputs.whichCrate }}): release v${{ needs.create-release.outputs.nev_version }}"
+          BODY="PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          BODY="$BODY\nLink to release: https://github.com/dfinity/dfx-extensions/releases/tag/$TAG"
+          gh pr create --base main --head "$HEAD" --title "$TITLE" --body "$BODY"

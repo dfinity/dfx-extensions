@@ -6,7 +6,7 @@ authors = "DFINITY"
 summary = "Toolkit to interact with the Network Nervous System."
 categories = ["sns", "nns"]
 keywords = [
-    "nns"
+    "nns",
     "deployment",
 ]
 

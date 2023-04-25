@@ -7,11 +7,12 @@ summary = "Toolkit to simulate decentralizing a dapp via SNS."
 categories = ["sns", "nns"]
 keywords = [
     "sns",
-    "nns"
+    "nns",
     "deployment",
 ]
 
 [extension.subcommands]
-init = {}
+config = { subcommands = ["create", "validate" ]}
+deploy = {}
 import = {}
-
+download = {}

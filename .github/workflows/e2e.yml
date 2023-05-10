@@ -25,8 +25,8 @@ jobs:
       - name: Install Rust toolchain (macOS)
         uses: dtolnay/rust-toolchain@stable
         if: contains(matrix.os, 'macos-11')
-      - name: Install sponge (macOS)
-        run: brew install moreutils
+      - name: Install sponge and timeout (macOS)
+        run: brew install moreutils coreutils
         if: contains(matrix.os, 'macos-11')
       - name: Install sponge (Ubuntu)
         run: sudo apt-get install --yes moreutils

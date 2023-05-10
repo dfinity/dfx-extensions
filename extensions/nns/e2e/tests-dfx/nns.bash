@@ -1,9 +1,15 @@
 #!/usr/bin/env bats
 
-load ../utils/_
+GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
+
+load "$GIT_ROOT_DIR"/e2e/e2e_utils.sh
+
+assets="$(dirname "$BATS_TEST_FILENAME")"/../assets
 
 setup() {
     standard_setup
+
+    dfx extension install nns
 
     dfx_new
 }
@@ -20,32 +26,37 @@ teardown() {
     dfx cache install
 
     # it panics, but still shows help
-    assert_command_fail "$(dfx cache show)/ic-nns-init" --help
-    assert_match "thread 'main' panicked at 'Illegal arguments:"
-    assert_match "ic-nns-init \[OPTIONS\]"
-    assert_match "-h, --help.*Print help information"
-    assert_match '--version.*Print version information'
+    run "$(dfx cache show)/ic-nns-init" --help
+    assert_failure
+    assert_output --partial "thread 'main' panicked at 'Illegal arguments:"
+    assert_output --partial "ic-nns-init [OPTIONS]"
+    assert_output --regexp "-h, --help.*Print help information"
+    assert_output --regexp '--version.*Print version information'
 
     # --version fails too
-    assert_command_fail "$(dfx cache show)/ic-nns-init" --version
+    run "$(dfx cache show)/ic-nns-init" --version
+    assert_failure
 }
 
 @test "ic-admin binary exists and is executable" {
     dfx cache install
 
-    assert_command "$(dfx cache show)/ic-admin" --help
-    assert_match "Common command-line options for \`ic-admin\`"
+    run "$(dfx cache show)/ic-admin" --help
+    assert_success
+    assert_output --partial 'Common command-line options for `ic-admin`'
 }
 
 @test "sns binary exists and is executable" {
     dfx cache install
 
-    assert_command_fail "$(dfx cache show)/sns" --help
-    assert_match "Initialize, deploy and interact with an SNS."
+    run "$(dfx cache show)/sns" --help
+    assert_failure
+    assert_output --partial "Initialize, deploy and interact with an SNS."
 }
 
 @test "dfx nns install command exists" {
-    assert_command dfx nns install --help
+    run dfx extension run nns install --help
+    assert_success
 }
 
 
@@ -78,7 +89,7 @@ assert_nns_canister_id_matches() {
 }
 
 @test "dfx nns import ids are as expected" {
-    dfx nns import
+    dfx extension run nns import
     assert_nns_canister_id_matches nns-registry
     assert_nns_canister_id_matches nns-governance
     assert_nns_canister_id_matches nns-ledger
@@ -95,10 +106,11 @@ assert_nns_canister_id_matches() {
 }
 
 @test "dfx nns install runs" {
+
     echo Setting up...
     install_shared_asset subnet_type/shared_network_settings/system
     dfx_start_for_nns_install
-    dfx nns install
+    dfx extension run nns install
 
     echo "Checking that the install worked..."
     echo "   The expected wasms should be installed..."
@@ -132,8 +144,9 @@ assert_nns_canister_id_matches() {
 
     echo "   Accounts should have funds..."
     account_has_funds() {
-        assert_command dfx ledger balance "$1"
-        assert_eq "1000000000.00000000 ICP"
+        run dfx ledger balance "$1"
+        assert_success
+        assert_output "1000000000.00000000 ICP"
     }
     SECP256K1_ACCOUNT_ID="2b8fbde99de881f695f279d2a892b1137bfe81a42d7694e064b1be58701e1138"
     ED25519_ACCOUNT_ID="5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"
@@ -143,8 +156,9 @@ assert_nns_canister_id_matches() {
     echo "    The secp256k1 account can be controlled from the command line"
     install_asset nns
     dfx identity import --force --disable-encryption ident-1 ident-1/identity.pem
-    assert_command dfx ledger account-id --identity ident-1
-    assert_eq "$SECP256K1_ACCOUNT_ID"
+    run dfx ledger account-id --identity ident-1
+    assert_success
+    assert_output "$SECP256K1_ACCOUNT_ID"
 
     echo Stopping dfx...
     dfx stop
@@ -158,18 +172,21 @@ test_project_import() {
 
     jq . dfx.json
 
-    assert_command jq -r '.canisters."pfx-normal-canister".candid' dfx.json
-    assert_eq "candid/pfx-normal-canister.did"
+    run jq -r '.canisters."pfx-normal-canister".candid' dfx.json
+    assert_success
+    assert_output "candid/pfx-normal-canister.did"
     # shellcheck disable=SC2154
     assert_files_eq \
       "${assets}/project-import/project-directory/normal-canister-directory/some-subdirectory/the-candid-filename.did" \
       "candid/pfx-normal-canister.did"
 
-    assert_command jq -r '.canisters."pfx-normal-canister".remote.id.ic' dfx.json
-    assert_eq "rrkah-fqaaa-aaaaa-aaaaq-cai"
+    run jq -r '.canisters."pfx-normal-canister".remote.id.ic' dfx.json
+    assert_success
+    assert_output "rrkah-fqaaa-aaaaa-aaaaq-cai"
 
-    assert_command jq -r '.canisters."pfx-sibling".candid' dfx.json
-    assert_eq "candid/pfx-sibling.did"
+    run jq -r '.canisters."pfx-sibling".candid' dfx.json
+    assert_success
+    assert_output "candid/pfx-sibling.did"
     assert_files_eq \
       "${assets}/project-import/sibling-project/canister/canister/the-sibling-candid-definition.did" \
       "candid/pfx-sibling.did"
@@ -193,14 +210,16 @@ test_project_import_specific_canister() {
 
     jq . dfx.json
 
-    assert_command jq -r '.canisters."normal-canister".candid' dfx.json
-    assert_eq "candid/normal-canister.did"
+    run jq -r '.canisters."normal-canister".candid' dfx.json
+    assert_success
+    assert_output "candid/normal-canister.did"
     assert_files_eq \
       "${assets}/project-import/project-directory/normal-canister-directory/some-subdirectory/the-candid-filename.did" \
       "candid/normal-canister.did"
 
-    assert_command jq -r '.canisters.sibling.candid' dfx.json
-    assert_eq "null"
+    run jq -r '.canisters.sibling.candid' dfx.json
+    assert_success
+    assert_output "null"
 }
 
 @test "dfx project import specific canister" {
@@ -232,3 +251,4 @@ test_project_import_specific_canister() {
 
     dfx beta project import "http://localhost:$E2E_WEB_SERVER_PORT/project-directory/dfx.json" --all
 }
+

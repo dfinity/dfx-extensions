@@ -16,10 +16,8 @@ install_asset() {
 }
 
 install_shared_asset() {
-    # ASSET_ROOT="${BASH_SOURCE[-1]}"/e2e/assets/$1/
     mkdir -p "$(dirname "$E2E_NETWORKS_JSON")"
 
-    # ASSET_ROOT="$GIT_ROOT_DIR"/e2e/assets/$1/
     ASSET_ROOT="$(dirname "$BATS_TEST_FILENAME")"/../assets/$1
     cp -R "$ASSET_ROOT"/* "$(dirname "$E2E_NETWORKS_JSON")"
 }

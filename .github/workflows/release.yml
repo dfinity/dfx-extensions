@@ -172,6 +172,8 @@ jobs:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v3
+      - name: Get correct tag
+        run: echo "TAG=${{ needs.create-release.outputs.release-tag }}" >> $GITHUB_ENV
       - name: mark release as non-draft
         run: |
           gh release edit ${{ env.TAG }} --draft=false

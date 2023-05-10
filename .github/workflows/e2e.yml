@@ -1,0 +1,52 @@
+name: Run e2e tests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  test-extension:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-11, ubuntu-20.04, ubuntu-22.04 ]
+        test_file_path: [ extensions/nns/e2e/tests-dfx/nns.bash, extensions/sns/e2e/tests-dfx/sns.bash ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Install Rust toolchain (macOS)
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          override: true
+        if: contains(matrix.os, 'macos-11')
+      - name: Install IC SDK (dfx)
+        # run: sudo sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
+        run: |
+          git clone --branch mnl/temp-changes-to-accomodate-e2e-testing-in-dfx-extensions-repo https://github.com/dfinity/sdk
+          cd sdk
+          cargo build -r
+          sudo cp -f target/release/dfx /usr/local/bin/dfx
+          dfx cache install
+          cd ..
+          rm -rf sdk
+      - name: run test
+        run: timeout 2400 e2e/bats/bin/bats ${{ matrix.test_file_path }}
+
+  aggregate:
+    name: e2e:required
+    if: ${{ always() }}
+    needs: [test-extension, smoke]
+    runs-on: ubuntu-latest
+    steps:
+      - name: check e2e test result
+        if: ${{ needs.test-extension.result != 'success' }}
+        run: exit 1

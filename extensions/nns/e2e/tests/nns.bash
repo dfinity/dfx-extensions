@@ -2,7 +2,7 @@
 
 GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
 
-load "$GIT_ROOT_DIR"/e2e/e2e_utils.sh
+load "$GIT_ROOT_DIR"/e2e/utils.sh
 
 assets="$(dirname "$BATS_TEST_FILENAME")"/../assets
 
@@ -55,7 +55,7 @@ teardown() {
 }
 
 @test "dfx nns install command exists" {
-    run dfx extension run nns install --help
+    run dfx nns install --help
     assert_success
 }
 
@@ -89,7 +89,7 @@ assert_nns_canister_id_matches() {
 }
 
 @test "dfx nns import ids are as expected" {
-    dfx extension run nns import
+    dfx nns import
     assert_nns_canister_id_matches nns-registry
     assert_nns_canister_id_matches nns-governance
     assert_nns_canister_id_matches nns-ledger
@@ -110,7 +110,7 @@ assert_nns_canister_id_matches() {
     echo Setting up...
     install_shared_asset subnet_type/shared_network_settings/system
     dfx_start_for_nns_install
-    dfx extension run nns install
+    dfx nns install
 
     echo "Checking that the install worked..."
     echo "   The expected wasms should be installed..."

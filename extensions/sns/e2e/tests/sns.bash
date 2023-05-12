@@ -1,6 +1,8 @@
 #!/usr/bin/env bats
 
-load "$(git rev-parse --show-toplevel)"/e2e/e2e_utils.sh
+GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
+
+load "$GIT_ROOT_DIR"/e2e/utils.sh
 
 setup() {
     standard_setup
@@ -18,17 +20,17 @@ teardown() {
 SNS_CONFIG_FILE_NAME="sns.yml"
 
 @test "sns config create and validate fail outside of a project" {
-    run dfx extension run sns config create
+    run dfx sns config create
     assert_failure
     assert_output --partial 'Error: No config file found. Please run `dfx config create` first.'
-    run dfx extension run sns config validate
+    run dfx sns config validate
     assert_failure
     assert_output --partial 'Error: No config file found. Please run `dfx config create` first.'
 }
 
 @test "sns config create creates a default configuration" {
     dfx_new
-    run dfx extension run sns config create
+    run dfx sns config create
     assert_success
     assert_output --regexp "Created SNS configuration at: .*/sns.yml"
     : "Check that the file exists..."
@@ -38,7 +40,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 @test "sns config validate approves a valid configuration" {
     dfx_new
     install_asset sns/valid
-    run dfx extension run sns config validate
+    run dfx sns config validate
     assert_success
     assert_output --partial 'SNS config file is valid'
 }
@@ -47,22 +49,22 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     dfx_new
     install_asset sns/valid
     grep -v token_name "${SNS_CONFIG_FILE_NAME}" | sponge "$SNS_CONFIG_FILE_NAME"
-    run dfx extension run sns config validate
+    run dfx sns config validate
     assert_failure
     assert_output --partial "Error: token-name must be specified"
 
 }
 
 @test "sns deploy exists" {
-    dfx extension run sns deploy --help
+    dfx sns deploy --help
 }
 
 @test "sns deploy fails without config file" {
     dfx_new
     dfx extension install nns
-    dfx extension run nns import
+    dfx nns import
     rm -f sns.yml # Is not expected to be present anyway
-    run dfx extension run sns deploy
+    run dfx sns deploy
     assert_failure
     assert_output --partial "Error encountered when generating the SnsInitPayload: Couldn't open initial parameters file"
 }
@@ -73,14 +75,14 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     dfx start --clean --background --host 127.0.0.1:8080
     sleep 1
     dfx extension install nns
-    dfx extension run nns install
-    dfx extension run nns import
-    dfx extension run sns import
+    dfx nns install
+    dfx nns import
+    dfx sns import
     ls candid
     cat dfx.json
     # Deploy the SNS
     install_asset sns/valid
-    dfx extension run sns config validate
+    dfx sns config validate
     # The remaining steps don't work any more as a pre-launch whitelist has been added.
     #dfx sns deploy
     # SNS canister IDs should be saved

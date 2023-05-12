@@ -1,0 +1,34 @@
+{
+  "name": "sns",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dfinity/dfx-extensions",
+  "authors": "DFINITY",
+  "summary": "Toolkit for interacting with the Network Nervous System.",
+  "categories": [
+    "nns"
+  ],
+  "keywords": [
+    "nns",
+    "deployment"
+  ],
+  "subcommands": {
+    "import": {
+      "about": "Install an NNS on the local dfx server.",
+      "args": {
+        "network_mapping": {
+          "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
+          "long": "network-mapping"
+        }
+      }
+    },
+    "install": {
+      "about": "Import NNS API definitions and canister IDs.",
+      "args": {
+        "ledger_accounts": {
+          "about": "Initialize ledger canister with these test accounts",
+          "long": "ledger-accounts"
+        }
+      }
+    }
+  }
+}

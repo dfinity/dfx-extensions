@@ -25,7 +25,7 @@ jobs:
       - name: Install sponge and timeout 
         run: |
           eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)" || true
-          brew install moreutils coreutils
+          brew install moreutils coreutils sponge
       - name: Install IC SDK (dfx)
         # run: sudo sh -ci "$(curl -fsSL https://internetcomputer.org/install.sh)"
         # TODO: uncomment above and remove below (once dfx 0.15.0 gets released)

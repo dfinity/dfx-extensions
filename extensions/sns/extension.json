@@ -1,0 +1,54 @@
+{
+  "name": "sns",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dfinity/dfx-extensions",
+  "authors": "DFINITY",
+  "summary": "Toolkit for simulating decentralizing a dapp via SNS.",
+  "categories": [
+    "sns",
+    "nns"
+  ],
+  "keywords": [
+    "sns",
+    "nns",
+    "deployment"
+  ],
+  "subcommands": {
+    "config": {
+      "about": "Subcommands for working with configuration.",
+      "subcommands": {
+        "create": {
+          "about": "Command line options for creating an SNS configuration."
+        },
+        "validate": {
+          "about": "Command line options for validating an SNS configuration."
+        }
+      }
+    },
+    "deploy": {
+      "about": "Subcommand for creating an SNS."
+    },
+    "import": {
+      "about": "Subcommand for importing sns API definitions and canister IDs.",
+      "args": {
+        "network_mapping": {
+          "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
+          "long": "network-mapping"
+        }
+      }
+    },
+    "download": {
+      "about": "Subcommand for downloading SNS WASMs.",
+      "args": {
+        "ic_commit": {
+          "about": "IC commit of SNS canister WASMs to download",
+          "long": "ic-commit"
+        },
+        "wasms_dir": {
+          "about": "Path to store downloaded SNS canister WASMs",
+          "long": "wasms-dir"
+        }
+      }
+    }
+  }
+}

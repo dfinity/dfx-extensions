@@ -36,7 +36,15 @@ enum SubCommand {
 /// Executes `dfx nns` and its subcommands.
 pub fn main() -> anyhow::Result<()> {
     let opts = NnsOpts::parse();
-    let dfx_cache_path = PathBuf::from_str(&opts.dfx_cache_path.unwrap()).unwrap();
+    let dfx_cache_path = PathBuf::from_str(
+        &opts
+            .dfx_cache_path
+            .ok_or_else(|| {
+                "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`"
+            })
+            .map_err(|e| anyhow::anyhow!(e))?,
+    )
+    .map_err(|e| anyhow::anyhow!("Malformed path to dfx cache: {e}"))?;
     let runtime = Runtime::new().expect("Unable to create a runtime");
     runtime.block_on(async {
         match opts.subcmd {

@@ -52,7 +52,15 @@ enum SubCommand {
 /// Executes `dfx sns` and its subcommands.
 fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
-    let dfx_cache_path = PathBuf::from_str(&opts.dfx_cache_path.unwrap()).unwrap();
+    let dfx_cache_path = PathBuf::from_str(
+        &opts
+            .dfx_cache_path
+            .ok_or_else(|| {
+                "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`"
+            })
+            .map_err(|e| anyhow::anyhow!(e))?,
+    )
+    .map_err(|e| anyhow::anyhow!("Malformed path to dfx cache: {e}"))?;
     match opts.subcmd {
         SubCommand::Config(v) => commands::config::exec(v, &dfx_cache_path),
         SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path),

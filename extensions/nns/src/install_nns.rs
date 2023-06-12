@@ -7,7 +7,6 @@
 #![warn(clippy::missing_docs_in_private_items)]
 
 use dfx_core::canister::install_canister_wasm;
-use dfx_core::config::cache::Cache;
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
@@ -57,7 +56,7 @@ pub async fn install_nns(
     agent: &Agent,
     network: &NetworkDescriptor,
     networks_config: &NetworksConfig,
-    cache: &dyn Cache,
+    dfx_cache_path: &Path,
     ic_nns_init_path: &Path,
     ledger_accounts: &[String],
     logger: &Logger,
@@ -68,17 +67,17 @@ pub async fn install_nns(
     let provider_url = get_and_check_provider(network)?;
     let nns_url = get_and_check_replica_url(network, logger)?;
     let subnet_id = get_subnet_id(agent).await?.to_text();
-    let ic_admin_cli = bundled_binary(cache, "ic-admin")?;
+    let ic_admin_cli = bundled_binary(dfx_cache_path, "ic-admin")?;
 
     eprintln!("Installing the core backend wasm canisters...");
-    download_nns_wasms(cache).await?;
+    download_nns_wasms(dfx_cache_path).await?;
     let mut test_accounts = vec![
         ED25519_TEST_ACCOUNT.to_string(),
         SECP256K1_TEST_ACCOUNT.to_string(),
     ];
     test_accounts.extend_from_slice(ledger_accounts);
     let ic_nns_init_opts = IcNnsInitOpts {
-        wasm_dir: nns_wasm_dir(cache)?,
+        wasm_dir: nns_wasm_dir(dfx_cache_path),
         nns_url: nns_url.to_string(),
         test_accounts,
         sns_subnets: Some(subnet_id.to_string()),
@@ -86,7 +85,7 @@ pub async fn install_nns(
     ic_nns_init(ic_nns_init_path, &ic_nns_init_opts).await?;
 
     eprintln!("Uploading NNS configuration data...");
-    upload_nns_sns_wasms_canister_wasms(cache)?;
+    upload_nns_sns_wasms_canister_wasms(dfx_cache_path)?;
 
     // Install the GUI canisters:
     for StandardCanister {
@@ -96,7 +95,7 @@ pub async fn install_nns(
         canister_id,
     } in NNS_FRONTEND
     {
-        let local_wasm_path = nns_wasm_dir(cache)?.join(wasm_name);
+        let local_wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
         let parsed_wasm_url = Url::parse(wasm_url)
             .with_context(|| format!("Could not parse url for {canister_name} wasm: {wasm_url}"))?;
         download(&parsed_wasm_url, &local_wasm_path).await?;
@@ -514,15 +513,15 @@ pub fn set_cmc_authorized_subnets(
 
 /// Uploads wasms to the nns-sns-wasm canister.
 #[context("Failed to upload wasm files to the nns-sns-wasm canister; it may not be possible to create an SNS.")]
-pub fn upload_nns_sns_wasms_canister_wasms(cache: &dyn Cache) -> anyhow::Result<()> {
+pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Result<()> {
     for SnsCanisterInstallation {
         upload_name,
         wasm_name,
         ..
     } in SNS_CANISTERS
     {
-        let sns_cli = bundled_binary(cache, "sns")?;
-        let wasm_path = nns_wasm_dir(cache)?.join(wasm_name);
+        let sns_cli = bundled_binary(dfx_cache_path, "sns")?;
+        let wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
         let mut command = Command::new(sns_cli);
         command
             .arg("add-sns-wasm-for-tests")
@@ -607,8 +606,12 @@ pub async fn install_canister(
 }
 
 /// Get the path to a bundled command line binary
-fn bundled_binary(cache: &dyn Cache, cli_name: &str) -> anyhow::Result<PathBuf> {
-    cache
-        .get_binary_command_path(cli_name)
-        .with_context(|| format!("Could not find bundled binary '{cli_name}'."))
+fn bundled_binary(dfx_cache_path: &Path, cli_name: &str) -> anyhow::Result<PathBuf> {
+    let bin_path = dfx_cache_path.join(cli_name);
+    if !bin_path.exists() {
+        return Err(anyhow::anyhow!(format!(
+            "Could not find bundled binary '{cli_name}'."
+        )));
+    }
+    Ok(bin_path)
 }

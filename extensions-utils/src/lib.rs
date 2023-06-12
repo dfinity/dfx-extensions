@@ -6,7 +6,7 @@ mod error;
 mod logger;
 mod project;
 
-pub use dfx::{call_bundled, dfx_version, replica_rev, webserver_port, Cache};
+pub use dfx::{call_bundled, dfx_version, replica_rev, webserver_port};
 pub use download_wasms::download_ic_repo_wasm;
 pub use download_wasms::nns::download_nns_wasms;
 pub use download_wasms::nns::{

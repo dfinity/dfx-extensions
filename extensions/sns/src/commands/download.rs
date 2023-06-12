@@ -3,7 +3,7 @@ use dfx_extensions_utils::download_sns_wasms;
 use dfx_extensions_utils::replica_rev;
 
 use clap::Parser;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use tokio::runtime::Runtime;
 
 /// Downloads the SNS canister WASMs
@@ -18,12 +18,12 @@ pub struct SnsDownloadOpts {
 }
 
 /// Executes the command line `dfx sns import`.
-pub fn exec(opts: SnsDownloadOpts) -> anyhow::Result<()> {
+pub fn exec(opts: SnsDownloadOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let runtime = Runtime::new().expect("Unable to create a runtime");
     let ic_commit = if let Some(ic_commit) = opts.ic_commit {
         ic_commit
     } else {
-        replica_rev()?
+        replica_rev(dfx_cache_path)?
     };
     runtime.block_on(download_sns_wasms(&ic_commit, &opts.wasms_dir))?;
     Ok(())

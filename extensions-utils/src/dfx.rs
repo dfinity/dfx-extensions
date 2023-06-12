@@ -1,14 +1,10 @@
 use crate::error::dfx_executable::DfxError;
 use anyhow::anyhow;
-use dfx_core::config::cache::{
-    binary_command_from_version, delete_version, get_binary_path_from_version, is_version_installed,
-};
-use dfx_core::error::cache::CacheError;
 use fn_error_context::context;
 use semver::Version;
 
 use std::ffi::OsStr;
-use std::path::{Path, PathBuf};
+use std::path::Path;
 use std::process::{self, Command};
 
 /// Calls a bundled command line tool.
@@ -17,12 +13,12 @@ use std::process::{self, Command};
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
 #[context("Calling {} CLI, or, it returned an error.", command)]
-pub fn call_bundled<S, I>(cache_path: PathBuf, command: &str, args: I) -> anyhow::Result<String>
+pub fn call_bundled<S, I>(dfx_cache_path: &Path, command: &str, args: I) -> anyhow::Result<String>
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
 {
-    let binary = cache_path.join(command);
+    let binary = dfx_cache_path.join(command);
 
     let mut command = Command::new(&binary);
     command.args(args);
@@ -54,9 +50,9 @@ where
         })
 }
 
-pub fn replica_rev() -> Result<String, DfxError> {
+pub fn replica_rev(dfx_cache_path: &Path) -> Result<String, DfxError> {
     let args = ["info", "replica-rev"];
-    let rev = Command::new("dfx")
+    let rev = Command::new(dfx_cache_path.join("dfx"))
         .args(args)
         .output()
         .map_err(DfxError::DfxExecutableError)?
@@ -75,9 +71,9 @@ pub fn replica_rev() -> Result<String, DfxError> {
     Ok(rev)
 }
 
-pub fn webserver_port() -> Result<u16, DfxError> {
+pub fn webserver_port(dfx_cache_path: &Path) -> Result<u16, DfxError> {
     let args = ["info", "webserver-port"];
-    let output = Command::new("dfx")
+    let output = Command::new(dfx_cache_path.join("dfx"))
         .args(args)
         .output()
         .map_err(DfxError::DfxExecutableError)?
@@ -95,9 +91,9 @@ pub fn webserver_port() -> Result<u16, DfxError> {
     Ok(port.unwrap())
 }
 
-pub fn dfx_version() -> Result<String, DfxError> {
+pub fn dfx_version(dfx_cache_path: &Path) -> Result<String, DfxError> {
     let args = ["--version"];
-    let version_cmd_output = Command::new("dfx")
+    let version_cmd_output = Command::new(dfx_cache_path.join("dfx"))
         .args(args)
         .output()
         .map_err(DfxError::DfxExecutableError)?
@@ -114,42 +110,5 @@ pub fn dfx_version() -> Result<String, DfxError> {
             command: args.join(" ").to_string(),
             output: version_cmd_output,
         })
-    }
-}
-
-pub struct Cache {
-    dfx_verison: String,
-}
-
-impl Cache {
-    pub fn from_version(version: &str) -> Result<Self, DfxError> {
-        let dfx_verison = version.to_string();
-        let cache = Self { dfx_verison };
-        if !is_version_installed(&version).map_err(DfxError::DfxCacheError)? {
-            return Err(DfxError::DfxCacheNotInstalled(version.to_string()));
-        }
-        Ok(cache)
-    }
-}
-
-impl dfx_core::config::cache::Cache for Cache {
-    fn version_str(&self) -> String {
-        self.dfx_verison.clone()
-    }
-
-    fn is_installed(&self) -> Result<bool, CacheError> {
-        is_version_installed(&self.version_str())
-    }
-
-    fn delete(&self) -> Result<(), CacheError> {
-        delete_version(&self.version_str()).map(|_| {})
-    }
-
-    fn get_binary_command_path(&self, binary_name: &str) -> Result<PathBuf, CacheError> {
-        get_binary_path_from_version(&self.version_str(), binary_name)
-    }
-
-    fn get_binary_command(&self, binary_name: &str) -> Result<std::process::Command, CacheError> {
-        binary_command_from_version(&self.version_str(), binary_name)
     }
 }

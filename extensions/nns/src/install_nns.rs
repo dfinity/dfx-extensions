@@ -610,7 +610,7 @@ fn bundled_binary(dfx_cache_path: &Path, cli_name: &str) -> anyhow::Result<PathB
     let bin_path = dfx_cache_path.join(cli_name);
     if !bin_path.exists() {
         return Err(anyhow::anyhow!(format!(
-            "Could not find bundled binary '{cli_name}'."
+            "Could not find bundled binary '{bin_path}'."
         )));
     }
     Ok(bin_path)

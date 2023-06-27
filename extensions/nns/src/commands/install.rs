@@ -1,12 +1,9 @@
 //! Code for the command line: `dfx nns install`
-use std::sync::Arc;
+use std::{path::Path, sync::Arc};
 
 use crate::install_nns::{get_and_check_replica_url, get_with_retries, install_nns};
 use dfx_core::{
-    config::{
-        cache::get_binary_path_from_version,
-        model::dfinity::{Config, NetworksConfig},
-    },
+    config::model::dfinity::{Config, NetworksConfig},
     network::{
         provider::{create_network_descriptor, LocalBindDetermination},
         root_key::fetch_root_key_when_local,
@@ -14,7 +11,7 @@ use dfx_core::{
 };
 
 use clap::Parser;
-use dfx_extensions_utils::{dfx_version, new_logger, webserver_port, Cache};
+use dfx_extensions_utils::{new_logger, webserver_port};
 use ic_agent::agent::http_transport::ReqwestHttpReplicaV2Transport;
 use ic_agent::Agent;
 
@@ -40,12 +37,12 @@ pub struct InstallOpts {
 }
 
 /// Executes `dfx nns install`.
-pub async fn exec(opts: InstallOpts) -> anyhow::Result<()> {
+pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let agent = Agent::builder()
         .with_transport(
             ReqwestHttpReplicaV2Transport::create(format!(
                 "http://127.0.0.1:{}",
-                webserver_port()?
+                webserver_port(dfx_cache_path)?
             ))
             .unwrap(),
         )
@@ -53,7 +50,6 @@ pub async fn exec(opts: InstallOpts) -> anyhow::Result<()> {
         .build()?;
     let networks_config = NetworksConfig::new()?;
     let logger = new_logger();
-    let cache: Cache = Cache::from_version(&dfx_version()?)?;
 
     let config = Config::from_current_dir()?;
     if config.is_none() {
@@ -73,13 +69,13 @@ pub async fn exec(opts: InstallOpts) -> anyhow::Result<()> {
 
     fetch_root_key_when_local(&agent, &network_descriptor).await?;
 
-    let ic_nns_init_path = get_binary_path_from_version(&dfx_version()?, "ic-nns-init")?;
+    let ic_nns_init_path = dfx_cache_path.join("ic-nns-init");
 
     install_nns(
         &agent,
         &network_descriptor,
         &networks_config,
-        &cache,
+        &dfx_cache_path,
         &ic_nns_init_path,
         &opts.ledger_accounts,
         &logger,

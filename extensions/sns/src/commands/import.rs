@@ -1,4 +1,6 @@
 //! Code for the command line `dfx sns import`
+use std::path::Path;
+
 use dfx_core::config::model::dfinity::Config;
 use dfx_extensions_utils::{
     get_network_mappings, import_canister_definitions, new_logger, replica_rev,
@@ -21,7 +23,7 @@ pub struct SnsImportOpts {
 }
 
 /// Executes the command line `dfx sns import`.
-pub fn exec(opts: SnsImportOpts) -> anyhow::Result<()> {
+pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let config = Config::from_current_dir()?;
     if config.is_none() {
         anyhow::bail!("No config file found. Please run `dfx config create` first.");
@@ -35,7 +37,7 @@ pub fn exec(opts: SnsImportOpts) -> anyhow::Result<()> {
     let ic_commit = if let Ok(v) = std::env::var("DFX_IC_COMMIT") {
         v
     } else {
-        replica_rev()?
+        replica_rev(dfx_cache_path)?
     };
     let their_dfx_json_location =
         format!("https://raw.githubusercontent.com/dfinity/ic/{ic_commit}/rs/sns/cli/dfx.json");

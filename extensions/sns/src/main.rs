@@ -8,6 +8,8 @@ pub mod validate_config;
 /// The default location of an SNS configuration file.
 pub const CONFIG_FILE_NAME: &str = "sns.yml";
 
+use std::path::PathBuf;
+
 // #![warn(clippy::missing_docs_in_private_items)]
 use crate::{
     commands::config::SnsConfigOpts, commands::deploy::DeployOpts,
@@ -23,6 +25,11 @@ pub struct SnsOpts {
     /// Arguments and flags for subcommands.
     #[clap(subcommand)]
     subcmd: SubCommand,
+
+    // global args have to be wrapped with Option for now: https://github.com/clap-rs/clap/issues/1546
+    /// Path to cache of DFX which executed this extension.
+    #[arg(long, env = "DFX_CACHE_PATH", global = true)]
+    dfx_cache_path: Option<PathBuf>,
 }
 
 /// Subcommands of `dfx sns`
@@ -45,11 +52,17 @@ enum SubCommand {
 /// Executes `dfx sns` and its subcommands.
 fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
+    let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
+        anyhow::Error::msg(
+            "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
+        )
+    })?;
+
     match opts.subcmd {
-        SubCommand::Config(v) => commands::config::exec(v),
-        SubCommand::Import(v) => commands::import::exec(v),
-        SubCommand::Deploy(v) => commands::deploy::exec(v),
-        SubCommand::Download(v) => commands::download::exec(v),
+        SubCommand::Config(v) => commands::config::exec(v, &dfx_cache_path),
+        SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path),
+        SubCommand::Deploy(v) => commands::deploy::exec(v, &dfx_cache_path),
+        SubCommand::Download(v) => commands::download::exec(v, &dfx_cache_path),
     }?;
     Ok(())
 }

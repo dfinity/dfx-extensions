@@ -34,4 +34,5 @@ pre-release-replacements = [
 ]
 
 [package.metadata.dist]
-include = ["extension.toml"]
+include = ["extension.json"]
+

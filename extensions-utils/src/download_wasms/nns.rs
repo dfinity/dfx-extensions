@@ -1,8 +1,7 @@
 //! Information about, and utils for canisters deployed via `ic nns install`.
 
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
-use dfx_core::config::cache::{get_bin_cache, Cache};
 use fn_error_context::context;
 
 use crate::{download_ic_repo_wasm, replica_rev};
@@ -11,13 +10,13 @@ use super::sns::download_sns_wasms;
 
 /// Downloads all the core NNS wasms, excluding only the front-end wasms II and NNS-dapp.
 #[context("Failed to download NNS wasm files.")]
-pub async fn download_nns_wasms(cache: &dyn Cache) -> anyhow::Result<()> {
+pub async fn download_nns_wasms(dfx_cache_path: &Path) -> anyhow::Result<()> {
     let ic_commit = if let Ok(env_ic_commit) = std::env::var("DFX_IC_COMMIT") {
         env_ic_commit
     } else {
-        replica_rev()?
+        replica_rev(dfx_cache_path)?
     };
-    let wasm_dir = &nns_wasm_dir(cache)?;
+    let wasm_dir = &nns_wasm_dir(dfx_cache_path);
     for IcNnsInitCanister {
         wasm_name,
         test_wasm_name,
@@ -34,8 +33,8 @@ pub async fn download_nns_wasms(cache: &dyn Cache) -> anyhow::Result<()> {
 }
 
 /// The local directory where NNS wasm files are cached.  The directory is typically created on demand.
-pub fn nns_wasm_dir(cache: &dyn Cache) -> anyhow::Result<PathBuf> {
-    Ok(get_bin_cache(&cache.version_str())?.join("wasms"))
+pub fn nns_wasm_dir(dfx_cache_path: &Path) -> PathBuf {
+    dfx_cache_path.join("wasms")
 }
 
 /// Configuration for an NNS canister installation as performed by `ic-nns-init`.
@@ -89,7 +88,7 @@ pub const NNS_CYCLES_MINTING: IcNnsInitCanister = IcNnsInitCanister {
 /// Canister used to restore functionality in an emergency.
 pub const NNS_LIFELINE: IcNnsInitCanister = IcNnsInitCanister {
     canister_name: "nns-lifeline",
-    wasm_name: "lifeline.wasm",
+    wasm_name: "lifeline_canister.wasm",
     test_wasm_name: None,
     canister_id: "rno2w-sqaaa-aaaaa-aaacq-cai",
 };

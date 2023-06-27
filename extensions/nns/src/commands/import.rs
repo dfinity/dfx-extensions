@@ -1,5 +1,5 @@
 //! Code for the command line: `dfx nns import`
-use std::collections::BTreeMap;
+use std::{collections::BTreeMap, path::Path};
 
 use dfx_core::config::model::canister_id_store::CanisterIds;
 use dfx_core::config::model::dfinity::Config;
@@ -25,7 +25,7 @@ pub struct ImportOpts {
 }
 
 /// Executes `dfx nns import`
-pub async fn exec(opts: ImportOpts) -> anyhow::Result<()> {
+pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let config = Config::from_current_dir()?;
     if config.is_none() {
         anyhow::bail!("No config file found. Please run `dfx config create` first.");
@@ -37,7 +37,7 @@ pub async fn exec(opts: ImportOpts) -> anyhow::Result<()> {
     let ic_commit = if let Ok(env_ic_commit) = std::env::var("DFX_IC_COMMIT") {
         env_ic_commit
     } else {
-        replica_rev()?
+        replica_rev(dfx_cache_path)?
     };
     let dfx_url_str = {
         let ic_project = std::env::var("DFX_IC_SRC").unwrap_or_else(|_| {

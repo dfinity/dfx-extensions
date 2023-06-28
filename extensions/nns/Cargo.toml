@@ -12,8 +12,8 @@ publish = true
 [dependencies]
 dfx-core.workspace = true
 dfx-extensions-utils.workspace = true
-ic-agent = "*"
-ic-utils = "*"
+ic-agent.workspace = true
+ic-utils.workspace = true
 candid = "*"
 
 anyhow.workspace = true

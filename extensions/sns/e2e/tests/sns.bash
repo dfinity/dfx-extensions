@@ -22,10 +22,10 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 @test "sns config create and validate fail outside of a project" {
     run dfx sns config create
     assert_failure
-    assert_output --partial 'Error: No config file found. Please run `dfx config create` first.'
+    assert_output --partial 'Error: Cannot find dfx configuration file in the current working directory. Did you forget to create one?'
     run dfx sns config validate
     assert_failure
-    assert_output --partial 'Error: No config file found. Please run `dfx config create` first.'
+    assert_output --partial 'Error: Cannot find dfx configuration file in the current working directory. Did you forget to create one?'
 }
 
 @test "sns config create creates a default configuration" {

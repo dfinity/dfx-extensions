@@ -53,7 +53,7 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
 
     let config = Config::from_current_dir()?;
     if config.is_none() {
-        anyhow::bail!("No config file found. Please run `dfx config create` first.");
+        anyhow::bail!("Cannot find dfx configuration file in the current working directory. Did you forget to create one?");
     }
     let network_descriptor = create_network_descriptor(
         Some(Arc::new(config.unwrap())),

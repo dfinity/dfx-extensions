@@ -1,9 +1,5 @@
 [workspace]
-members = [
-    "extensions/sns",
-    "extensions/nns",
-    "extensions-utils"
-]
+members = ["extensions/sns", "extensions/nns", "extensions-utils"]
 
 [workspace.package]
 authors = ["DFINITY Team"]
@@ -22,6 +18,8 @@ anyhow = "1.0.70"
 clap = { version = "4.2.1", features = ["derive", "env"] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
+ic-agent = "0.24.1"
+ic-utils = "0.24.1"
 reqwest = { version = "0.11.16", default-features = false, features = [
     "blocking",
     "json",
@@ -43,7 +41,11 @@ rust-toolchain-version = "1.66.1"
 # CI backends to support (see 'cargo dist generate-ci')
 ci = ["github"]
 # Target platforms to build apps for (Rust target-triple syntax)
-targets = ["x86_64-unknown-linux-gnu", "x86_64-apple-darwin", "aarch64-apple-darwin"]
+targets = [
+    "x86_64-unknown-linux-gnu",
+    "x86_64-apple-darwin",
+    "aarch64-apple-darwin",
+]
 
 # The profile that 'cargo dist' will build with
 [profile.dist]
@@ -53,3 +55,18 @@ lto = "thin"
 [workspace.metadata.release]
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
 publish = false
+
+[patch.crates-io.ic-agent]
+version = "0.24.1"
+git = "https://github.com/dfinity/agent-rs.git"
+rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"
+
+[patch.crates-io.ic-identity-hsm]
+version = "0.24.1"
+git = "https://github.com/dfinity/agent-rs.git"
+rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"
+
+[patch.crates-io.ic-utils]
+version = "0.24.1"
+git = "https://github.com/dfinity/agent-rs.git"
+rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"

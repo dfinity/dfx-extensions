@@ -22,22 +22,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           submodules: 'recursive'
-      - name: get me brew
-        run: eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+      - name: Install brew
+        uses: Homebrew/actions/setup-homebrew@master
         if: contains(matrix.os, 'macos-12') == false
-
-#       - uses: Homebrew/actions/setup-homebrew@106393ccb5a96991745465f1c36a522117fe384c
       - name: Install sponge and timeout 
         run: brew install coreutils sponge
-      # - name: Install Rust toolchain (macOS)
-      #   uses: dtolnay/rust-toolchain@stable
-      #   if: contains(matrix.os, 'macos-12')
-      # - name: Install sponge and timeout (macOS)
-      #   run: brew install moreutils coreutils
-      #   if: contains(matrix.os, 'macos-12')
-      # - name: Install sponge (Ubuntu)
-      #   run: sudo apt-get install --yes moreutils
-      #   if: contains(matrix.os, 'macos-12') == false
       - name: Install IC SDK (dfx)
         run: DFX_VERSION="0.14.2-beta.1" sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
       - name: run test

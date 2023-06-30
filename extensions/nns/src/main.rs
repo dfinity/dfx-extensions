@@ -7,6 +7,7 @@ use clap::Parser;
 use tokio::runtime::Runtime;
 
 mod commands;
+mod errors;
 mod install_nns;
 mod nns_types;
 

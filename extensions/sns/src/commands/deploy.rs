@@ -20,7 +20,7 @@ pub fn exec(_opts: DeployOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let sns_config_path = if let Some(config) = Config::from_current_dir()? {
         config.get_project_root().join(CONFIG_FILE_NAME)
     } else {
-        anyhow::bail!("No config file found. Please run `dfx config create` first.");
+        anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
 
     println!("{}", deploy_sns(dfx_cache_path, &sns_config_path)?);

@@ -3,6 +3,7 @@
 pub mod commands;
 pub mod create_config;
 pub mod deploy;
+mod errors;
 pub mod validate_config;
 
 /// The default location of an SNS configuration file.

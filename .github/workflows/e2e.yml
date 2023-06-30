@@ -1,0 +1,43 @@
+name: Run e2e tests
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  test-extension:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ macos-12, ubuntu-22.04 ]
+        test_file_path: [ extensions/nns/e2e/tests/nns.bash, extensions/sns/e2e/tests/sns.bash ]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+      - name: Install brew
+        uses: Homebrew/actions/setup-homebrew@master
+        if: contains(matrix.os, 'macos-12') == false
+      - name: Install sponge and timeout 
+        run: brew install coreutils sponge
+      - name: Install IC SDK (dfx)
+        run: DFX_VERSION="0.14.2-beta.1" sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
+      - name: run test
+        run: timeout 2400 e2e/bats/bin/bats ${{ matrix.test_file_path }}
+
+  aggregate:
+    name: e2e:required
+    if: ${{ always() }}
+    needs: [test-extension]
+    runs-on: ubuntu-latest
+    steps:
+      - name: check e2e test result
+        if: ${{ needs.test-extension.result != 'success' }}
+        run: exit 1

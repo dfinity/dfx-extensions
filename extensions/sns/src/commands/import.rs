@@ -26,7 +26,7 @@ pub struct SnsImportOpts {
 pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let config = Config::from_current_dir()?;
     if config.is_none() {
-        anyhow::bail!("No config file found. Please run `dfx config create` first.");
+        anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }
     let mut config = config.unwrap();
     let logger = new_logger();

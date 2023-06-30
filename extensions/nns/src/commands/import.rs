@@ -28,7 +28,7 @@ pub struct ImportOpts {
 pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let config = Config::from_current_dir()?;
     if config.is_none() {
-        anyhow::bail!("Cannot find dfx configuration file in the current working directory. Did you forget to create one?");
+        anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }
     let mut config = config.unwrap().clone();
     let logger = new_logger();

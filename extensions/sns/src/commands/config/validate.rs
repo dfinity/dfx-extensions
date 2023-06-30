@@ -15,7 +15,7 @@ pub fn exec(_opts: ValidateOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let sns_config_path = if let Some(config) = Config::from_current_dir()? {
         config.get_project_root().join(CONFIG_FILE_NAME)
     } else {
-        anyhow::bail!("Cannot find dfx configuration file in the current working directory. Did you forget to create one?");
+        anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
     validate_config(dfx_cache_path, &sns_config_path).map(|stdout| println!("{}", stdout))
 }

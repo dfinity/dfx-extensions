@@ -32,7 +32,7 @@ use ic_agent::Agent;
 #[clap(about)]
 pub struct InstallOpts {
     /// Initialize ledger canister with these test accounts
-    #[arg(long, action = clap::ArgAction::Append)]
+    #[arg(long, action = clap::ArgAction::Append, num_args = 0..)]
     ledger_accounts: Vec<String>,
 }
 

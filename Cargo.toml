@@ -11,15 +11,15 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = { git = "https://github.com/dfinity/sdk" }
+dfx-core = { git = "https://github.com/dfinity/sdk", rev = "2a2d0450bc5138bef3e0902794b680fa3955ac36" }
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "1.0.70"
 clap = { version = "4.2.1", features = ["derive", "env"] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = "0.24.1"
-ic-utils = "0.24.1"
+ic-agent = "0.25.0"
+ic-utils = "0.25.0"
 reqwest = { version = "0.11.16", default-features = false, features = [
     "blocking",
     "json",
@@ -57,16 +57,11 @@ lto = "thin"
 publish = false
 
 [patch.crates-io.ic-agent]
-version = "0.24.1"
+version = "0.25.0"
 git = "https://github.com/dfinity/agent-rs.git"
-rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"
-
-[patch.crates-io.ic-identity-hsm]
-version = "0.24.1"
-git = "https://github.com/dfinity/agent-rs.git"
-rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"
+rev = "6d923cbc918852ef5bfaeb08e63c86580aa80ffe"
 
 [patch.crates-io.ic-utils]
-version = "0.24.1"
+version = "0.25.0"
 git = "https://github.com/dfinity/agent-rs.git"
-rev = "b9c57f8bab23cc9936dca4560293ffe485471c6d"
+rev = "6d923cbc918852ef5bfaeb08e63c86580aa80ffe"

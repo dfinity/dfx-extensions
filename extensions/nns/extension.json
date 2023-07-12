@@ -26,7 +26,8 @@
       "args": {
         "ledger_accounts": {
           "about": "Initialize ledger canister with these test accounts",
-          "long": "ledger-accounts"
+          "long": "ledger-accounts",
+          "multiple": true
         }
       }
     }

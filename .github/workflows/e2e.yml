@@ -28,7 +28,7 @@ jobs:
       - name: Install sponge and timeout 
         run: brew install coreutils sponge
       - name: Install IC SDK (dfx)
-        run: DFX_VERSION="0.14.2-beta.1" sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
+        run: sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats ${{ matrix.test_file_path }}
 

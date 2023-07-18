@@ -153,9 +153,14 @@ jobs:
           FILES=$(cat uploads.txt)
           rm uploads.txt
           for i in $FILES; do
+            TAR_ARCHIVE_FILENAME="${i//.tar.xz/.tar}"
+            TAR_GZ_ARCHIVE_FILENAME="$TAR_ARCHIVE_FILENAME.gz"
+            CHECKSUM_FILENAME="$TAR_GZ_ARCHIVE_FILENAME.sha256"
             xz -d -v $i
-            gzip --best --keep --force --no-name ${i//.tar.xz/.tar}
-            echo ${i//.tar.xz/.tar.gz} >> uploads.txt
+            gzip --best --keep --force --no-name "$TAR_ARCHIVE_FILENAME"
+            shasum -a 256 "$TAR_GZ_ARCHIVE_FILENAME" > "$CHECKSUM_FILENAME"
+            echo "$TAR_GZ_ARCHIVE_FILENAME" >> uploads.txt
+            echo "$CHECKSUM_FILENAME" >> uploads.txt
           done
 
           echo "uploading..."

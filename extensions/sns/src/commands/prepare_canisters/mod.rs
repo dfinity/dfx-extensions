@@ -1,7 +1,9 @@
 //! Code for command line `dfx sns prepare-canisters
+use crate::commands::prepare_canisters::{
+    add_nns_root::AddNnsRootOpts, remove_nns_root::RemoveNnsRootOpts,
+};
 use clap::Parser;
 use std::path::Path;
-use crate::commands::prepare_canisters::{add_nns_root::AddNnsRootOpts, remove_nns_root::RemoveNnsRootOpts};
 
 mod add_nns_root;
 mod remove_nns_root;

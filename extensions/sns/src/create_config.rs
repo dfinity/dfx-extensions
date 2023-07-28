@@ -5,7 +5,7 @@ use std::path::Path;
 
 use dfx_extensions_utils::call_bundled;
 
-/// Ceates an SNS configuration template.
+/// Creates an SNS configuration template.
 #[context("Failed to create sns config at {}.", path.display())]
 pub fn create_config(dfx_cache_path: &Path, path: &Path) -> anyhow::Result<()> {
     let args = vec![

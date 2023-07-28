@@ -6,7 +6,7 @@ use clap::Parser;
 mod create;
 mod validate;
 
-/// Command line options for `sdx sns config`.
+/// Command line options for `dfx sns config`.
 #[derive(Parser)]
 pub struct ConfigOpts {}
 
@@ -19,7 +19,7 @@ pub struct SnsConfigOpts {
     subcmd: SubCommand,
 }
 
-/// Command line options for `sdx sns` subcommands.
+/// Command line options for `sdx sns config` subcommands.
 #[derive(Parser)]
 enum SubCommand {
     /// Command line options for creating an SNS configuration.

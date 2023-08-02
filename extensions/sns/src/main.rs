@@ -60,9 +60,9 @@ fn main() -> anyhow::Result<()> {
     })?;
 
     match opts.subcmd {
-        SubCommand::Config(v) => commands::config::exec(v, &dfx_cache_path),
+        SubCommand::Config(v) => commands::config::exec(v),
         SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path),
-        SubCommand::Deploy(v) => commands::deploy::exec(v, &dfx_cache_path),
+        SubCommand::Deploy(v) => commands::deploy::exec(v),
         SubCommand::Download(v) => commands::download::exec(v, &dfx_cache_path),
     }?;
     Ok(())

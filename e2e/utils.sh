@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -e
 
 GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
@@ -439,9 +440,11 @@ assert_files_eq() {
 
 # Asserts that `dfx start` and `replica` are no longer running
 assert_no_dfx_start_or_replica_processes() {
+    # shellcheck disable=SC2251
     ! ( pgrep "dfx start" )
     if [ -e .dfx/replica-configuration/replica-pid ];
     then
+      # shellcheck disable=SC2251
       ! ( kill -0 "$(< .dfx/replica-configuration/replica-pid)" 2>/dev/null )
     fi
 }

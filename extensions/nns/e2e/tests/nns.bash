@@ -43,7 +43,7 @@ teardown() {
 
     run "$(dfx cache show)/ic-admin" --help
     assert_success
-    assert_output --partial 'Common command-line options for `ic-admin`'
+    assert_output --partial "Common command-line options for \`ic-admin\`"
 }
 
 @test "sns binary exists and is executable" {

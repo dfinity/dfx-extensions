@@ -1,5 +1,6 @@
 FROM rust:1.58.1 as builder
 
+# hadolint ignore=DL3008
 RUN rustup target add wasm32-unknown-unknown && \
     apt-get -yq update && \
     apt-get -yqq install --no-install-recommends build-essential pkg-config clang cmake && \

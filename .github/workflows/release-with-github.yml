@@ -51,7 +51,7 @@ jobs:
           wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
           tar -xvzf cargo-binstall-x86_64-unknown-linux-musl.tgz
           rm cargo-binstall-x86_64-unknown-linux-musl.tgz
-          mv cargo-binstall $HOME/.cargo/bin
+          mv cargo-binstall "$HOME/.cargo/bin"
           cargo binstall cargo-release -y
           cargo binstall ripgrep -y
       - name: Determine new version number by dry-running `cargo-release`
@@ -64,9 +64,10 @@ jobs:
           else
             cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
           fi
+          # shellcheck disable=SC2002
           cat cargo-release-output.txt
-          NEW_VERSION=$(cat cargo-release-output.txt | rg "Upgrading .* from .* to (.*)" -r '$1' | tr -d ' ')
-          echo $NEW_VERSION
+          NEW_VERSION="$(cat cargo-release-output.txt | rg "Upgrading .* from .* to (.*)" -r '$1' | tr -d ' ')"
+          echo "$NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
           rm cargo-release-output.txt

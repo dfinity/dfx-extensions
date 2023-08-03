@@ -1,6 +1,6 @@
 set -e
 
-GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
+GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
 
 load "$GIT_ROOT_DIR"/e2e/bats-support/load
 load "$GIT_ROOT_DIR"/e2e/bats-assert/load

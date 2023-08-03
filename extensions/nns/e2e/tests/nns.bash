@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-export GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
+export GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
 export CARGO_HOME="$HOME"
 
 load "$GIT_ROOT_DIR"/e2e/utils.sh

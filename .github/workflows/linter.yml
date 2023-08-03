@@ -28,5 +28,6 @@ jobs:
         uses: super-linter/super-linter@v5
         env:
           DEFAULT_BRANCH: main
+          VALIDATE_RUST_2015: false # SL already lints 2018 and 2021
           FILTER_REGEX_EXCLUDE: 'e2e/bats.*'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

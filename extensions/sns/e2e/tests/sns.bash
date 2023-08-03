@@ -1,13 +1,14 @@
 #!/usr/bin/env bats
 
-GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
+export GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
+export CARGO_HOME="$HOME"
 
 load "$GIT_ROOT_DIR"/e2e/utils.sh
 
 setup() {
     standard_setup
 
-    dfx extension install sns
+    dfx_extension_install_manually sns
 }
 
 teardown() {
@@ -60,21 +61,21 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 }
 
 @test "sns deploy fails without config file" {
+    dfx_extension_install_manually nns
     dfx_new
-    dfx extension install nns
     dfx nns import
     rm -f sns.yml # Is not expected to be present anyway
     run dfx sns deploy
     assert_failure
-    assert_output --partial "Error encountered when generating the SnsInitPayload: Couldn't open initial parameters file"
+    assert_output --regexp "Error encountered when generating the SnsInitPayload.* Unable to read .*sns.yml.* No such file or directory"
 }
 
 @test "sns deploy succeeds" {
+    dfx_extension_install_manually nns
     dfx_new
     install_shared_asset subnet_type/shared_network_settings/system
     dfx start --clean --background --host 127.0.0.1:8080
     sleep 1
-    dfx extension install nns
     dfx nns install
     dfx nns import
     dfx sns import

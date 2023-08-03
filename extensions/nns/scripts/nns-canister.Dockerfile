@@ -1,31 +1,31 @@
 FROM rust:1.58.1 as builder
 
-RUN rustup target add wasm32-unknown-unknown
-RUN apt -yq update && \
-    apt -yqq install --no-install-recommends build-essential pkg-config clang cmake && \
-    apt autoremove --purge -y && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
-
-RUN cargo install --version 0.3.2 ic-cdk-optimizer
+RUN rustup target add wasm32-unknown-unknown && \
+    apt-get -yq update && \
+    apt-get -yqq install --no-install-recommends build-essential pkg-config clang cmake && \
+    apt-get autoremove --purge -y && \
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* && \
+    cargo install --version 0.3.2 ic-cdk-optimizer
 
 ARG IC_COMMIT
 
 RUN git clone https://github.com/dfinity/ic && \
-    cd ic && \
-    git reset --hard ${IC_COMMIT} && \
+WORKDIR /ic
+RUN git reset --hard ${IC_COMMIT} && \
     rm -rf .git && \
-    cd ..
+WORKDIR /
 
 RUN git config --global url."https://github.com/".insteadOf git://github.com/
 
 # Modify the code to make testing easier:
 # - Provide maturity more rapidly.
 COPY nns-canister.patch /tmp/
-RUN cd /ic && patch -p1 < /tmp/nns-canister.patch
+WORKDIR /ic
+RUN patch -p1 < /tmp/nns-canister.patch
 
-RUN export CARGO_TARGET_DIR=/ic/rs/target && \
-    cd ic/rs/ && \
-    cargo fetch
+RUN export CARGO_TARGET_DIR=/ic/rs/target 
+WORKDIR /ic/rs
+RUN cargo fetch
 
 ENV CARGO_TARGET_DIR=/ic/rs/target
 WORKDIR /ic/rs
@@ -41,6 +41,7 @@ RUN binary=ledger-canister && \
     ls "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/" && \
     ic-cdk-optimizer -o "$CARGO_TARGET_DIR/${binary}_${features}.wasm" "$CARGO_TARGET_DIR/wasm32-unknown-unknown/release/${binary}.wasm"
 
+# hadolint ignore=SC2034
 RUN binary="governance-canister" && \
     features="test" && \
     cargo build --target wasm32-unknown-unknown --release -p ic-nns-governance --features "$features"

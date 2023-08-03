@@ -36,7 +36,6 @@ where
             } else {
                 let args: Vec<_> = command
                     .get_args()
-                    .into_iter()
                     .map(OsStr::to_string_lossy)
                     .collect();
                 Err(anyhow!(
@@ -102,7 +101,7 @@ pub fn dfx_version(dfx_cache_path: &Path) -> Result<String, DfxError> {
         .map(|c| *c as char)
         .collect::<String>();
     if let Some(version) = version_cmd_output.split_whitespace().last() {
-        Version::parse(&version) // make sure the output is really a version
+        Version::parse(version) // make sure the output is really a version
             .map_err(DfxError::DfxVersionMalformed)
             .map(|v| v.to_string())
     } else {

@@ -14,6 +14,6 @@ pub fn validate_config(dfx_cache_path: &Path, path: &Path) -> anyhow::Result<Str
         OsString::from(path),
         OsString::from("validate"),
     ];
-    call_bundled(dfx_cache_path, "sns", &args)
+    call_bundled(dfx_cache_path, "sns", args)
         .map(|_| format!("SNS config file is valid: {}", path.display()))
 }

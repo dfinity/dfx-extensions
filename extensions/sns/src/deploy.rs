@@ -30,7 +30,7 @@ pub fn deploy_sns(dfx_cache_path: &Path, path: &Path) -> anyhow::Result<String> 
         OsString::from("--save-to"),
         OsString::from(canister_ids_file),
     ];
-    call_bundled(dfx_cache_path, "sns", &args).map(|stdout| {
+    call_bundled(dfx_cache_path, "sns", args).map(|stdout| {
         format!(
             "Deployed SNS:\nSNS config: {}\nCanister ID file: {}\n\n{}",
             path.display(),

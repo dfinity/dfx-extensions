@@ -14,6 +14,6 @@ pub fn create_config(dfx_cache_path: &Path, path: &Path) -> anyhow::Result<()> {
         OsString::from(path),
         OsString::from("new"),
     ];
-    call_bundled(&dfx_cache_path, "sns", &args)?;
+    call_bundled(dfx_cache_path, "sns", args)?;
     Ok(())
 }

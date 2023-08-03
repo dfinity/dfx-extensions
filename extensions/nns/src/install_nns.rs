@@ -4,7 +4,6 @@
 //! * Example: Minimise crate dependencies outside the nns modules.
 //! * Example: Use `anyhow::Result` not `DfxResult`
 #![warn(missing_docs)]
-#![warn(clippy::missing_docs_in_private_items)]
 
 use dfx_core::canister::install_canister_wasm;
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
@@ -431,11 +430,7 @@ pub async fn ic_nns_init(ic_nns_init_path: &Path, opts: &IcNnsInitOpts) -> anyho
         cmd.arg("--sns-subnet");
         cmd.arg(subnet);
     });
-    let args: Vec<_> = cmd
-        .get_args()
-        .into_iter()
-        .map(OsStr::to_string_lossy)
-        .collect();
+    let args: Vec<_> = cmd.get_args().map(OsStr::to_string_lossy).collect();
     dbg!(&cmd);
     println!("ic-nns-init {}", args.join(" "));
     cmd.stdout(std::process::Stdio::inherit());

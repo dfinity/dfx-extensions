@@ -885,13 +885,15 @@ dependencies = [
 [[package]]
 name = "dfx-core"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/sdk?rev=2a2d0450bc5138bef3e0902794b680fa3955ac36#2a2d0450bc5138bef3e0902794b680fa3955ac36"
+source = "git+https://github.com/dfinity/sdk?rev=6272e370fb37074734ae026bc0a0161d7c2a9fe4#6272e370fb37074734ae026bc0a0161d7c2a9fe4"
 dependencies = [
  "aes-gcm",
  "argon2",
  "bip32",
  "byte-unit",
+ "bytes",
  "candid",
+ "clap",
  "dialoguer",
  "directories-next",
  "flate2",
@@ -903,6 +905,7 @@ dependencies = [
  "k256 0.11.6",
  "keyring",
  "lazy_static",
+ "reqwest",
  "ring",
  "schemars",
  "sec1 0.3.0",
@@ -911,6 +914,7 @@ dependencies = [
  "serde_json",
  "slog",
  "tar",
+ "tempfile",
  "thiserror",
  "tiny-bip39",
  "url",
@@ -3282,6 +3286,9 @@ name = "semver"
 version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed"
+dependencies = [
+ "serde",
+]
 
 [[package]]
 name = "serde"

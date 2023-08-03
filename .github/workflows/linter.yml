@@ -22,7 +22,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install cmake
-        run: sudo apt-get install -y cmake
+        run: sudo apt-get install -y cmake && cmake --version
 
       - name: Lint Code Base
         uses: super-linter/super-linter@v5

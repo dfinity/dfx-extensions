@@ -29,5 +29,7 @@ jobs:
         env:
           DEFAULT_BRANCH: main
           VALIDATE_RUST_2015: false # SL already lints 2018 and 2021
+          VALIDATE_NATURAL_LANGUAGE: false # needs custom config
+          VALIDATE_YAML: false # needs custom config
           FILTER_REGEX_EXCLUDE: 'e2e/bats.*'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

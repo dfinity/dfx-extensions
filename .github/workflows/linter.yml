@@ -2,8 +2,6 @@
 name: Lint Code Base
 
 on:
-  push:
-    branches-ignore: [main]
   pull_request:
     branches: [main]
 
@@ -30,4 +28,5 @@ jobs:
         uses: super-linter/super-linter@v5
         env:
           DEFAULT_BRANCH: main
+          FILTER_REGEX_EXCLUDE: 'e2e/bats.*'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

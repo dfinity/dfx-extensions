@@ -34,10 +34,7 @@ where
             if output.status.success() {
                 Ok(String::from_utf8_lossy(&output.stdout).into_owned())
             } else {
-                let args: Vec<_> = command
-                    .get_args()
-                    .map(OsStr::to_string_lossy)
-                    .collect();
+                let args: Vec<_> = command.get_args().map(OsStr::to_string_lossy).collect();
                 Err(anyhow!(
                     "Call failed:\n{:?} {}\nStdout:\n{}\n\nStderr:\n{}",
                     command.get_program(),

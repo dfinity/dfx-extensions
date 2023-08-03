@@ -67,7 +67,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     rm -f sns.yml # Is not expected to be present anyway
     run dfx sns deploy
     assert_failure
-    assert_output --regexp "Error encountered when generating the SnsInitPayload.* Unable to read .*sns.yml.* No such file or directory"
+    assert_output --regexp "Error encountered when generating the SnsInitPayload.* Couldn't open initial parameters file .*sns.yml.* No such file or directory"
 }
 
 @test "sns deploy succeeds" {

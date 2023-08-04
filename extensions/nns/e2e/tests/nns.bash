@@ -1,7 +1,6 @@
 #!/usr/bin/env bats
 
-GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
-
+export GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
 load "$GIT_ROOT_DIR"/e2e/utils.sh
 
 assets="$(dirname "$BATS_TEST_FILENAME")"/../assets
@@ -9,7 +8,7 @@ assets="$(dirname "$BATS_TEST_FILENAME")"/../assets
 setup() {
     standard_setup
 
-    dfx extension install nns
+    dfx_extension_install_manually nns
 
     dfx_new
 }

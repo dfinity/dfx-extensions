@@ -1,16 +1,12 @@
 //! Library for calling bundled command line tools.
 
 mod dfx;
-pub mod download_dependencies;
 mod download_wasms;
 mod error;
 mod logger;
 mod project;
 
-pub use dfx::{
-    call_dfx_bundled_binary, call_extension_bundled_binary, dfx_version, replica_rev,
-    webserver_port,
-};
+pub use dfx::{call_bundled, dfx_version, replica_rev, webserver_port};
 pub use download_wasms::download_ic_repo_wasm;
 pub use download_wasms::nns::download_nns_wasms;
 pub use download_wasms::nns::{

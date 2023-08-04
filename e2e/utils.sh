@@ -1,7 +1,6 @@
 set -e
 
-GIT_ROOT_DIR=$(git rev-parse --show-toplevel)
-
+export CARGO_HOME="$HOME"
 load "$GIT_ROOT_DIR"/e2e/bats-support/load
 load "$GIT_ROOT_DIR"/e2e/bats-assert/load
 
@@ -21,6 +20,19 @@ install_shared_asset() {
     ASSET_ROOT="$(dirname "$BATS_TEST_FILENAME")"/../assets/$1
     cp -R "$ASSET_ROOT"/* "$(dirname "$E2E_NETWORKS_JSON")"
 }
+
+dfx_extension_install_manually() (
+    cd "$GIT_ROOT_DIR"
+    local extension_name="$1"
+    package_version=$(HOME="$CARGO_HOME" cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
+    HOME="$CARGO_HOME" cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
+    extensions_dir="$(dfx cache show)/extensions"
+    arch_platform="$(get_arch_and_platform)"
+    rm -rf "$extensions_dir/$extension_name-$arch_platform" "${extensions_dir:?}/$extension_name" # remove old versions
+    mkdir -p "$extensions_dir"
+    tar xfJ "target/distrib/$extension_name-$arch_platform.tar.xz" -C "$extensions_dir"
+    mv "$extensions_dir/$extension_name-$arch_platform" "$extensions_dir/$extension_name"
+)
 
 standard_setup() {
     # We want to work from a temporary directory, different for every test.
@@ -446,3 +458,21 @@ assert_no_dfx_start_or_replica_processes() {
     fi
 }
 
+get_arch_and_platform() {
+    ARCH=$(uname -m)
+    SYS=$(uname -s)
+
+    if [[ "$ARCH" == "x86_64" ]]; then
+        if [[ "$SYS" == "Darwin" ]]; then
+            echo "$ARCH-apple-darwin"
+        elif [[ "$SYS" == "Linux" ]]; then
+            echo "$ARCH-unknown-linux-gnu"
+        else
+            echo "System not recognized"
+        fi
+    elif [[ "$ARCH" == "arm64" && "$SYS" == "Darwin" ]]; then
+        echo "aarch64-apple-darwin"
+    else
+        echo "Architecture not recognized"
+    fi
+}

@@ -1,7 +1,6 @@
 set -e
 
-GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
-
+export CARGO_HOME="$HOME"
 load "$GIT_ROOT_DIR"/e2e/bats-support/load
 load "$GIT_ROOT_DIR"/e2e/bats-assert/load
 

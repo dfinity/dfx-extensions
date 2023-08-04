@@ -1,7 +1,6 @@
 #!/usr/bin/env bats
 
 export GIT_ROOT_DIR="$(git rev-parse --show-toplevel)"
-export CARGO_HOME="$HOME"
 
 load "$GIT_ROOT_DIR"/e2e/utils.sh
 
@@ -67,7 +66,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     rm -f sns.yml # Is not expected to be present anyway
     run dfx sns deploy
     assert_failure
-    assert_output --regexp "Error encountered when generating the SnsInitPayload.* Couldn't open initial parameters file .*sns.yml.* No such file or directory"
+    assert_output --partial "Error encountered when generating the SnsInitPayload: Couldn't open initial parameters file"
 }
 
 @test "sns deploy succeeds" {

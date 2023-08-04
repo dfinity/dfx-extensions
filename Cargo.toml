@@ -16,7 +16,6 @@ dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "1.0.70"
 clap = { version = "4.2.1", features = ["derive", "env"] }
-flate2 = { version = "1.0.25", default-features = false, features = ["zlib-ng"] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
 ic-agent = "0.25.0"

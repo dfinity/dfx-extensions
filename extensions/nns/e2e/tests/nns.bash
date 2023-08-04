@@ -22,8 +22,10 @@ teardown() {
 }
 
 @test "ic-nns-init binary exists and is executable" {
+    dfx cache install
+
     # it panics, but still shows help
-    run "$(dfx cache show)/extensions/nns/ic-nns-init" --help
+    run "$(dfx cache show)/ic-nns-init" --help
     assert_failure
     assert_output --partial "thread 'main' panicked at 'Illegal arguments:"
     assert_output --partial "ic-nns-init [OPTIONS]"
@@ -31,18 +33,22 @@ teardown() {
     assert_output --regexp '--version.*Print version information'
 
     # --version fails too
-    run "$(dfx cache show)/extensions/nns/ic-nns-init" --version
+    run "$(dfx cache show)/ic-nns-init" --version
     assert_failure
 }
 
 @test "ic-admin binary exists and is executable" {
-    run "$(dfx cache show)/extensions/nns/ic-admin" --help
+    dfx cache install
+
+    run "$(dfx cache show)/ic-admin" --help
     assert_success
     assert_output --partial 'Common command-line options for `ic-admin`'
 }
 
 @test "sns binary exists and is executable" {
-    run "$(dfx cache show)/extensions/nns/sns-cli" --help
+    dfx cache install
+
+    run "$(dfx cache show)/sns" --help
     assert_failure
     assert_output --partial "Initialize, deploy and interact with an SNS."
 }

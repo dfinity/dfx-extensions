@@ -27,6 +27,8 @@ jobs:
         if: contains(matrix.os, 'macos-12') == false
       - name: Install sponge and timeout 
         run: brew install coreutils sponge
+      - name: Install cargo-dist
+        run: cargo install cargo-dist
       - name: Install IC SDK (dfx)
         run: sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
       - name: run test

@@ -7,13 +7,17 @@ use std::ffi::OsStr;
 use std::path::Path;
 use std::process::{self, Command};
 
-/// Calls a bundled command line tool.
+/// Calls a binary from dfx cache.
 ///
 /// # Returns
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
 #[context("Calling {} CLI, or, it returned an error.", command)]
-pub fn call_bundled<S, I>(dfx_cache_path: &Path, command: &str, args: I) -> anyhow::Result<String>
+pub fn call_dfx_bundled_binary<S, I>(
+    dfx_cache_path: &Path,
+    command: &str,
+    args: I,
+) -> anyhow::Result<String>
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
@@ -26,6 +30,57 @@ where
     // The sns command line tool should not rely on commands not packaged with dfx.
     // The same applies to other bundled binaries.
     command.env("PATH", binary.parent().unwrap_or_else(|| Path::new(".")));
+    command
+        .stdin(process::Stdio::null())
+        .output()
+        .map_err(anyhow::Error::from)
+        .and_then(|output| {
+            if output.status.success() {
+                Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+            } else {
+                let args: Vec<_> = command
+                    .get_args()
+                    .into_iter()
+                    .map(OsStr::to_string_lossy)
+                    .collect();
+                Err(anyhow!(
+                    "Call failed:\n{:?} {}\nStdout:\n{}\n\nStderr:\n{}",
+                    command.get_program(),
+                    args.join(" "),
+                    String::from_utf8_lossy(&output.stdout),
+                    String::from_utf8_lossy(&output.stderr)
+                ))
+            }
+        })
+}
+
+/// Calls a binary that was delivered with an extension tarball.
+///
+/// # Returns
+/// - On success, returns stdout as a string.
+/// - On error, returns an error message including stdout and stderr.
+#[context("Calling {} CLI failed, or, it returned an error.", binary_name)]
+pub fn call_extension_bundled_binary<S, I>(binary_name: &str, args: I) -> anyhow::Result<String>
+where
+    I: IntoIterator<Item = S>,
+    S: AsRef<OsStr>,
+{
+    let extension_binary_path =
+        std::env::current_exe().map_err(|e| anyhow::anyhow!("Failed to get current exe: {}", e))?;
+    let extension_dir_path = extension_binary_path
+        .parent()
+        .unwrap_or_else(|| Path::new("."));
+    let binary_to_call = extension_dir_path.join(binary_name);
+
+    let mut command = Command::new(&binary_to_call);
+    command.args(args);
+    // The sns command line tool itself calls dfx; it should call this dfx.
+    // The sns command line tool should not rely on commands not packaged with dfx.
+    // The same applies to other bundled binaries.
+    command.env(
+        "PATH",
+        binary_to_call.parent().unwrap_or_else(|| Path::new(".")),
+    );
     command
         .stdin(process::Stdio::null())
         .output()

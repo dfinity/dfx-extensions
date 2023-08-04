@@ -92,3 +92,8 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     #dfx canister id sns_root
     #dfx canister id sns_swap
 }
+
+@test "sns-cli binary exists and is executable" {
+    run "$(dfx cache show)"/extensions/sns/sns-cli --help
+    assert_output --partial "Initialize, deploy and interact with an SNS"
+}

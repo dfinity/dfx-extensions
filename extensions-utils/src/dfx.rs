@@ -12,7 +12,7 @@ use std::process::{self, Command};
 /// # Returns
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
-#[context("Calling {} CLI failed, or, it returned an error.", command)]
+#[context("Calling {} CLI, or, it returned an error.", command)]
 pub fn call_dfx_bundled_binary<S, I>(
     dfx_cache_path: &Path,
     command: &str,

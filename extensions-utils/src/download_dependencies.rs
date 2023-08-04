@@ -34,5 +34,11 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, renamed_binary_n
 
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
     let out_path = Path::new(&manifest_dir).join(renamed_binary_name);
-    fs::rename(binary_name, out_path).expect("Failed to move sns");
+    fs::rename(binary_name, &out_path).expect("Failed to move extension");
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        dfx_core::fs::set_permissions(&out_path, std::fs::Permissions::from_mode(0o777))
+            .expect("Failed to set permissions");
+    }
 }

@@ -1,4 +1,6 @@
 //! Code for the command line `dfx sns deploy`.
+use std::path::Path;
+
 use crate::deploy::deploy_sns;
 use crate::CONFIG_FILE_NAME;
 use clap::Parser;
@@ -13,7 +15,7 @@ use dfx_core::config::model::dfinity::Config;
 pub struct DeployOpts {}
 
 /// Executes the command line `dfx sns deploy`.
-pub fn exec(_opts: DeployOpts) -> anyhow::Result<()> {
+pub fn exec(_opts: DeployOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     println!("Creating SNS canisters.  This typically takes about one minute...");
     let sns_config_path = if let Some(config) = Config::from_current_dir()? {
         config.get_project_root().join(CONFIG_FILE_NAME)
@@ -21,6 +23,6 @@ pub fn exec(_opts: DeployOpts) -> anyhow::Result<()> {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
 
-    println!("{}", deploy_sns(&sns_config_path)?);
+    println!("{}", deploy_sns(&sns_config_path, dfx_cache_path)?);
     Ok(())
 }

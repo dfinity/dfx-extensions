@@ -7,7 +7,7 @@ use dfx_extensions_utils::call_extension_bundled_binary;
 
 /// Checks whether an SNS configuration file is valid.
 #[context("Failed to validate SNS config at {}.", path.display())]
-pub fn validate_config(path: &Path) -> anyhow::Result<String> {
+pub fn validate_config(path: &Path, dfx_cache_path: &Path) -> anyhow::Result<String> {
     let args = vec![
         OsString::from("init-config-file"),
         OsString::from("--init-config-file-path"),
@@ -16,6 +16,6 @@ pub fn validate_config(path: &Path) -> anyhow::Result<String> {
     ];
     // current binary
 
-    call_extension_bundled_binary("sns-cli", &args)
+    call_extension_bundled_binary(dfx_cache_path, "sns-cli", &args)
         .map(|_| format!("SNS config file is valid: {}", path.display()))
 }

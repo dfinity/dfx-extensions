@@ -28,6 +28,7 @@ use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
 use reqwest::Url;
 use slog::Logger;
+use std::ffi::OsString;
 use std::fs;
 use std::io::Write;
 use std::path::Component;
@@ -78,7 +79,7 @@ pub async fn install_nns(
         test_accounts,
         sns_subnets: Some(subnet_id.to_string()),
     };
-    ic_nns_init(&ic_nns_init_opts).await?;
+    ic_nns_init(&ic_nns_init_opts, dfx_cache_path).await?;
 
     eprintln!("Uploading NNS configuration data...");
     upload_nns_sns_wasms_canister_wasms(dfx_cache_path)?;
@@ -112,8 +113,8 @@ pub async fn install_nns(
     }
     // ... and configure the backend NNS canisters:
     eprintln!("Configuring the NNS...");
-    set_xdr_rate(1234567, &nns_url)?;
-    set_cmc_authorized_subnets(&nns_url, &subnet_id)?;
+    set_xdr_rate(1234567, &nns_url, dfx_cache_path)?;
+    set_cmc_authorized_subnets(&nns_url, &subnet_id, dfx_cache_path)?;
 
     print_nns_details(provider_url)?;
     Ok(())
@@ -412,24 +413,24 @@ pub struct IcNnsInitOpts {
 ///   - This won't work with an HSM, because the agent holds a session open
 ///   - The provider_url is what the agent connects to, and forwards to the replica.
 #[context("Failed to install NNS components.")]
-pub async fn ic_nns_init(opts: &IcNnsInitOpts) -> anyhow::Result<String> {
-    let mut args = vec![
-        "--pass-specified-id",
-        "--url",
-        &opts.nns_url,
-        "--wasm-dir",
-        opts.wasm_dir.to_str().unwrap(),
+pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow::Result<String> {
+    let mut args: Vec<OsString> = vec![
+        "--pass-specified-id".into(),
+        "--url".into(),
+        opts.nns_url.clone().into(),
+        "--wasm-dir".into(),
+        opts.wasm_dir.as_os_str().into(),
     ];
     for account in &opts.test_accounts {
-        args.push("--initialize-ledger-with-test-accounts");
-        args.push(account);
+        args.push("--initialize-ledger-with-test-accounts".into());
+        args.push(account.into());
     }
     if let Some(subnets) = &opts.sns_subnets {
-        args.push("--sns-subnet");
-        args.push(subnets);
+        args.push("--sns-subnet".into());
+        args.push(subnets.into());
     }
-    call_extension_bundled_binary("ic-nns-init", &args)
-        .with_context(|| format!("Error executing `ic-admin` with args: {:?}", args))
+    call_extension_bundled_binary(dfx_cache_path, "ic-nns-init", &args)
+        .with_context(|| format!("Error executing `ic-nns-init` with args: {:?}", args))
 }
 
 /// Sets the exchange rate between ICP and cycles.
@@ -439,7 +440,7 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts) -> anyhow::Result<String> {
 /// proposals with a test user pass immediately, as the small test neuron is
 /// the only neuron and has absolute majority.
 #[context("Failed to set an initial exchange rate between ICP and cycles. It may not be possible to create canisters or purchase cycles.")]
-pub fn set_xdr_rate(rate: u64, nns_url: &Url) -> anyhow::Result<String> {
+pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::Result<String> {
     let summary = format!("Set the cycle exchange rate to {}.", rate.clone());
     let xdr_permyriad_per_icp = rate.to_string();
     let args = vec![
@@ -452,13 +453,17 @@ pub fn set_xdr_rate(rate: u64, nns_url: &Url) -> anyhow::Result<String> {
         "--xdr-permyriad-per-icp",
         &xdr_permyriad_per_icp,
     ];
-    call_extension_bundled_binary("ic-admin", args)
+    call_extension_bundled_binary(dfx_cache_path, "ic-admin", args)
         .map_err(|e| anyhow!("Call to propose to set xdr rate failed: {e}"))
 }
 
 /// Sets the subnets the CMC is authorized to create canisters in.
 #[context("Failed to authorize a subnet for use by the cycles management canister. The CMC may not be able to create canisters.")]
-pub fn set_cmc_authorized_subnets(nns_url: &Url, subnet: &str) -> anyhow::Result<String> {
+pub fn set_cmc_authorized_subnets(
+    nns_url: &Url,
+    subnet: &str,
+    dfx_cache_path: &Path,
+) -> anyhow::Result<String> {
     let summary = format!(
         "Authorize the Cycles Minting Canister to create canisters in the subnet '{}'.",
         subnet.clone()
@@ -475,7 +480,7 @@ pub fn set_cmc_authorized_subnets(nns_url: &Url, subnet: &str) -> anyhow::Result
         "--subnets",
         subnet,
     ];
-    call_extension_bundled_binary("ic-admin", args)
+    call_extension_bundled_binary(dfx_cache_path, "ic-admin", args)
         .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))
 }
 
@@ -488,23 +493,20 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
         ..
     } in SNS_CANISTERS
     {
-        let wasm_path = nns_wasm_dir(dfx_cache_path)
-            .join(wasm_name)
-            .display()
-            .to_string();
+        let wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
         let args = vec![
-            "add-sns-wasm-for-tests",
-            "--network",
-            "local",
-            "--override-sns-wasm-canister-id-for-tests",
-            NNS_SNS_WASM.canister_id,
-            "--wasm-file",
-            &wasm_path,
-            upload_name,
+            "add-sns-wasm-for-tests".into(),
+            "--network".into(),
+            "local".into(),
+            "--override-sns-wasm-canister-id-for-tests".into(),
+            NNS_SNS_WASM.canister_id.into(),
+            "--wasm-file".into(),
+            wasm_path.clone().into_os_string(),
+            upload_name.into(),
         ];
-        call_extension_bundled_binary("sns-cli", &args)
+        call_extension_bundled_binary(dfx_cache_path,"sns-cli", &args)
             .map_err(|e| anyhow!(
-                        "Failed to upload {upload_name} from {wasm_path} to the nns-sns-wasm canister by calling `sns-cli` with args {args:?}: {e}"
+                        "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli` with args {args:?}: {e}"
                     ))?;
     }
     Ok(())

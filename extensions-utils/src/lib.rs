@@ -1,24 +1,23 @@
 //! Library for calling bundled command line tools.
 
-mod dfx;
-pub mod download_dependencies;
-mod download_wasms;
+pub mod dependencies;
 mod error;
 mod logger;
 mod project;
 
-pub use dfx::{
-    call_dfx_bundled_binary, call_extension_bundled_binary, dfx_version, replica_rev,
-    webserver_port,
+pub use dependencies::{
+    call::call_extension_bundled_binary,
+    dfx::{call_dfx_bundled_binary, dfx_version, replica_rev, webserver_port},
+    download_ic_binaries::download_ic_binary,
+    download_wasms::{
+        download_ic_repo_wasm,
+        nns::{
+            download_nns_wasms, nns_wasm_dir, IcNnsInitCanister, StandardCanister,
+            ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND, NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT,
+        },
+        sns::{download_sns_wasms, SnsCanisterInstallation, SNS_CANISTERS},
+    },
 };
-pub use download_wasms::download_ic_repo_wasm;
-pub use download_wasms::nns::download_nns_wasms;
-pub use download_wasms::nns::{
-    nns_wasm_dir, IcNnsInitCanister, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE,
-    NNS_FRONTEND, NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT,
-};
-pub use download_wasms::sns::SnsCanisterInstallation;
-pub use download_wasms::sns::{download_sns_wasms, SNS_CANISTERS};
 pub use logger::new_logger;
 pub use project::import::import_canister_definitions;
 pub use project::network_mappings::get_network_mappings;

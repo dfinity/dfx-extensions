@@ -8,7 +8,7 @@ use dfx_extensions_utils::call_extension_bundled_binary;
 
 /// Creates an SNS.  This requires funds but no proposal.
 #[context("Failed to deploy SNS with config: {}", path.display())]
-pub fn deploy_sns(path: &Path) -> anyhow::Result<String> {
+pub fn deploy_sns(path: &Path, dfx_cache_path: &Path) -> anyhow::Result<String> {
     // Note: It MAY be possible to get the did file location using existing sdk methods.
     let did_file = "candid/nns-sns-wasm.did";
     if !Path::new(did_file).exists() {
@@ -30,7 +30,7 @@ pub fn deploy_sns(path: &Path) -> anyhow::Result<String> {
         OsString::from("--save-to"),
         OsString::from(canister_ids_file),
     ];
-    call_extension_bundled_binary("sns-cli", &args).map(|stdout| {
+    call_extension_bundled_binary(dfx_cache_path, "sns-cli", &args).map(|stdout| {
         format!(
             "Deployed SNS:\nSNS config: {}\nCanister ID file: {}\n\n{}",
             path.display(),

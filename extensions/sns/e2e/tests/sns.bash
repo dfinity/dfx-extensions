@@ -97,3 +97,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     run "$(dfx cache show)"/extensions/sns/sns-cli --help
     assert_output --partial "Initialize, deploy and interact with an SNS"
 }
+
+@test "sns prepare-canisters exists" {
+      dfx sns prepare-canisters --help
+}

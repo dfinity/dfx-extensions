@@ -17,7 +17,7 @@ pub struct SnsConfigOpts {
     subcmd: SubCommand,
 }
 
-/// Command line options for `sdx sns config` subcommands.
+/// Command line options for `dfx sns config` subcommands.
 #[derive(Parser)]
 enum SubCommand {
     /// Command line options for creating an SNS configuration.

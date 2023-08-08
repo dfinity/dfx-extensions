@@ -16,7 +16,7 @@ pub struct SnsPrepareCanistersOpts {
     subcmd: SubCommand,
 }
 
-/// Command line options for `sdx sns prepare-canisters` subcommands.
+/// Command line options for `dfx sns prepare-canisters` subcommands.
 #[derive(Parser)]
 enum SubCommand {
     /// Command line options for adding NNS Root as a co-controller of a dapp canister.

@@ -30,7 +30,7 @@ fn main() {
         if destination_paths.1.exists() {
             std::fs::remove_file(&destination_paths.1).unwrap();
         }
-        std::fs::create_dir_all(destination_paths.1.parent().unwrap()).unwrap();
+        std::fs::create_dir_all(target_dir).unwrap();
         std::fs::copy(destination_paths.0, destination_paths.1).unwrap();
     }
 }

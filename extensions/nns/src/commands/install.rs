@@ -69,11 +69,14 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
 
     fetch_root_key_when_local(&agent, &network_descriptor).await?;
 
+    let ic_nns_init_path = dfx_cache_path.join("ic-nns-init");
+
     install_nns(
         &agent,
         &network_descriptor,
         &networks_config,
         &dfx_cache_path,
+        &ic_nns_init_path,
         &opts.ledger_accounts,
         &logger,
     )

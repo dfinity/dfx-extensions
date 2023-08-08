@@ -1,4 +1,6 @@
 //! Code for the command line `dfx sns config`.
+use std::path::Path;
+
 use clap::Parser;
 
 mod create;
@@ -27,9 +29,9 @@ enum SubCommand {
 }
 
 /// Executes `dfx sns config` and its subcommands.
-pub fn exec(opts: SnsConfigOpts) -> anyhow::Result<()> {
+pub fn exec(opts: SnsConfigOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     match opts.subcmd {
-        SubCommand::Create(v) => create::exec(v),
-        SubCommand::Validate(v) => validate::exec(v),
+        SubCommand::Create(v) => create::exec(v, dfx_cache_path),
+        SubCommand::Validate(v) => validate::exec(v, dfx_cache_path),
     }
 }

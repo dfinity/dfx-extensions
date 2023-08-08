@@ -430,7 +430,6 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
         args.push(subnets.into());
     }
     call_extension_bundled_binary(dfx_cache_path, "ic-nns-init", &args)
-        .with_context(|| format!("Error executing `ic-nns-init` with args: {:?}", args))
 }
 
 /// Sets the exchange rate between ICP and cycles.
@@ -506,7 +505,7 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
         ];
         call_extension_bundled_binary(dfx_cache_path,"sns-cli", &args)
             .map_err(|e| anyhow!(
-                        "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli` with args {args:?}: {e}"
+                        "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli`: {e}"
                     ))?;
     }
     Ok(())

@@ -3,6 +3,7 @@ use anyhow::Context;
 use fn_error_context::context;
 use semver::Version;
 
+use std::env;
 use std::ffi::OsStr;
 use std::path::Path;
 use std::process::{self, Command};
@@ -12,6 +13,8 @@ use std::process::{self, Command};
 /// # Returns
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
+///
+/// Does not stream stdout/stderr, and instead returns it after the process has exited.
 #[context("Calling {} CLI, or, it returned an error.", command)]
 pub fn call_dfx_bundled_binary<S, I>(
     dfx_cache_path: &Path,
@@ -23,9 +26,16 @@ where
     S: AsRef<OsStr>,
 {
     let binary = dfx_cache_path.join(command);
-    let mut command = Command::new(&binary);
+    let mut command = Command::new(binary);
     // If extension's dependency calls dfx; it should call dfx in this dir.
-    command.env("PATH", dfx_cache_path.join("dfx"));
+    if let Some(path) = env::var_os("PATH") {
+        let mut paths = env::split_paths(&path).collect::<Vec<_>>();
+        paths.push(dfx_cache_path.to_path_buf());
+        let new_path = env::join_paths(paths)?;
+        command.env("PATH", new_path);
+    } else {
+        command.env("PATH", dfx_cache_path);
+    }
     command.args(args);
     let output = command
         .stdin(process::Stdio::null())
@@ -87,7 +97,7 @@ pub fn dfx_version(dfx_cache_path: &Path) -> Result<String, DfxError> {
         .map(|c| *c as char)
         .collect::<String>();
     if let Some(version) = version_cmd_output.split_whitespace().last() {
-        Version::parse(&version) // make sure the output is really a version
+        Version::parse(version) // make sure the output is really a version
             .map_err(DfxError::DfxVersionMalformed)
             .map(|v| v.to_string())
     } else {

@@ -1,3 +1,4 @@
+use std::env;
 use std::path::PathBuf;
 
 const REPLICA_REV: &str = "90e2799c255733409d0e61682685afcc2431c928";
@@ -11,26 +12,25 @@ const BINARY_DEPENDENCIES: &[(&str, &str)] = &[
 
 fn main() {
     // keep copy of the dependency in the root of the project, so that cargo-dist will be able to package it into a tarball
-    let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    // and also in `target/debug` or `target/release` for development purposes (e.g. cargo run)
-    let target_dir = manifest_dir
+    let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    // and also in `target/debug` or `target/release` for development purposes (e.g. cargo run), this is a bit hacky: https://github.com/rust-lang/cargo/issues/9661
+    let target_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap())
         .parent()
         .unwrap()
         .parent()
         .unwrap()
-        .join("target")
-        .join(std::env::var("PROFILE").unwrap());
+        .parent()
+        .unwrap()
+        .to_path_buf();
     for (binary_name, renamed_binary_name) in BINARY_DEPENDENCIES {
-        let destination_paths = (
-            manifest_dir.join(renamed_binary_name),
-            target_dir.join(renamed_binary_name),
-        );
-        dbg!(&destination_paths);
-        dfx_extensions_utils::download_ic_binary(REPLICA_REV, binary_name, &destination_paths.0);
-        if destination_paths.1.exists() {
-            std::fs::remove_file(&destination_paths.1).unwrap();
+        let bin_in_manifest_dir = manifest_dir.join(renamed_binary_name);
+        let bin_in_target_dir = target_dir.join(renamed_binary_name);
+        dbg!(&bin_in_manifest_dir, &bin_in_target_dir);
+        dfx_extensions_utils::download_ic_binary(REPLICA_REV, binary_name, &bin_in_manifest_dir);
+        if bin_in_target_dir.exists() {
+            std::fs::remove_file(&bin_in_target_dir).unwrap();
         }
-        std::fs::create_dir_all(target_dir).unwrap();
-        std::fs::copy(destination_paths.0, destination_paths.1).unwrap();
+        std::fs::create_dir_all(bin_in_target_dir.parent().unwrap()).unwrap();
+        std::fs::copy(&bin_in_manifest_dir, &bin_in_target_dir).unwrap();
     }
 }

@@ -34,13 +34,13 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, destination_path
     let mut temp = fs::File::create(&temp_file).expect("Failed to create the file");
     copy(&mut d, &mut temp).expect("Failed to copy content");
 
-    fs::rename(temp_file, &destination_path).expect("Failed to move extension");
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        dfx_core::fs::set_permissions(&destination_path, std::fs::Permissions::from_mode(0o500))
+        dfx_core::fs::set_permissions(&temp_file, std::fs::Permissions::from_mode(0o500))
             .expect("Failed to set permissions");
     }
+    fs::rename(temp_file, destination_path).expect("Failed to move extension");
 }
 
 async fn download_bytes(url: &str) -> Vec<u8> {

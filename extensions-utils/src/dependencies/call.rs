@@ -1,6 +1,7 @@
 use anyhow::Context;
 use fn_error_context::context;
 use std::{
+    env,
     ffi::OsStr,
     path::Path,
     process::{self, Command},
@@ -11,6 +12,8 @@ use std::{
 /// # Returns
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
+///
+/// Does not stream stdout/stderr, and instead returns it after the process has exited.
 #[context("Calling {} CLI failed, or, it returned an error.", binary_name)]
 pub fn call_extension_bundled_binary<S, I>(
     dfx_cache_path: &Path,
@@ -30,9 +33,16 @@ where
         )
     })?;
     let binary_to_call = extension_dir_path.join(binary_name);
-    let mut command = Command::new(&binary_to_call);
+    let mut command = Command::new(binary_to_call);
     // If extension's dependency calls dfx; it should call dfx in this dir.
-    command.env("PATH", dfx_cache_path.join("dfx"));
+    if let Some(path) = env::var_os("PATH") {
+        let mut paths = env::split_paths(&path).collect::<Vec<_>>();
+        paths.push(dfx_cache_path.to_path_buf());
+        let new_path = env::join_paths(paths)?;
+        command.env("PATH", new_path);
+    } else {
+        command.env("PATH", dfx_cache_path);
+    }
     command.args(args);
     let output = command
         .stdin(process::Stdio::null())

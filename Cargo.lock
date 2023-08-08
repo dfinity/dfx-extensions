@@ -3529,6 +3529,7 @@ name = "sns"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "candid",
  "clap",
  "dfx-core",
  "dfx-extensions-utils",

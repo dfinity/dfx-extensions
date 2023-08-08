@@ -1,5 +1,5 @@
 use crate::error::dfx_executable::DfxError;
-use anyhow::anyhow;
+use anyhow::Context;
 use fn_error_context::context;
 use semver::Version;
 
@@ -27,28 +27,12 @@ where
     // If extension's dependency calls dfx; it should call dfx in this dir.
     command.env("PATH", dfx_cache_path.join("dfx"));
     command.args(args);
-    command
+    let output = command
         .stdin(process::Stdio::null())
         .output()
-        .map_err(anyhow::Error::from)
-        .and_then(|output| {
-            if output.status.success() {
-                Ok(String::from_utf8_lossy(&output.stdout).into_owned())
-            } else {
-                let args: Vec<_> = command
-                    .get_args()
-                    .into_iter()
-                    .map(OsStr::to_string_lossy)
-                    .collect();
-                Err(anyhow!(
-                    "Call failed:\n{:?} {}\nStdout:\n{}\n\nStderr:\n{}",
-                    command.get_program(),
-                    args.join(" "),
-                    String::from_utf8_lossy(&output.stdout),
-                    String::from_utf8_lossy(&output.stderr)
-                ))
-            }
-        })
+        .with_context(|| format!("Error executing {:#?}", command))?
+        .stdout;
+    Ok(String::from_utf8_lossy(&output).to_string())
 }
 
 pub fn replica_rev(dfx_cache_path: &Path) -> Result<String, DfxError> {

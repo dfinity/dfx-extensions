@@ -3,6 +3,7 @@ use crate::commands::prepare_canisters::{
     add_nns_root::AddNnsRootOpts, remove_nns_root::RemoveNnsRootOpts,
 };
 use clap::Parser;
+use std::path::Path;
 
 mod add_nns_root;
 mod remove_nns_root;
@@ -26,9 +27,9 @@ enum SubCommand {
 }
 
 /// Executes `dfx sns prepare-canisters` and its subcommands.
-pub fn exec(opts: SnsPrepareCanistersOpts) -> anyhow::Result<()> {
+pub fn exec(opts: SnsPrepareCanistersOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     match opts.subcmd {
-        SubCommand::AddNnsRoot(v) => add_nns_root::exec(v),
-        SubCommand::RemoveNnsRoot(v) => remove_nns_root::exec(v),
+        SubCommand::AddNnsRoot(v) => add_nns_root::exec(v, dfx_cache_path),
+        SubCommand::RemoveNnsRoot(v) => remove_nns_root::exec(v, dfx_cache_path),
     }
 }

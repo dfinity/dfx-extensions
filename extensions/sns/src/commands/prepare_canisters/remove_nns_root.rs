@@ -9,6 +9,7 @@ use std::path::Path;
 #[derive(Parser)]
 pub struct RemoveNnsRootOpts {
     // TODO support multiple canisters?
+    #[arg(long)]
     canister_id: Principal,
 }
 

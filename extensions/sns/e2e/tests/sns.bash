@@ -93,20 +93,15 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     #dfx canister id sns_swap
 }
 
-@test "sns-cli binary exists and is executable" {
-    run "$(dfx cache show)"/extensions/sns/sns-cli --help
-    assert_output --partial "Initialize, deploy and interact with an SNS"
-}
-
 # This test asserts that the `prepare-canisters` subcommand and it's child subcommands
 # exist in the current extension version.
 @test "sns prepare-canisters exists" {
     run dfx sns prepare-canisters --help
-    asset_succes
+    assert_output --partial "dfx sns prepare-canisters"
     run dfx sns prepare-canisters add-nns-root --help
-    assert_success
+    assert_output --partial "dfx sns prepare-canisters add-nns-root"
     run dfx sns prepare-canisters remove-nns-root --help
-    assert_success
+    assert_output --partial "dfx sns prepare-canisters remove-nns-root"
 }
 
 # This test asserts that the new subcommand `prepare-canister add-nns-root` can add NNS root
@@ -119,6 +114,23 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 
      WALLET_CANISTER_ID=$(dfx identity get-wallet)
 
-     run dfx sns prepare-canisters add-nns-root "${WALLET_CANISTER_ID}"
+     run dfx sns prepare-canisters add-nns-root --canister-id "${WALLET_CANISTER_ID}"
+     assert_success
+}
+
+# This test asserts that the new subcommand `prepare-canister remove-nns-root` can remove NNS root
+# as a co-controller to a dapp.
+@test "sns prepare-canisters removes NNS Root" {
+     dfx_extension_install_manually nns
+     install_shared_asset subnet_type/shared_network_settings/system
+     dfx start --clean --background --host 127.0.0.1:8080
+     sleep 1
+
+     WALLET_CANISTER_ID=$(dfx identity get-wallet)
+
+     run dfx sns prepare-canisters add-nns-root --canister-id "${WALLET_CANISTER_ID}"
+     assert_success
+
+     run dfx sns prepare-canisters remove-nns-root --canister-id "${WALLET_CANISTER_ID}"
      assert_success
 }

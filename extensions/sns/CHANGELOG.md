@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+### Added
+- Add the new sns extension subcommand `prepare-canister`.
+
 ## [0.1.0] - 2023-07-12
 
 <!-- next-url -->

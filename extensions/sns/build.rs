@@ -28,7 +28,7 @@ fn main() {
         if bin_in_target_dir.exists() {
             std::fs::remove_file(&bin_in_target_dir).unwrap();
         }
-        std::fs::create_dir_all(target_dir).unwrap();
+        std::fs::create_dir_all(&target_dir).unwrap();
         std::fs::copy(&bin_in_manifest_dir, &bin_in_target_dir).unwrap();
     }
 }

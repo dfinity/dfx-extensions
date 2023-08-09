@@ -13,7 +13,7 @@ use std::{
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
 ///
-/// Does not stream stdout/stderr, and instead returns it after the process has exited.
+/// Does not print stdout/stderr to the console, and instead returns the output to the caller after the process has exited.
 #[context("Calling {} CLI failed, or, it returned an error.", binary_name)]
 pub fn call_extension_bundled_binary<S, I>(
     dfx_cache_path: &Path,

@@ -16,6 +16,6 @@ pub fn validate_config(path: &Path, dfx_cache_path: &Path) -> anyhow::Result<Str
     ];
     // current binary
 
-    call_extension_bundled_binary(dfx_cache_path, "sns-cli", &args)
+    call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)
         .map(|_| format!("SNS config file is valid: {}", path.display()))
 }

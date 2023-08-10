@@ -429,7 +429,7 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
         args.push("--sns-subnet".into());
         args.push(subnets.into());
     }
-    call_extension_bundled_binary(dfx_cache_path, "ic-nns-init", &args)
+    call_extension_bundled_binary("ic-nns-init", &args, dfx_cache_path)
 }
 
 /// Sets the exchange rate between ICP and cycles.
@@ -452,7 +452,7 @@ pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::
         "--xdr-permyriad-per-icp",
         &xdr_permyriad_per_icp,
     ];
-    call_extension_bundled_binary(dfx_cache_path, "ic-admin", args)
+    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
         .map_err(|e| anyhow!("Call to propose to set xdr rate failed: {e}"))
 }
 
@@ -479,7 +479,7 @@ pub fn set_cmc_authorized_subnets(
         "--subnets",
         subnet,
     ];
-    call_extension_bundled_binary(dfx_cache_path, "ic-admin", args)
+    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
         .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))
 }
 
@@ -503,7 +503,7 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
             wasm_path.clone().into_os_string(),
             upload_name.into(),
         ];
-        call_extension_bundled_binary(dfx_cache_path,"sns-cli", &args)
+        call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)
             .map_err(|e| anyhow!(
                         "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli`: {e}"
                     ))?;

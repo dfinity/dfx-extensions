@@ -17,5 +17,5 @@ pub fn exec(_opts: ValidateOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     } else {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
-    validate_config(dfx_cache_path, &sns_config_path).map(|stdout| println!("{}", stdout))
+    validate_config(&sns_config_path, dfx_cache_path).map(|stdout| println!("{}", stdout))
 }

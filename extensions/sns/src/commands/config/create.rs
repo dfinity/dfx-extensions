@@ -18,7 +18,7 @@ pub fn exec(_opts: CreateOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
 
-    create_config(dfx_cache_path, &sns_config_path)?;
+    create_config(&sns_config_path, dfx_cache_path)?;
     println!(
         "Created SNS configuration at: {}",
         sns_config_path.display()

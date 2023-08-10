@@ -19,6 +19,11 @@ teardown() {
 # The location of the SNS init config.
 SNS_CONFIG_FILE_NAME="sns.yml"
 
+@test "sns-cli binary exists and is executable" {
+    run "$(dfx cache show)"/extensions/sns/sns-cli --help
+    assert_output --partial "Initialize, deploy and interact with an SNS"
+}
+
 @test "sns config create and validate fail outside of a project" {
     run dfx sns config create
     assert_failure

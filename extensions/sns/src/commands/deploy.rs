@@ -23,6 +23,6 @@ pub fn exec(_opts: DeployOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     };
 
-    println!("{}", deploy_sns(dfx_cache_path, &sns_config_path)?);
+    println!("{}", deploy_sns(&sns_config_path, dfx_cache_path)?);
     Ok(())
 }

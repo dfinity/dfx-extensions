@@ -9,10 +9,15 @@ publish = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[build-dependencies]
+flate2.workspace = true
+reqwest.workspace = true
+
 [dependencies]
 dfx-core.workspace = true
 
 anyhow.workspace = true
+backoff = { version = "0.4.0", features = [ "futures", "tokio" ] }
 flate2 = { version = "1.0.25", default-features = false, features = ["zlib-ng"] }
 fn-error-context.workspace = true
 futures-util.workspace = true
@@ -27,4 +32,5 @@ slog-term = "2.9.0"
 slog.workspace = true
 tempfile.workspace = true
 thiserror = "1.0.40"
+tokio.workspace = true
 url.workspace = true

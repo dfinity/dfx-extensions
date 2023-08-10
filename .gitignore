@@ -15,11 +15,8 @@ target/
 ## MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
-# dfx-extensions
-## nns extension
+## don't include binaries that are downloaded in build.rs scripts
+extensions/sns/sns-cli
 extensions/nns/ic-admin
 extensions/nns/ic-nns-init
 extensions/nns/sns-cli
-
-## sns extension
-extensions/sns/sns-cli

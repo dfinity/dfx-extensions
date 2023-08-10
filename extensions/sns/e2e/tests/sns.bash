@@ -79,7 +79,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     dfx_new
     install_shared_asset subnet_type/shared_network_settings/system
     dfx start --clean --background --host 127.0.0.1:8080
-    sleep 1
+    wait_until_replica_healthy
     dfx nns install
     dfx nns import
     dfx sns import
@@ -115,7 +115,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
      dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
      dfx start --clean --background --host 127.0.0.1:8080
-     sleep 1
+     wait_until_replica_healthy
 
      WALLET_CANISTER_ID=$(dfx identity get-wallet)
 
@@ -129,7 +129,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
      dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
      dfx start --clean --background --host 127.0.0.1:8080
-     sleep 1
+     wait_until_replica_healthy
 
      WALLET_CANISTER_ID=$(dfx identity get-wallet)
 

@@ -8,18 +8,16 @@ use std::path::Path;
 /// `dfx sns prepare-canisters add-nns-root` command line arguments.
 #[derive(Parser)]
 pub struct AddNnsRootOpts {
-    // TODO support multiple canisters?
-    #[arg(long)]
-    canister_id: Principal,
+    canister_ids: Vec<Principal>,
 }
 
 /// Executes `dfx sns prepare-canisters add-nns-root`
 pub fn exec(opts: AddNnsRootOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let args = vec![
+    let mut args = vec![
         OsString::from("prepare-canisters"),
         OsString::from("add-nns-root"),
-        OsString::from(opts.canister_id.to_string()),
     ];
+    args.extend(opts.canister_ids.iter().map(|id| id.to_string().into()));
 
     call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)?;
     Ok(())

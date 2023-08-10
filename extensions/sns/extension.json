@@ -34,18 +34,18 @@
         "add-nns-root": {
           "about": "Subcommand for adding NNS Root as a co-controller of the dapp canister.",
           "args": {
-            "canister_id": {
+            "canister_ids": {
               "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "long": "canister-id"
+              "multiple": true
             }
           }
         },
         "remove-nns-root": {
           "about": "Subcommand for removing NNS Root as a co-controller of the dapp canister.",
           "args": {
-            "canister_id": {
+            "canister_ids": {
               "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "long": "canister-id"
+              "multiple": true
             }
           }
         }

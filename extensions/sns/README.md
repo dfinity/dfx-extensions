@@ -107,11 +107,13 @@ dfx sns prepare-canisters
 Add NNS Root as a co-controller to a dapp canister controlled by the current dfx user
 
 ```
-dfx sns prepare-canisters add-nns-root --canister-id rkp4c-7iaaa-aaaaa-aaaca-cai
+dfx sns prepare-canisters add-nns-root rkp4c-7iaaa-aaaaa-aaaca-cai
+dfx sns prepare-canisters add-nns-root rkp4c-7iaaa-aaaaa-aaaca-cai 6zikg-xaaaa-aaaaa-aabhq-cai
 ```
 
 Remove NNS Root as a co-controller to a dapp canister controlled by the current dfx user
 
 ```
-dfx sns prepare-canisters remove-nns-root --canister-id rkp4c-7iaaa-aaaaa-aaaca-cai
+dfx sns prepare-canisters remove-nns-root rkp4c-7iaaa-aaaaa-aaaca-cai
+dfx sns prepare-canisters remove-nns-root rkp4c-7iaaa-aaaaa-aaaca-cai 6zikg-xaaaa-aaaaa-aabhq-cai
 ```

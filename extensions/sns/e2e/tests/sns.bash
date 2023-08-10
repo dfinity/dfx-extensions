@@ -119,8 +119,17 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 
      WALLET_CANISTER_ID=$(dfx identity get-wallet)
 
-     run dfx sns prepare-canisters add-nns-root --canister-id "${WALLET_CANISTER_ID}"
+     # TODO specify multiple
+     run dfx sns prepare-canisters add-nns-root "${WALLET_CANISTER_ID}"
      assert_success
+
+     run dfx canister info "${WALLET_CANISTER_ID}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${NEW_CANISTER_ID}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }
 
 # This test asserts that the new subcommand `prepare-canister remove-nns-root` can remove NNS root
@@ -133,9 +142,17 @@ SNS_CONFIG_FILE_NAME="sns.yml"
 
      WALLET_CANISTER_ID=$(dfx identity get-wallet)
 
-     run dfx sns prepare-canisters add-nns-root --canister-id "${WALLET_CANISTER_ID}"
+     run dfx sns prepare-canisters add-nns-root "${WALLET_CANISTER_ID}"
      assert_success
 
-     run dfx sns prepare-canisters remove-nns-root --canister-id "${WALLET_CANISTER_ID}"
+     run dfx canister info "${WALLET_CANISTER_ID}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx sns prepare-canisters remove-nns-root  "${WALLET_CANISTER_ID}"
      assert_success
+
+     run dfx canister info "${WALLET_CANISTER_ID}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually removed
+     refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }

@@ -117,13 +117,18 @@ SNS_CONFIG_FILE_NAME="sns.yml"
      dfx start --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
 
-     WALLET_CANISTER_ID=$(dfx identity get-wallet)
+     dfx_new && dfx deploy
+     BACKEND_CANISTER=$(dfx canister id e2e_project_backend)
+     FRONTEND_CANISTER=$(dfx canister id e2e_project_frontend)
 
-     # TODO specify multiple
-     run dfx sns prepare-canisters add-nns-root "${WALLET_CANISTER_ID}"
+     run dfx sns prepare-canisters add-nns-root "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
      assert_success
 
-     run dfx canister info "${WALLET_CANISTER_ID}"
+     run dfx canister info "${BACKEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${FRONTEND_CANISTER}"
      # Assert that the NNS Root canister (hard-coded ID) was actually added
      assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }
@@ -136,19 +141,29 @@ SNS_CONFIG_FILE_NAME="sns.yml"
      dfx start --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
 
-     WALLET_CANISTER_ID=$(dfx identity get-wallet)
+     dfx_new && dfx deploy
+     BACKEND_CANISTER=$(dfx canister id e2e_project_backend)
+     FRONTEND_CANISTER=$(dfx canister id e2e_project_frontend)
 
-     run dfx sns prepare-canisters add-nns-root "${WALLET_CANISTER_ID}"
+     run dfx sns prepare-canisters add-nns-root "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
      assert_success
 
-     run dfx canister info "${WALLET_CANISTER_ID}"
+     run dfx canister info "${BACKEND_CANISTER}"
      # Assert that the NNS Root canister (hard-coded ID) was actually added
      assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 
-     run dfx sns prepare-canisters remove-nns-root  "${WALLET_CANISTER_ID}"
+     run dfx canister info "${FRONTEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx sns prepare-canisters remove-nns-root  "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
      assert_success
 
-     run dfx canister info "${WALLET_CANISTER_ID}"
+     run dfx canister info "${BACKEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually removed
+     refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${FRONTEND_CANISTER}"
      # Assert that the NNS Root canister (hard-coded ID) was actually removed
      refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }

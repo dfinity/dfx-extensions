@@ -19,6 +19,11 @@ pub fn exec(opts: RemoveNnsRootOpts, dfx_cache_path: &Path) -> anyhow::Result<()
     ];
     args.extend(opts.canister_ids.iter().map(|id| id.to_string().into()));
 
-    call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)?;
+    call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)
+        .map(|stdout| println!("{}", stdout))
+        .map_err(|error| {
+            println!("{}", error);
+            error
+        })?;
     Ok(())
 }

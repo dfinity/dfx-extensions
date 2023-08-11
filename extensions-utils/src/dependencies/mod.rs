@@ -83,7 +83,7 @@ mod tests {
         let result = execute_command(&path, args, &Path::new("."));
         if let Err(e) = &result {
             assert_eq!(
-                e.to_string(), //.split(':').next().unwrap(),
+                e.to_string(),
                 format!(
                     r#"Command execution failed: Command {{
     program: "{binary}",

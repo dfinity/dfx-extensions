@@ -18,7 +18,7 @@ pub fn call_dfx_bundled_binary<S, I>(
     command: &str,
     args: I,
     dfx_cache_path: &Path,
-) -> anyhow::Result<String>
+) -> anyhow::Result<()>
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,

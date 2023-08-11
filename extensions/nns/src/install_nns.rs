@@ -413,7 +413,7 @@ pub struct IcNnsInitOpts {
 ///   - This won't work with an HSM, because the agent holds a session open
 ///   - The provider_url is what the agent connects to, and forwards to the replica.
 #[context("Failed to install NNS components.")]
-pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow::Result<String> {
+pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let mut args: Vec<OsString> = vec![
         "--pass-specified-id".into(),
         "--url".into(),
@@ -439,7 +439,7 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
 /// proposals with a test user pass immediately, as the small test neuron is
 /// the only neuron and has absolute majority.
 #[context("Failed to set an initial exchange rate between ICP and cycles. It may not be possible to create canisters or purchase cycles.")]
-pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::Result<String> {
+pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let summary = format!("Set the cycle exchange rate to {}.", rate.clone());
     let xdr_permyriad_per_icp = rate.to_string();
     let args = vec![
@@ -462,7 +462,7 @@ pub fn set_cmc_authorized_subnets(
     nns_url: &Url,
     subnet: &str,
     dfx_cache_path: &Path,
-) -> anyhow::Result<String> {
+) -> anyhow::Result<()> {
     let summary = format!(
         "Authorize the Cycles Minting Canister to create canisters in the subnet '{}'.",
         subnet.clone()

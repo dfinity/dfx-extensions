@@ -15,7 +15,7 @@ pub fn call_extension_bundled_binary<S, I>(
     binary_name: &str,
     args: I,
     dfx_cache_path: &Path,
-) -> anyhow::Result<String>
+) -> anyhow::Result<()>
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,

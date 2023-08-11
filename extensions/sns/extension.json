@@ -28,6 +28,29 @@
     "deploy": {
       "about": "Subcommand for creating an SNS."
     },
+    "prepare-canisters": {
+      "about": "Subcommand for preparing dapp canister(s) for 1-proposal SNS creation.",
+      "subcommands": {
+        "add-nns-root": {
+          "about": "Subcommand for adding NNS Root as a co-controller of the dapp canister.",
+          "args": {
+            "canister_ids": {
+              "about": "CanisterId of a dapp canister your current dfx identity controls.",
+              "multiple": true
+            }
+          }
+        },
+        "remove-nns-root": {
+          "about": "Subcommand for removing NNS Root as a co-controller of the dapp canister.",
+          "args": {
+            "canister_ids": {
+              "about": "CanisterId of a dapp canister your current dfx identity controls.",
+              "multiple": true
+            }
+          }
+        }
+      }
+    },
     "import": {
       "about": "Subcommand for importing sns API definitions and canister IDs.",
       "args": {

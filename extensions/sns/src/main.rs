@@ -15,6 +15,7 @@ use std::path::PathBuf;
 use crate::{
     commands::config::SnsConfigOpts, commands::deploy::DeployOpts,
     commands::download::SnsDownloadOpts, commands::import::SnsImportOpts,
+    commands::prepare_canisters::SnsPrepareCanistersOpts,
 };
 
 use clap::Parser;
@@ -48,6 +49,9 @@ enum SubCommand {
     /// Subcommand for downloading SNS WASMs.
     #[command()]
     Download(SnsDownloadOpts),
+    /// Subcommand for preparing dapp canister(s) for 1-proposal SNS creation
+    #[command()]
+    PrepareCanisters(SnsPrepareCanistersOpts),
 }
 
 /// Executes `dfx sns` and its subcommands.
@@ -64,6 +68,7 @@ fn main() -> anyhow::Result<()> {
         SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path),
         SubCommand::Deploy(v) => commands::deploy::exec(v, &dfx_cache_path),
         SubCommand::Download(v) => commands::download::exec(v, &dfx_cache_path),
+        SubCommand::PrepareCanisters(v) => commands::prepare_canisters::exec(v, &dfx_cache_path),
     }?;
     Ok(())
 }

@@ -13,7 +13,7 @@
   ],
   "subcommands": {
     "import": {
-      "about": "Install an NNS on the local dfx server.",
+      "about": "Import NNS API definitions and canister IDs.",
       "args": {
         "network_mapping": {
           "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
@@ -22,7 +22,7 @@
       }
     },
     "install": {
-      "about": "Import NNS API definitions and canister IDs.",
+      "about": "Install an NNS on the local dfx server.",
       "args": {
         "ledger_accounts": {
           "about": "Initialize ledger canister with these test accounts",

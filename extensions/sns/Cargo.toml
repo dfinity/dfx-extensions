@@ -5,9 +5,7 @@ authors.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-# Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
-# Nothing will actually be published (unless `cargo publish` is executed (and it shouldn't)).
-publish = true
+publish.workspace = true
 build = "build.rs"
 
 [build-dependencies]

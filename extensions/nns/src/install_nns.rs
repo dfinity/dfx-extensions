@@ -4,15 +4,16 @@
 //! * Example: Minimise crate dependencies outside the nns modules.
 //! * Example: Use `anyhow::Result` not `DfxResult`
 #![warn(missing_docs)]
+#![warn(clippy::missing_docs_in_private_items)]
 
 use dfx_core::canister::install_canister_wasm;
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
 use dfx_extensions_utils::{
-    download_nns_wasms, nns_wasm_dir, IcNnsInitCanister, SnsCanisterInstallation, StandardCanister,
-    ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND, NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT,
-    SNS_CANISTERS,
+    call_extension_bundled_binary, download_nns_wasms, nns_wasm_dir, IcNnsInitCanister,
+    SnsCanisterInstallation, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND,
+    NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT, SNS_CANISTERS,
 };
 
 use anyhow::{anyhow, bail, Context};
@@ -27,12 +28,11 @@ use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
 use reqwest::Url;
 use slog::Logger;
-use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::fs;
 use std::io::Write;
 use std::path::Component;
 use std::path::{Path, PathBuf};
-use std::process::{self, Command};
 
 /// Installs NNS canisters on a local dfx server.
 /// # Notes:
@@ -56,7 +56,6 @@ pub async fn install_nns(
     network: &NetworkDescriptor,
     networks_config: &NetworksConfig,
     dfx_cache_path: &Path,
-    ic_nns_init_path: &Path,
     ledger_accounts: &[String],
     logger: &Logger,
 ) -> anyhow::Result<()> {
@@ -66,7 +65,6 @@ pub async fn install_nns(
     let provider_url = get_and_check_provider(network)?;
     let nns_url = get_and_check_replica_url(network, logger)?;
     let subnet_id = get_subnet_id(agent).await?.to_text();
-    let ic_admin_cli = bundled_binary(dfx_cache_path, "ic-admin")?;
 
     eprintln!("Installing the core backend wasm canisters...");
     download_nns_wasms(dfx_cache_path).await?;
@@ -81,7 +79,7 @@ pub async fn install_nns(
         test_accounts,
         sns_subnets: Some(subnet_id.to_string()),
     };
-    ic_nns_init(ic_nns_init_path, &ic_nns_init_opts).await?;
+    ic_nns_init(&ic_nns_init_opts, dfx_cache_path).await?;
 
     eprintln!("Uploading NNS configuration data...");
     upload_nns_sns_wasms_canister_wasms(dfx_cache_path)?;
@@ -115,8 +113,8 @@ pub async fn install_nns(
     }
     // ... and configure the backend NNS canisters:
     eprintln!("Configuring the NNS...");
-    set_xdr_rate(1234567, &nns_url, &ic_admin_cli)?;
-    set_cmc_authorized_subnets(&nns_url, &subnet_id, &ic_admin_cli)?;
+    set_xdr_rate(1234567, &nns_url, dfx_cache_path)?;
+    set_cmc_authorized_subnets(&nns_url, &subnet_id, dfx_cache_path)?;
 
     print_nns_details(provider_url)?;
     Ok(())
@@ -415,34 +413,23 @@ pub struct IcNnsInitOpts {
 ///   - This won't work with an HSM, because the agent holds a session open
 ///   - The provider_url is what the agent connects to, and forwards to the replica.
 #[context("Failed to install NNS components.")]
-pub async fn ic_nns_init(ic_nns_init_path: &Path, opts: &IcNnsInitOpts) -> anyhow::Result<()> {
-    let mut cmd = std::process::Command::new(ic_nns_init_path);
-    cmd.arg("--pass-specified-id");
-    cmd.arg("--url");
-    cmd.arg(&opts.nns_url);
-    cmd.arg("--wasm-dir");
-    cmd.arg(&opts.wasm_dir);
-    opts.test_accounts.iter().for_each(|account| {
-        cmd.arg("--initialize-ledger-with-test-accounts");
-        cmd.arg(account);
-    });
-    opts.sns_subnets.iter().for_each(|subnet| {
-        cmd.arg("--sns-subnet");
-        cmd.arg(subnet);
-    });
-    let args: Vec<_> = cmd.get_args().map(OsStr::to_string_lossy).collect();
-    dbg!(&cmd);
-    println!("ic-nns-init {}", args.join(" "));
-    cmd.stdout(std::process::Stdio::inherit());
-    cmd.stderr(std::process::Stdio::inherit());
-    let output = cmd
-        .output()
-        .with_context(|| format!("Error executing {:#?}", cmd))?;
-
-    if !output.status.success() {
-        return Err(anyhow!("ic-nns-init call failed"));
+pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
+    let mut args: Vec<OsString> = vec![
+        "--pass-specified-id".into(),
+        "--url".into(),
+        opts.nns_url.clone().into(),
+        "--wasm-dir".into(),
+        opts.wasm_dir.as_os_str().into(),
+    ];
+    for account in &opts.test_accounts {
+        args.push("--initialize-ledger-with-test-accounts".into());
+        args.push(account.into());
     }
-    Ok(())
+    if let Some(subnets) = &opts.sns_subnets {
+        args.push("--sns-subnet".into());
+        args.push(subnets.into());
+    }
+    call_extension_bundled_binary("ic-nns-init", &args, dfx_cache_path)
 }
 
 /// Sets the exchange rate between ICP and cycles.
@@ -451,59 +438,49 @@ pub async fn ic_nns_init(ic_nns_init_path: &Path, opts: &IcNnsInitOpts) -> anyho
 /// This is done by proposal.  Just after startung a test server, ic-admin
 /// proposals with a test user pass immediately, as the small test neuron is
 /// the only neuron and has absolute majority.
-#[context("Failed to set an initial exchange rate between ICP and cycles.  It may not be possible to create canisters or purchase cycles.")]
-pub fn set_xdr_rate(rate: u64, nns_url: &Url, ic_admin: &PathBuf) -> anyhow::Result<()> {
-    std::process::Command::new(ic_admin)
-        .arg("--nns-url")
-        .arg(nns_url.as_str())
-        .arg("propose-xdr-icp-conversion-rate")
-        .arg("--test-neuron-proposer")
-        .arg("--summary")
-        .arg(format!("Set the cycle exchange rate to {rate}."))
-        .arg("--xdr-permyriad-per-icp")
-        .arg(format!("{}", rate))
-        .stdin(process::Stdio::null())
-        .output()
-        .map_err(anyhow::Error::from)
-        .and_then(|output| {
-            if output.status.success() {
-                Ok(())
-            } else {
-                Err(anyhow!("Call to propose to set xdr rate failed"))
-            }
-        })
+#[context("Failed to set an initial exchange rate between ICP and cycles. It may not be possible to create canisters or purchase cycles.")]
+pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::Result<()> {
+    let summary = format!("Set the cycle exchange rate to {}.", rate.clone());
+    let xdr_permyriad_per_icp = rate.to_string();
+    let args = vec![
+        "--nns-url",
+        nns_url.as_str(),
+        "propose-xdr-icp-conversion-rate",
+        "--test-neuron-proposer",
+        "--summary",
+        &summary,
+        "--xdr-permyriad-per-icp",
+        &xdr_permyriad_per_icp,
+    ];
+    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
+        .map_err(|e| anyhow!("Call to propose to set xdr rate failed: {e}"))
 }
 
 /// Sets the subnets the CMC is authorized to create canisters in.
-#[context("Failed to authorize a subnet for use by the cycles management canister.  The CMC may not be able to create canisters.")]
+#[context("Failed to authorize a subnet for use by the cycles management canister. The CMC may not be able to create canisters.")]
 pub fn set_cmc_authorized_subnets(
     nns_url: &Url,
     subnet: &str,
-    ic_admin: &PathBuf,
+    dfx_cache_path: &Path,
 ) -> anyhow::Result<()> {
-    std::process::Command::new(ic_admin)
-        .arg("--nns-url")
-        .arg(nns_url.as_str())
-        .arg("propose-to-set-authorized-subnetworks")
-        .arg("--test-neuron-proposer")
-        .arg("--proposal-title")
-        .arg("Set Cycles Minting Canister Authorized Subnets")
-        .arg("--summary")
-        .arg(format!(
-            "Authorize the Cycles Minting Canister to create canisters in the subnet '{subnet}'."
-        ))
-        .arg("--subnets")
-        .arg(subnet)
-        .stdin(process::Stdio::null())
-        .output()
-        .map_err(anyhow::Error::from)
-        .and_then(|output| {
-            if output.status.success() {
-                Ok(())
-            } else {
-                Err(anyhow!("Call to propose to set xdr rate failed"))
-            }
-        })
+    let summary = format!(
+        "Authorize the Cycles Minting Canister to create canisters in the subnet '{}'.",
+        subnet.clone()
+    );
+    let args = vec![
+        "--nns-url",
+        nns_url.as_str(),
+        "propose-to-set-authorized-subnetworks",
+        "--test-neuron-proposer",
+        "--proposal-title",
+        "Set Cycles Minting Canister Authorized Subnets",
+        "--summary",
+        &summary,
+        "--subnets",
+        subnet,
+    ];
+    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
+        .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))
 }
 
 /// Uploads wasms to the nns-sns-wasm canister.
@@ -515,37 +492,21 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
         ..
     } in SNS_CANISTERS
     {
-        let sns_cli = bundled_binary(dfx_cache_path, "sns")?;
         let wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
-        let mut command = Command::new(sns_cli);
-        command
-            .arg("add-sns-wasm-for-tests")
-            .arg("--network")
-            .arg("local")
-            .arg("--override-sns-wasm-canister-id-for-tests")
-            .arg(NNS_SNS_WASM.canister_id)
-            .arg("--wasm-file")
-            .arg(&wasm_path)
-            .arg(upload_name);
-        command
-        .stdin(process::Stdio::null())
-        .output()
-            .map_err(anyhow::Error::from)
-            .and_then(|output| {
-                if output.status.success() {
-                    Ok(())
-                } else {
-                    Err(anyhow!(
-                        "Failed to upload {} from {} to the nns-sns-wasm canister:\n{:?} {:?}\nStdout:\n{:?}\n\nStderr:\n{:?}",
-                        upload_name,
-                        wasm_path.to_string_lossy(),
-                        command.get_program(),
-                        command.get_args(),
-                        String::from_utf8_lossy(&output.stdout),
-                        String::from_utf8_lossy(&output.stderr)
-                    ))
-                }
-            })?;
+        let args = vec![
+            "add-sns-wasm-for-tests".into(),
+            "--network".into(),
+            "local".into(),
+            "--override-sns-wasm-canister-id-for-tests".into(),
+            NNS_SNS_WASM.canister_id.into(),
+            "--wasm-file".into(),
+            wasm_path.clone().into_os_string(),
+            upload_name.into(),
+        ];
+        call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)
+            .map_err(|e| anyhow!(
+                        "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli`: {e}"
+                    ))?;
     }
     Ok(())
 }
@@ -598,16 +559,4 @@ pub async fn install_canister(
     println!("Installed {canister_name} at {canister_id_str}");
 
     Ok(canister_id)
-}
-
-/// Get the path to a bundled command line binary
-fn bundled_binary(dfx_cache_path: &Path, cli_name: &str) -> anyhow::Result<PathBuf> {
-    let bin_path = dfx_cache_path.join(cli_name);
-    if !bin_path.exists() {
-        return Err(anyhow::anyhow!(format!(
-            "Could not find bundled binary '{bin_path}'.",
-            bin_path = bin_path.display()
-        )));
-    }
-    Ok(bin_path)
 }

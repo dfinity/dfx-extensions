@@ -1,49 +1,30 @@
+use crate::dependencies::execute_command;
 use crate::error::dfx_executable::DfxError;
-use anyhow::anyhow;
 use fn_error_context::context;
 use semver::Version;
-
 use std::ffi::OsStr;
 use std::path::Path;
-use std::process::{self, Command};
+use std::process::Command;
 
-/// Calls a bundled command line tool.
+/// Calls a binary from dfx cache.
 ///
 /// # Returns
 /// - On success, returns stdout as a string.
 /// - On error, returns an error message including stdout and stderr.
-#[context("Calling {} CLI, or, it returned an error.", command)]
-pub fn call_bundled<S, I>(dfx_cache_path: &Path, command: &str, args: I) -> anyhow::Result<String>
+///
+/// Does not print stdout/stderr to the console, and instead returns the output to the caller after the process has exited.
+#[context("Calling {} CLI failed, or, it returned an error.", command)]
+pub fn call_dfx_bundled_binary<S, I>(
+    command: &str,
+    args: I,
+    dfx_cache_path: &Path,
+) -> anyhow::Result<()>
 where
     I: IntoIterator<Item = S>,
     S: AsRef<OsStr>,
 {
     let binary = dfx_cache_path.join(command);
-
-    let mut command = Command::new(&binary);
-    command.args(args);
-    // The sns command line tool itself calls dfx; it should call this dfx.
-    // The sns command line tool should not rely on commands not packaged with dfx.
-    // The same applies to other bundled binaries.
-    command.env("PATH", binary.parent().unwrap_or_else(|| Path::new(".")));
-    command
-        .stdin(process::Stdio::null())
-        .output()
-        .map_err(anyhow::Error::from)
-        .and_then(|output| {
-            if output.status.success() {
-                Ok(String::from_utf8_lossy(&output.stdout).into_owned())
-            } else {
-                let args: Vec<_> = command.get_args().map(OsStr::to_string_lossy).collect();
-                Err(anyhow!(
-                    "Call failed:\n{:?} {}\nStdout:\n{}\n\nStderr:\n{}",
-                    command.get_program(),
-                    args.join(" "),
-                    String::from_utf8_lossy(&output.stdout),
-                    String::from_utf8_lossy(&output.stderr)
-                ))
-            }
-        })
+    execute_command(&binary, args, dfx_cache_path)
 }
 
 pub fn replica_rev(dfx_cache_path: &Path) -> Result<String, DfxError> {

@@ -19,6 +19,11 @@ teardown() {
 # The location of the SNS init config.
 SNS_CONFIG_FILE_NAME="sns.yml"
 
+@test "sns-cli binary exists and is executable" {
+    run "$(dfx cache show)"/extensions/sns/sns-cli --help
+    assert_output --partial "Initialize, deploy and interact with an SNS"
+}
+
 @test "sns config create and validate fail outside of a project" {
     run dfx sns config create
     assert_failure
@@ -66,7 +71,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     rm -f sns.yml # Is not expected to be present anyway
     run dfx sns deploy
     assert_failure
-    assert_output --partial "Error encountered when generating the SnsInitPayload: Couldn't open initial parameters file"
+    assert_output --regexp "Error encountered when generating the SnsInitPayload: Unable to read .*sns.yml.* No such file or directory"
 }
 
 @test "sns deploy succeeds" {
@@ -74,7 +79,7 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     dfx_new
     install_shared_asset subnet_type/shared_network_settings/system
     dfx start --clean --background --host 127.0.0.1:8080
-    sleep 1
+    wait_until_replica_healthy
     dfx nns install
     dfx nns import
     dfx sns import
@@ -91,4 +96,74 @@ SNS_CONFIG_FILE_NAME="sns.yml"
     #dfx canister id sns_ledger
     #dfx canister id sns_root
     #dfx canister id sns_swap
+}
+
+# This test asserts that the `prepare-canisters` subcommand and it's child subcommands
+# exist in the current extension version.
+@test "sns prepare-canisters exists" {
+    run dfx sns prepare-canisters --help
+    assert_output --partial "dfx sns prepare-canisters"
+    run dfx sns prepare-canisters add-nns-root --help
+    assert_output --partial "dfx sns prepare-canisters add-nns-root"
+    run dfx sns prepare-canisters remove-nns-root --help
+    assert_output --partial "dfx sns prepare-canisters remove-nns-root"
+}
+
+# This test asserts that the new subcommand `prepare-canister add-nns-root` can add NNS root
+# as a co-controller to a dapp.
+@test "sns prepare-canisters adds NNS Root" {
+     dfx_extension_install_manually nns
+     install_shared_asset subnet_type/shared_network_settings/system
+     dfx start --clean --background --host 127.0.0.1:8080
+     wait_until_replica_healthy
+
+     dfx_new && dfx deploy
+     BACKEND_CANISTER=$(dfx canister id e2e_project_backend)
+     FRONTEND_CANISTER=$(dfx canister id e2e_project_frontend)
+
+     run dfx sns prepare-canisters add-nns-root "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
+     assert_success
+
+     run dfx canister info "${BACKEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${FRONTEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+}
+
+# This test asserts that the new subcommand `prepare-canister remove-nns-root` can remove NNS root
+# as a co-controller to a dapp.
+@test "sns prepare-canisters removes NNS Root" {
+     dfx_extension_install_manually nns
+     install_shared_asset subnet_type/shared_network_settings/system
+     dfx start --clean --background --host 127.0.0.1:8080
+     wait_until_replica_healthy
+
+     dfx_new && dfx deploy
+     BACKEND_CANISTER=$(dfx canister id e2e_project_backend)
+     FRONTEND_CANISTER=$(dfx canister id e2e_project_frontend)
+
+     run dfx sns prepare-canisters add-nns-root "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
+     assert_success
+
+     run dfx canister info "${BACKEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${FRONTEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually added
+     assert_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx sns prepare-canisters remove-nns-root  "${BACKEND_CANISTER}" "${FRONTEND_CANISTER}"
+     assert_success
+
+     run dfx canister info "${BACKEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually removed
+     refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
+
+     run dfx canister info "${FRONTEND_CANISTER}"
+     # Assert that the NNS Root canister (hard-coded ID) was actually removed
+     refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }

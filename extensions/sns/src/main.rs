@@ -1,21 +1,24 @@
 //! Code for decentralizing dapps
-#![allow(clippy::missing_docs_in_private_items)]
-
+#![warn(clippy::missing_docs_in_private_items)]
 pub mod commands;
 pub mod create_config;
 pub mod deploy;
 mod errors;
 pub mod validate_config;
 
+/// The default location of an SNS configuration file.
+pub const CONFIG_FILE_NAME: &str = "sns.yml";
+
+use std::path::PathBuf;
+
+// #![warn(clippy::missing_docs_in_private_items)]
 use crate::{
     commands::config::SnsConfigOpts, commands::deploy::DeployOpts,
     commands::download::SnsDownloadOpts, commands::import::SnsImportOpts,
+    commands::prepare_canisters::SnsPrepareCanistersOpts,
 };
-use clap::Parser;
-use std::path::PathBuf;
 
-/// The default location of an SNS configuration file.
-pub const CONFIG_FILE_NAME: &str = "sns.yml";
+use clap::Parser;
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -46,6 +49,9 @@ enum SubCommand {
     /// Subcommand for downloading SNS WASMs.
     #[command()]
     Download(SnsDownloadOpts),
+    /// Subcommand for preparing dapp canister(s) for 1-proposal SNS creation
+    #[command()]
+    PrepareCanisters(SnsPrepareCanistersOpts),
 }
 
 /// Executes `dfx sns` and its subcommands.
@@ -58,10 +64,11 @@ fn main() -> anyhow::Result<()> {
     })?;
 
     match opts.subcmd {
-        SubCommand::Config(v) => commands::config::exec(v, dfx_cache_path),
-        SubCommand::Import(v) => commands::import::exec(v, dfx_cache_path),
-        SubCommand::Deploy(v) => commands::deploy::exec(v, dfx_cache_path),
-        SubCommand::Download(v) => commands::download::exec(v, dfx_cache_path),
+        SubCommand::Config(v) => commands::config::exec(v, &dfx_cache_path),
+        SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path),
+        SubCommand::Deploy(v) => commands::deploy::exec(v, &dfx_cache_path),
+        SubCommand::Download(v) => commands::download::exec(v, &dfx_cache_path),
+        SubCommand::PrepareCanisters(v) => commands::prepare_canisters::exec(v, &dfx_cache_path),
     }?;
     Ok(())
 }

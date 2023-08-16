@@ -8,6 +8,10 @@ repository.workspace = true
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
 # Nothing will actually be published (unless `cargo publish` is executed (and it shouldn't)).
 publish = true
+build = "build.rs"
+
+[build-dependencies]
+dfx-extensions-utils.workspace = true
 
 [dependencies]
 dfx-core.workspace = true
@@ -19,6 +23,7 @@ fn-error-context.workspace = true
 slog.workspace = true
 tokio.workspace = true
 futures-util = "0.3.28"
+candid.workspace = true
 
 [package.metadata.release]
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
@@ -34,5 +39,4 @@ pre-release-replacements = [
 ]
 
 [package.metadata.dist]
-include = ["extension.json"]
-
+include = ["extension.json", "sns-cli"]

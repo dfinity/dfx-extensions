@@ -29,15 +29,13 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, destination_path
 
     let bytes = Runtime::new().unwrap().block_on(download_bytes(&url));
     let mut d = GzDecoder::new(&*bytes);
-    let tempdir = tempfile::tempdir().expect("Failed to create temp dir");
-    let temp_file = tempdir.path().join(binary_name);
-    let mut temp = fs::File::create(&temp_file).expect("Failed to create the file");
-    copy(&mut d, &mut temp).expect("Failed to copy content");
+    let mut temp_file = tempfile::NamedTempFile::new().expect("Failed to create temp file");
+    copy(&mut d, &mut temp_file).expect("Failed to copy content");
 
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        dfx_core::fs::set_permissions(&temp_file, std::fs::Permissions::from_mode(0o500))
+        dfx_core::fs::set_permissions(&temp_file.path(), std::fs::Permissions::from_mode(0o500))
             .expect("Failed to set permissions");
     }
     fs::rename(temp_file, destination_path).expect("Failed to move extension");

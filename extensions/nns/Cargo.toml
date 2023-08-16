@@ -46,4 +46,4 @@ pre-release-replacements = [
 ]
 
 [package.metadata.dist]
-include = ["extension.json", "sns-cli", "ic-admin", "ic-nns-init"]
+include = ["extension.json", "binary-dependencies/"]

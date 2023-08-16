@@ -37,4 +37,4 @@ pre-release-replacements = [
 ]
 
 [package.metadata.dist]
-include = ["extension.json", "sns-cli"]
+include = ["extension.json", "binary-dependencies/"]

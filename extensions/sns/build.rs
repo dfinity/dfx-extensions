@@ -9,8 +9,10 @@ const BINARY_DEPENDENCIES: &[(&str, &str)] = &[
 ];
 
 fn main() {
-    // keep copy of the dependency in the root of the project, so that cargo-dist will be able to package it into a tarball
-    let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
+    // keep copy of the dependency in extensions/sns/binary-dependencies, so that cargo-dist will be able to package it into a tarball
+    let dependencies_dir =
+        PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap()).join("binary-dependencies");
+    std::fs::create_dir_all(&dependencies_dir).expect("Failed to create dependencies dir");
     // and also in `target/debug` or `target/release` for development purposes (e.g. cargo run), this is a bit hacky: https://github.com/rust-lang/cargo/issues/9661
     let target_dir = PathBuf::from(std::env::var("OUT_DIR").unwrap())
         .parent()
@@ -21,14 +23,21 @@ fn main() {
         .unwrap()
         .to_path_buf();
     for (binary_name, renamed_binary_name) in BINARY_DEPENDENCIES {
-        let bin_in_manifest_dir = manifest_dir.join(renamed_binary_name);
+        let bin_in_dependencies_dir = dependencies_dir.join(renamed_binary_name);
         let bin_in_target_dir = target_dir.join(renamed_binary_name);
-        dbg!(&bin_in_manifest_dir, &bin_in_target_dir);
-        dfx_extensions_utils::download_ic_binary(REPLICA_REV, binary_name, &bin_in_manifest_dir);
+        dbg!(&bin_in_dependencies_dir, &bin_in_target_dir);
+        if bin_in_dependencies_dir.exists() {
+            std::fs::remove_file(&bin_in_target_dir).expect("Failed to remove file");
+        }
+        dfx_extensions_utils::download_ic_binary(
+            REPLICA_REV,
+            binary_name,
+            &bin_in_dependencies_dir,
+        );
         if bin_in_target_dir.exists() {
             std::fs::remove_file(&bin_in_target_dir).unwrap();
         }
         std::fs::create_dir_all(&target_dir).unwrap();
-        std::fs::copy(&bin_in_manifest_dir, &bin_in_target_dir).unwrap();
+        std::fs::copy(&bin_in_dependencies_dir, &bin_in_target_dir).unwrap();
     }
 }

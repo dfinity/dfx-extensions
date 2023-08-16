@@ -44,7 +44,7 @@ jobs:
         with:
           fetch-depth: 0
       - uses: cargo-bins/cargo-binstall@main
-      - run: cargo binstall cargo-release ripgrep -y
+      - run: cargo binstall cargo-release -y
       - name: Determine new version number by dry-running `cargo-release`
         id: determine_version
         continue-on-error: true
@@ -56,7 +56,7 @@ jobs:
             cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
           fi
           cat cargo-release-output.txt
-          NEW_VERSION=$(rg "Upgrading .* from .* to (.*)" -r '$1' cargo-release-output.txt | tr -d ' ')
+          NEW_VERSION=$(grep -oP 'Upgrading .* from .* to \K[^\s]*' cargo-release-output.txt | tr -d ' ')
           echo "$NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"

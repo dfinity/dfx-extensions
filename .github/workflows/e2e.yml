@@ -30,7 +30,7 @@ jobs:
       - name: Install cargo-dist
         run: cargo install cargo-dist
       - name: Install IC SDK (dfx)
-        run: DFX_VERSION="0.15.0-beta.3" sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
+        run: DFX_VERSION="0.15.0-ext.0" sh -ci "$(curl -sSL https://internetcomputer.org/install.sh)"
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats ${{ matrix.test_file_path }}
 

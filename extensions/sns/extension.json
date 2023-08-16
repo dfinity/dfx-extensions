@@ -36,7 +36,7 @@
           "args": {
             "canister_ids": {
               "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "multiple": true
+              "values": "unlimited"
             }
           }
         },
@@ -45,7 +45,7 @@
           "args": {
             "canister_ids": {
               "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "multiple": true
+              "values": "unlimited"
             }
           }
         }

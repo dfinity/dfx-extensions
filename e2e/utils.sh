@@ -30,7 +30,7 @@ dfx_extension_install_manually() (
     arch_platform="$(get_arch_and_platform)"
     rm -rf "$extensions_dir/$extension_name-$arch_platform" "${extensions_dir:?}/$extension_name" # remove old versions
     mkdir -p "$extensions_dir"
-    tar xfJ "target/distrib/$extension_name-$arch_platform.tar.xz" -C "$extensions_dir"
+    tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" -C "$extensions_dir"
     mv "$extensions_dir/$extension_name-$arch_platform" "$extensions_dir/$extension_name"
 )
 

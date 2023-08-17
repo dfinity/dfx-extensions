@@ -18,6 +18,7 @@ teardown() {
 
 # The location of the SNS init config.
 SNS_CONFIG_FILE_NAME="sns.yml"
+SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 
 @test "sns-cli binary exists and is executable" {
     run "$(dfx cache show)"/extensions/sns/sns-cli --help
@@ -167,3 +168,36 @@ SNS_CONFIG_FILE_NAME="sns.yml"
      # Assert that the NNS Root canister (hard-coded ID) was actually removed
      refute_output --partial "r7inp-6aaaa-aaaaa-aaabq-cai"
 }
+
+# This test asserts that the `propose` subcommand exist in the current extension version.
+@test "sns propose exists" {
+    run dfx sns propose --help
+    assert_output --partial "dfx sns propose"
+}
+
+# This test asserts that at least one neuron flag must be specified to succeed
+@test "sns propose must use a neuron flag" {
+    install_asset sns/valid
+
+    run dfx sns propose sns_v2.yml
+    assert_failure
+    assert_output --partial "one of the arguments '--neuron-id <NEURON_ID>' or '--neuron-memo <NEURON_MEMO>' or --test-neuron-proposer must be used"
+}
+
+# This test asserts that a local dfx server with the NNS installed can submit a
+# CreateServiceNervousSystem NNS Proposal
+@test "sns propose can submit a proposal" {
+    dfx_new
+
+    dfx_extension_install_manually nns
+    install_shared_asset subnet_type/shared_network_settings/system
+    install_asset sns/valid
+
+    dfx_start_for_nns_install
+    dfx nns install
+
+    run dfx sns propose --test-neuron-proposer "${SNS_CONFIG_FILE_V2_NAME}"
+    assert_success
+}
+
+# TODO use dfx nns to stake a Neuron and test with dfx identity as a hotkey

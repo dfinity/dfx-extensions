@@ -18,6 +18,7 @@ use crate::{
     commands::prepare_canisters::SnsPrepareCanistersOpts,
 };
 
+use crate::commands::propose::SnsProposeOpts;
 use clap::Parser;
 
 /// Options for `dfx sns`.
@@ -52,6 +53,9 @@ enum SubCommand {
     /// Subcommand for preparing dapp canister(s) for 1-proposal SNS creation
     #[command()]
     PrepareCanisters(SnsPrepareCanistersOpts),
+    /// Subcommand for submitting a CreateServiceNervousSystem NNS Proposal.
+    #[command()]
+    Propose(SnsProposeOpts),
 }
 
 /// Executes `dfx sns` and its subcommands.
@@ -69,6 +73,7 @@ fn main() -> anyhow::Result<()> {
         SubCommand::Deploy(v) => commands::deploy::exec(v, &dfx_cache_path),
         SubCommand::Download(v) => commands::download::exec(v, &dfx_cache_path),
         SubCommand::PrepareCanisters(v) => commands::prepare_canisters::exec(v, &dfx_cache_path),
+        SubCommand::Propose(v) => commands::propose::exec(v, &dfx_cache_path),
     }?;
     Ok(())
 }

@@ -127,7 +127,7 @@ dfx sns prepare-canisters remove-nns-root rkp4c-7iaaa-aaaaa-aaaca-cai 6zikg-xaaa
 
 Use the `dfx sns propose` command to submit a CreateServiceNervousSystem NNS proposal according to the
 local configuration file. The local dfx identity must be able to operate (as a controller or hotkey) 
-a staked NNS Neuron to be able to submit an NNS Proposal. 
+a staked NNS Neuron to submit an NNS Proposal. 
 
 ### Basic usage
 
@@ -137,7 +137,7 @@ dfx sns propose
 
 ### Examples
 
-Submit a proposal using a known NeuronId
+Submit a proposal using a known NeuronId.
 
 ```
 dfx sns propose --neuron-id 42 sns_init.yaml 

@@ -148,7 +148,7 @@ with the current dfx identity to calculate the ICP Ledger Subaccount that backs 
 stake.
 
 ```
-dfx sns propose --neuruon-memo 0 sns_init.yaml 
+dfx sns propose --neuron-memo 0 sns_init.yaml 
 ```
 
 **Test Only:** Submits a proposal using the test NNS neuron that is available on the NNS installed

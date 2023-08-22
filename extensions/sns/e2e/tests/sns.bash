@@ -181,12 +181,12 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 
     run dfx sns propose sns_v2.yml
     assert_failure
-    assert_output --partial "one of the arguments '--neuron-id <NEURON_ID>' or '--neuron-memo <NEURON_MEMO>' or --test-neuron-proposer must be used"
+    assert_output --partial "sns propose --dfx-cache-path <DFX_CACHE_PATH> <--neuron-id <NEURON_ID>|--neuron-memo <NEURON_MEMO>|--test-neuron-proposer> <INIT_CONFIG_FILE>"
 }
 
 # This test asserts that a local dfx server with the NNS installed can submit a
-# CreateServiceNervousSystem NNS Proposal
-@test "sns propose can submit a proposal" {
+# CreateServiceNervousSystem NNS Proposal with the test neuron
+@test "sns propose can submit a proposal with the test neuron" {
     dfx_new
 
     dfx_extension_install_manually nns
@@ -200,4 +200,52 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
     assert_success
 }
 
-# TODO use dfx nns to stake a Neuron and test with dfx identity as a hotkey
+# This test asserts that a local dfx server wih the NNS installed can a
+# CreateServiceNervousSystem NNS Proposal with the --neuron-id flag,
+# which requires actual staking of a neuron in the NNS.
+@test "sns propose can submit a proposal with neuron id" {
+    dfx_new
+
+    dfx_extension_install_manually nns
+    install_shared_asset subnet_type/shared_network_settings/system
+    install_asset sns
+
+    dfx_start_for_nns_install
+    dfx nns import
+    dfx nns install
+
+    # Import the identity we'll use for the tests
+    dfx identity import --force --disable-encryption ident-1 ident-1/identity.pem
+    dfx identity use ident-1
+
+    # Transfer the stake required to create a neuron
+    run dfx ledger transfer --amount 10 --memo 0 a749bfc34e8f202046e9c836f46c23a327dbf78fe223cf4a893a59ed60dd1883
+    assert_success
+
+    # Create the Neuron and extract the Neuron Id
+    RESPONSE=$(dfx canister call nns-governance claim_or_refresh_neuron_from_account '(record {
+        controller = opt principal "hpikg-6exdt-jn33w-ndty3-fc7jc-tl2lr-buih3-cs3y7-tftkp-sfp62-gqe";
+        memo = 0 : nat64;
+    })')
+    NEURON_ID=$(echo "${RESPONSE}" | awk -F 'id = ' '{print $2}' | cut -d ' ' -f 1 | tr -d '[:space:]_')
+
+    # Extend its dissolve delay to 6 months so it can submit proposals
+    run dfx canister call nns-governance  manage_neuron "(record {
+        id = opt record { id = $NEURON_ID : nat64 };
+        command = opt variant {
+            Configure = record {
+                operation = opt variant {
+                    IncreaseDissolveDelay = record {
+                        additional_dissolve_delay_seconds = 31_622_400 : nat32;
+                    }
+                };
+            }
+        };
+        neuron_id_or_subaccount = null;
+    })"
+    assert_success
+
+    # Actually submit the proposal
+    run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_V2_NAME}"
+    assert_success
+}

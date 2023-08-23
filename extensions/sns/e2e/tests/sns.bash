@@ -198,6 +198,8 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 
     run dfx sns propose --test-neuron-proposer "${SNS_CONFIG_FILE_V2_NAME}"
     assert_success
+    assert_output --partial "🚀 Success!"
+    assert_output --partial "Proposal ID"
 }
 
 # This test asserts that a local dfx server wih the NNS installed can a
@@ -248,4 +250,6 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
     # Actually submit the proposal
     run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_V2_NAME}"
     assert_success
+    assert_output --partial "🚀 Success!"
+    assert_output --partial "Proposal ID"
 }

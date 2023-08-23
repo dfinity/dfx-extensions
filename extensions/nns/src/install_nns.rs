@@ -435,7 +435,7 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
 /// Sets the exchange rate between ICP and cycles.
 ///
 /// # Implementation
-/// This is done by proposal.  Just after startung a test server, ic-admin
+/// This is done by proposal.  Just after starting a test server, ic-admin
 /// proposals with a test user pass immediately, as the small test neuron is
 /// the only neuron and has absolute majority.
 #[context("Failed to set an initial exchange rate between ICP and cycles. It may not be possible to create canisters or purchase cycles.")]

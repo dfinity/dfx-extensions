@@ -3,3 +3,4 @@ pub(crate) mod deploy;
 pub(crate) mod download;
 pub(crate) mod import;
 pub(crate) mod prepare_canisters;
+pub(crate) mod propose;

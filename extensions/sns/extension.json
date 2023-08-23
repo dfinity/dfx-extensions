@@ -51,6 +51,27 @@
         }
       }
     },
+    "propose": {
+      "about": "Subcommand for submitting a CreateServiceNervousSystem NNS Proposal.",
+      "args": {
+        "init_config_file": {
+          "about": "Path to a configuration file specifying the SNS to be created.",
+          "multiple": false
+        },
+        "neuron_id": {
+          "about": "The neuron with which to make the proposal. The current dfx identity must be able to operate this neuron (as a hotkey for instance).",
+          "long": "neuron-id"
+        },
+        "neuron_memo": {
+          "about": "The memo to use in conjunction with the current dfx identity to identify the neuron with which to make the proposal. This calculates the subaccount address with which the Neuron was created with. The current dfx identity must be able to operate this neuron (as a hotkey for instance).",
+          "long": "neuron-memo"
+        },
+        "test_neuron_proposer": {
+          "about": "A test only alternative to `--neuron-id` and `--neuron-memo` that works on a local dfx server where an NNS is installed with the test neuron. If used with the mainnet version of the ic, `dfx sns propose` will return a failure.",
+          "long": "test-neuron-proposer"
+        }
+      }
+    },
     "import": {
       "about": "Subcommand for importing sns API definitions and canister IDs.",
       "args": {

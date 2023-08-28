@@ -59,7 +59,7 @@ pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()>
 }
 
 /// Sets local canister IDs
-/// The "local" entries at the remote URL are often misssing or do not match our NNS installation.
+/// The "local" entries at the remote URL are often missing or do not match our NNS installation.
 /// Always set the local values per our local NNS deployment.  We have all the information locally.
 fn set_local_nns_canister_ids(logger: &Logger, config: &mut Config) -> anyhow::Result<()> {
     let local_canister_ids: CanisterIds = NNS_CORE

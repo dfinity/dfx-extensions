@@ -10,6 +10,7 @@
 ## [0.2.0] - 2023-08-16
 
 - Introduced support for a new filenaming scheme for the tarball. See [PR #3307](https://github.com/dfinity/sdk/pull/3307).
+- **Note**: This version was retracted and superseded by `0.2.1`.
 
 ## [0.1.0] - 2023-07-12
 

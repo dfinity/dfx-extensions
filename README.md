@@ -30,7 +30,7 @@ Each extension in the DFINITY extensions repository has its structure:
 ## Getting Started
 
 ### Installing/Uninstalling/Upgrading Extensions
-As the extensions are built with Rust, you can follow the usual Rust procedures to build, install, and manage them.
+Head over to https://internetcomputer.org/docs/current/references/cli-reference/dfx-extension to learn more!
 
 ### Extension Development
 1. Create a separate directory under the `extensions` folder for your extension.

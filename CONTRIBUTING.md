@@ -1,5 +1,12 @@
 # Contributing
 
+### Development of a new extension
+
+1. Create a separate directory under the `extensions` folder for your extension.
+2. Provide a manifest (`extension.json`) with metadata for your extension.
+3. Add your extension to `compatibility.json`, ensuring compatibility with specific `dfx` versions.
+4. Add the name of the crate of your extension to https://github.com/dfinity/dfx-extensions/blob/main/.github/workflows/release-with-github.yml under `whichCrate`, this will allow you to release new versions of your extension very easily.
+
 ## How it works 
 
 The `dfx` utility offers a feature to install new extensions. This process ensures that the extensions are not only installed from a trusted source but are also compatible with the user's dfx version, enhancing the utility's reliability and user experience. Here's a high-level overview of how the installation process works:
@@ -41,11 +48,12 @@ cargo test --workspace
 
 ## Release a new version of the extension
 Once your changes are on the `main` branch and you wish to release a new version of the extension, the process consists of the following steps:
-1. Create a new GitHub Release with the extension's binaries. The whole process is automated using GitHub Actions. Go to https://github.com/dfinity/dfx-extensions/actions/workflows/release-with-github.yml and click `Run workflow`, then follow the instructions in the pop-up menu. Alternatively, you can trigger this workflow from your shell by navigating to the repository directory and running:
+1. Create a new GitHub Release with the extension's binaries. The whole process is automated using GitHub Actions. Go to https://github.com/dfinity/dfx-extensions/actions/workflows/release-with-github.yml and click `Run workflow`, then follow the instructions in the pop-up menu. Alternatively, you can trigger this workflow from your shell by navigating to the repository directory and running (in this example, we're releasing `nns` extension, version `1.2.3`):
     ```console 
     gh workflow run "release-with-github.yml" -f whichCrate=nns -f semverVersion=1.2.3
     ```
-Once the workflow finishes running, it will open a PR that you need to review and merge.
+    Once the workflow finishes running, it will open a PR that you need to review and merge.
+
 2. Copy the relevant section from the extension's `CHANGELOG.md` to the description in GitHub Releases.
 
 ## Styleguides

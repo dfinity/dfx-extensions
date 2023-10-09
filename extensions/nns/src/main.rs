@@ -1,5 +1,5 @@
 //! Code for the command line `dfx nns`.
-#![warn(clippy::missing_docs_in_private_items)]
+#![allow(clippy::missing_docs_in_private_items)]
 
 use std::path::PathBuf;
 
@@ -46,8 +46,8 @@ pub fn main() -> anyhow::Result<()> {
     let runtime = Runtime::new().expect("Unable to create a runtime");
     runtime.block_on(async {
         match opts.subcmd {
-            SubCommand::Import(v) => commands::import::exec(v, &dfx_cache_path).await,
-            SubCommand::Install(v) => commands::install::exec(v, &dfx_cache_path).await,
+            SubCommand::Import(v) => commands::import::exec(v, dfx_cache_path).await,
+            SubCommand::Install(v) => commands::install::exec(v, dfx_cache_path).await,
         }
     })
 }

@@ -1,5 +1,5 @@
-pub mod sns;
 pub mod nns;
+pub mod sns;
 
 use anyhow::Context;
 use dfx_core::fs;

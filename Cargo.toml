@@ -46,10 +46,6 @@ unix-archive = ".tar.gz"
 checksum = "sha256"
 dist = true
 allow-dirty = ["ci"]
-# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.0.7"
-# The installers to generate for each app
-installers = []
 
 
 # The profile that 'cargo dist' will build with

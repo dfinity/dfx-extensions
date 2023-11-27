@@ -2,9 +2,6 @@
 
 ## [Unreleased] - ReleaseDate
 
-- Same functionality as version `0.2.1`.
-- Bump the REPLICA_REV to `41319eab85e65e3eb8174f37518bf81530a58831`
-
 ## [0.2.1] - 2023-08-29
 
 - Same functionality as version `0.2.0`.

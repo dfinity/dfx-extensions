@@ -45,6 +45,7 @@ targets = [
 unix-archive = ".tar.gz"
 checksum = "sha256"
 dist = true
+allow-dirty = ["ci"]
 
 
 # The profile that 'cargo dist' will build with

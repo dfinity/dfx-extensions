@@ -40,7 +40,7 @@ jobs:
     outputs:
       nev_version: ${{ steps.determine_version.outputs.NEW_VERSION }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: cargo-bins/cargo-binstall@main
@@ -92,7 +92,7 @@ jobs:
     needs: [create-release, call-release-binaries-workflow]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Open the release PR
         env:
           GH_TOKEN: ${{ github.token }}
@@ -100,6 +100,8 @@ jobs:
           TAG="${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}"
           HEAD="release/$TAG"
           TITLE="chore(${{ inputs.whichCrate }}): release v${{ needs.create-release.outputs.nev_version }}"
-          echo "PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> BODY.md
-          echo "Link to release: https://github.com/dfinity/dfx-extensions/releases/tag/$TAG" >> BODY.md
+          cat >BODY.md <<EOF
+          PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          Link to release: https://github.com/${{ github.server_url }}/${{ github.repository }}/releases/tag/$TAG
+          EOF
           gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md

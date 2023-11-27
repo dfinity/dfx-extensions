@@ -3,7 +3,7 @@
 ## [Unreleased] - ReleaseDate
 
 - Same functionality as version `0.2.1`.
-- Bump the REPLICA_REV to `41319eab85e65e3eb8174f37518bf81530a58831` which installs the
+- Bump the REPLICA_REV to `8dd5cd00acdc4d891fa0c5a1605bcf3b68a3d707` which installs the
   NNS Governance canister with 10GB of allocated memory
 
 ## [0.2.1] - 2023-08-29

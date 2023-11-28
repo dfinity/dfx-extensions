@@ -47,7 +47,7 @@ checksum = "sha256"
 dist = true
 allow-dirty = ["ci"]
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.5.0"
+cargo-dist-version = "0.4.3"
 
 
 # The profile that 'cargo dist' will build with

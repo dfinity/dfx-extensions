@@ -29,7 +29,7 @@ jobs:
         run: brew install coreutils sponge
       - uses: cargo-bins/cargo-binstall@main
       - name: Install cargo-dist
-        run: cargo binstall cargo-dist -y
+        run: cargo binstall cargo-dist@0.4.3 -y
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
       - name: run test

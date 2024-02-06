@@ -20,7 +20,7 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, destination_path
     };
 
     let url = format!(
-        "https://download.dfinity.systems/ic/{replica_rev}/openssl-static-binaries/{arch}-{os}/{binary_name}.gz",
+        "https://download.dfinity.systems/ic/{replica_rev}/binaries/{arch}-{os}/{binary_name}.gz",
         arch = arch,
         os = os,
         binary_name = binary_name,

@@ -152,6 +152,13 @@ pub const NNS_DAPP: StandardCanister = StandardCanister {
     wasm_name: "nns-dapp_local.wasm",
     wasm_url: "https://github.com/dfinity/nns-dapp/releases/download/tip/nns-dapp_t2.wasm",
 };
+/// Canister that can be used instead of cycle wallets
+pub const CYCLES_LEDGER: StandardCanister = StandardCanister {
+    canister_name: "cycles_ledger",
+    canister_id: "um5iw-rqaaa-aaaaq-qaaba-cai",
+    wasm_name: "cycles_ledger.wasm.gz",
+    wasm_url: "https://github.com/dfinity/cycles-ledger/releases/download/cycles-ledger-v0.2.8/cycles-ledger.wasm.gz",
+};
 /// Backend canisters deployed by `ic nns init`.
 pub const NNS_CORE: &[&IcNnsInitCanister; 11] = &[
     &NNS_REGISTRY,       // 0

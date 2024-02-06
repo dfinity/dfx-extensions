@@ -10,6 +10,7 @@ use dfx_core::canister::install_canister_wasm;
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
+use dfx_extensions_utils::dependencies::download_wasms::nns::{CYCLES_LEDGER, NNS_CYCLES_MINTING};
 use dfx_extensions_utils::{
     call_extension_bundled_binary, download_nns_wasms, nns_wasm_dir, IcNnsInitCanister,
     SnsCanisterInstallation, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND,
@@ -19,7 +20,7 @@ use dfx_extensions_utils::{
 use anyhow::{anyhow, bail, Context};
 use backoff::backoff::Backoff;
 use backoff::ExponentialBackoff;
-use candid::Encode;
+use candid::{CandidType, Encode};
 use fn_error_context::context;
 use futures_util::future::try_join_all;
 use ic_agent::export::Principal;
@@ -27,6 +28,7 @@ use ic_agent::Agent;
 use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
 use reqwest::Url;
+use sha2::{Digest, Sha256};
 use slog::Logger;
 use std::ffi::OsString;
 use std::fs;
@@ -115,6 +117,7 @@ pub async fn install_nns(
     eprintln!("Configuring the NNS...");
     set_xdr_rate(1234567, &nns_url, dfx_cache_path)?;
     set_cmc_authorized_subnets(&nns_url, &subnet_id, dfx_cache_path)?;
+    set_cycles_ledger_canister_id_in_cmc(&nns_url, dfx_cache_path)?;
 
     print_nns_details(provider_url)?;
     Ok(())
@@ -394,7 +397,7 @@ pub async fn download(source: &Url, target: &Path) -> anyhow::Result<()> {
 
 /// Arguments for the ic-nns-init command line function.
 pub struct IcNnsInitOpts {
-    /// An URL to accees one or more NNS subnet replicas.
+    /// An URL to access one or more NNS subnet replicas.
     nns_url: String,
     /// A directory that needs to be populated will all required wasms before calling ic-nns-init.
     wasm_dir: PathBuf,
@@ -478,6 +481,61 @@ pub fn set_cmc_authorized_subnets(
         &summary,
         "--subnets",
         subnet,
+    ];
+    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
+        .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))
+}
+
+/// Sets the cycles ledger canister id in the CMC
+#[context("Failed to set the cycles ledger canister id in the CMC")]
+pub fn set_cycles_ledger_canister_id_in_cmc(
+    nns_url: &Url,
+    dfx_cache_path: &Path,
+) -> anyhow::Result<()> {
+    #[derive(CandidType, Clone, Debug, PartialEq, Eq)]
+    struct CyclesCanisterInitPayload {
+        pub cycles_ledger_canister_id: Option<Principal>,
+    }
+
+    let wasm_path = nns_wasm_dir(dfx_cache_path);
+    let ledger_wasm_path = wasm_path.join(NNS_CYCLES_MINTING.wasm_name);
+    let ledger_wasm_bytes = std::fs::read(&ledger_wasm_path)
+        .with_context(|| format!("Failed to read {}", ledger_wasm_path.to_string_lossy()))?;
+    let wasm_hash = Sha256::digest(ledger_wasm_bytes);
+    let mut upgrade_arg_file = tempfile::NamedTempFile::new()?;
+    upgrade_arg_file
+        .write_all(
+            &Encode!(&(Some(CyclesCanisterInitPayload {
+                cycles_ledger_canister_id: Some(
+                    Principal::from_text(CYCLES_LEDGER.canister_id).unwrap()
+                ),
+            }),))
+            .unwrap(),
+        )
+        .unwrap();
+
+    let ledger_wasm_path_str = ledger_wasm_path.to_string_lossy();
+    let wasm_hash_str = hex::encode(wasm_hash);
+    let upgrade_arg_file_str = upgrade_arg_file.path().to_string_lossy();
+    let args = vec![
+        "--nns-url",
+        nns_url.as_str(),
+        "propose-to-change-nns-canister",
+        "--test-neuron-proposer",
+        "--proposal-title",
+        "Set cycles ledger canister id in Cycles Minting Canister",
+        "--summary",
+        "Set cycles ledger canister id in Cycles Minting Canister",
+        "--mode",
+        "upgrade",
+        "--canister-id",
+        NNS_CYCLES_MINTING.canister_id,
+        "--wasm-module-path",
+        &ledger_wasm_path_str,
+        "--wasm-module-sha256",
+        &wasm_hash_str,
+        "--arg",
+        &upgrade_arg_file_str,
     ];
     call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
         .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))

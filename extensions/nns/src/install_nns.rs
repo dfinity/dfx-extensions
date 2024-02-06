@@ -499,8 +499,7 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
 
     let wasm_path = nns_wasm_dir(dfx_cache_path);
     let ledger_wasm_path = wasm_path.join(NNS_CYCLES_MINTING.wasm_name);
-    let ledger_wasm_bytes = std::fs::read(&ledger_wasm_path)
-        .with_context(|| format!("Failed to read {}", ledger_wasm_path.to_string_lossy()))?;
+    let ledger_wasm_bytes = dfx_core::fs::read(&ledger_wasm_path)?;
     let wasm_hash = Sha256::digest(ledger_wasm_bytes);
     let mut upgrade_arg_file = tempfile::NamedTempFile::new()?;
     upgrade_arg_file

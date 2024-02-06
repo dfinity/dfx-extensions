@@ -25,7 +25,8 @@ teardown() {
     # it panics, but still shows help
     run "$(dfx cache show)/extensions/nns/ic-nns-init" --help
     assert_failure
-    assert_output --partial "thread 'main' panicked at 'Illegal arguments:"
+    assert_output --partial "thread 'main' panicked"
+    assert_output --partial "Illegal arguments:"
     assert_output --partial "ic-nns-init [OPTIONS]"
     assert_output --regexp "-h, --help.*Print help information"
     assert_output --regexp '--version.*Print version information'

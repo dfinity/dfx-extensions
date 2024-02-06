@@ -511,7 +511,7 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
             }),))
             .unwrap(),
         )
-        .unwrap();
+        .context("Failed to write to tempfile.")?;
 
     let ledger_wasm_path_str = ledger_wasm_path.to_string_lossy();
     let wasm_hash_str = hex::encode(wasm_hash);
@@ -537,7 +537,7 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
         &upgrade_arg_file_str,
     ];
     call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
-        .map_err(|e| anyhow!("Call to propose to set authorized subnets failed: {e}"))
+        .map_err(|e| anyhow!("Call to set the cycles ledger canister id in the CMC: {e}"))
 }
 
 /// Uploads wasms to the nns-sns-wasm canister.

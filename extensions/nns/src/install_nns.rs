@@ -498,9 +498,9 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
     }
 
     let wasm_path = nns_wasm_dir(dfx_cache_path);
-    let ledger_wasm_path = wasm_path.join(NNS_CYCLES_MINTING.wasm_name);
-    let ledger_wasm_bytes = dfx_core::fs::read(&ledger_wasm_path)?;
-    let wasm_hash = Sha256::digest(ledger_wasm_bytes);
+    let cmc_wasm_path = wasm_path.join(NNS_CYCLES_MINTING.wasm_name);
+    let cmc_wasm_bytes = dfx_core::fs::read(&cmc_wasm_path)?;
+    let wasm_hash = Sha256::digest(cmc_wasm_bytes);
     let mut upgrade_arg_file = tempfile::NamedTempFile::new()?;
     upgrade_arg_file
         .write_all(
@@ -513,7 +513,7 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
         )
         .context("Failed to write to tempfile.")?;
 
-    let ledger_wasm_path_str = ledger_wasm_path.to_string_lossy();
+    let cmc_wasm_path_str = cmc_wasm_path.to_string_lossy();
     let wasm_hash_str = hex::encode(wasm_hash);
     let upgrade_arg_file_str = upgrade_arg_file.path().to_string_lossy();
     let args = vec![
@@ -530,7 +530,7 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
         "--canister-id",
         NNS_CYCLES_MINTING.canister_id,
         "--wasm-module-path",
-        &ledger_wasm_path_str,
+        &cmc_wasm_path_str,
         "--wasm-module-sha256",
         &wasm_hash_str,
         "--arg",

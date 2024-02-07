@@ -468,7 +468,7 @@ pub fn set_cmc_authorized_subnets(
 ) -> anyhow::Result<()> {
     let summary = format!(
         "Authorize the Cycles Minting Canister to create canisters in the subnet '{}'.",
-        subnet.clone()
+        subnet
     );
     let args = vec![
         "--nns-url",

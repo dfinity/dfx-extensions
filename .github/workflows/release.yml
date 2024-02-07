@@ -86,7 +86,7 @@ jobs:
           ref: ${{ needs.determine-release-tag.outputs.release-tag }}
           submodules: recursive
       - name: Install cargo-dist
-        run: "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.4.3/cargo-dist-installer.sh | sh"
+        run: "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.9.0/cargo-dist-installer.sh | sh"
       - id: plan
         run: |
           cargo dist plan ${{ !github.event.pull_request && format('--tag={0}', needs.determine-release-tag.outputs.release-tag) || '' }} --output-format=json > dist-manifest.json

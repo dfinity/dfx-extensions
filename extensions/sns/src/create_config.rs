@@ -14,6 +14,6 @@ pub fn create_config(path: &Path, dfx_cache_path: &Path) -> anyhow::Result<()> {
         OsString::from(path),
         OsString::from("new"),
     ];
-    call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)?;
+    call_extension_bundled_binary("sns-cli", args, dfx_cache_path)?;
     Ok(())
 }

@@ -66,7 +66,7 @@ mod tests {
             fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
         }
         let args: Vec<String> = vec![];
-        let result = execute_command(&path, args, &Path::new("."));
+        let result = execute_command(&path, args, Path::new("."));
         assert!(result.is_ok());
     }
 
@@ -80,7 +80,7 @@ mod tests {
             fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
         }
         let args: Vec<String> = vec!["arg".into()];
-        let result = execute_command(&path, args, &Path::new("."));
+        let result = execute_command(&path, args, Path::new("."));
         if let Err(e) = &result {
             assert_eq!(
                 e.to_string(),
@@ -122,7 +122,7 @@ mod tests {
     /// Try executing a non-existent command
     fn test_execute_command_nonexistent() {
         let args: Vec<String> = vec![];
-        let result = execute_command(&Path::new("/nonexistent/binary"), args, &Path::new("."));
+        let result = execute_command(Path::new("/nonexistent/binary"), args, Path::new("."));
         if let Err(e) = &result {
             assert_eq!(
                 e.to_string(),

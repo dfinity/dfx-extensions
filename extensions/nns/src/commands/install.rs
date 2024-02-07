@@ -73,7 +73,7 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
         &agent,
         &network_descriptor,
         &networks_config,
-        &dfx_cache_path,
+        dfx_cache_path,
         &opts.ledger_accounts,
         &logger,
     )

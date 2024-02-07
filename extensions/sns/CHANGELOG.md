@@ -4,6 +4,9 @@
 
 ## [0.3.0] - 2024-02-07
 
+- Same functionality as version `0.2.1`.
+- Updated SNS canisters to the latest version.
+
 ## [0.2.1] - 2023-08-29
 
 - Same functionality as version `0.2.0`.

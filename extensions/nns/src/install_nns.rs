@@ -501,16 +501,13 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
     let cmc_wasm_path = wasm_path.join(NNS_CYCLES_MINTING.wasm_name);
     let cmc_wasm_bytes = dfx_core::fs::read(&cmc_wasm_path)?;
     let wasm_hash = Sha256::digest(cmc_wasm_bytes);
+    let upgrade_arg = format!(
+        "(opt record {{ cycles_ledger_canister_id = opt principal \"{}\" }})",
+        CYCLES_LEDGER.canister_id
+    );
     let mut upgrade_arg_file = tempfile::NamedTempFile::new()?;
     upgrade_arg_file
-        .write_all(
-            &Encode!(&(Some(CyclesCanisterInitPayload {
-                cycles_ledger_canister_id: Some(
-                    Principal::from_text(CYCLES_LEDGER.canister_id).unwrap()
-                ),
-            }),))
-            .unwrap(),
-        )
+        .write_all(upgrade_arg.as_bytes())
         .context("Failed to write to tempfile.")?;
 
     let cmc_wasm_path_str = cmc_wasm_path.to_string_lossy();

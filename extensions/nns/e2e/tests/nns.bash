@@ -154,6 +154,13 @@ assert_nns_canister_id_matches() {
     assert_success
     assert_output "$SECP256K1_ACCOUNT_ID"
 
+    run dfx --identity ident-1 ledger transfer 4b37224c5ed36e8a28ae39af482f5f858104f0a2285d100e67cf029ff07d948e --amount 10 --memo 1414416717
+    assert_success
+    run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5; })'
+    # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger.
+    # If it is not configured correctly, then this will complain about the cycles ledger canister id not being configured.
+    assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
+
     echo Stopping dfx...
     dfx stop
 }

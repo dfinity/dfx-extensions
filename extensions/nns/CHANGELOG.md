@@ -3,12 +3,12 @@
 ## [Unreleased] - ReleaseDate
 
 ## [0.3.1] - 2024-02-09
+- `dfx nns install` now configures the cycles minting canister such that it plays nicely with the cycles ledger (which has to be installed separately).
 
 ## [0.3.0] - 2024-02-07
 
 - Same functionality as version `0.2.1`.
 - Updated NNS canisters to the latest version.
-- `dfx nns install` now configures the cycles minting canister such that it plays nicely with the cycles ledger (which has to be installed separately).
 
 ## [0.2.1] - 2023-08-29
 

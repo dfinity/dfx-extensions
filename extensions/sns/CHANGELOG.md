@@ -3,6 +3,7 @@
 ## [Unreleased] - ReleaseDate
 
 ## [0.3.1] - 2024-02-09
+- Same functionality as version `0.3.0`.
 
 ## [0.3.0] - 2024-02-07
 

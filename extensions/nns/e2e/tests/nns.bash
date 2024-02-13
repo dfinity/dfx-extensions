@@ -160,9 +160,6 @@ assert_nns_canister_id_matches() {
     # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger.
     # If it is not configured correctly, then this will complain about the cycles ledger canister id not being configured.
     assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
-
-    echo Stopping dfx...
-    dfx stop
 }
 
 test_project_import() {

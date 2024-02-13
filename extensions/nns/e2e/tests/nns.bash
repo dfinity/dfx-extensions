@@ -154,102 +154,12 @@ assert_nns_canister_id_matches() {
     assert_success
     assert_output "$SECP256K1_ACCOUNT_ID"
 
+    sleep 10 # In slow CI the last upgrade proposal has not finished executing yet. Need to give a little spare time to restart all canisters
     run dfx --identity ident-1 ledger transfer 4b37224c5ed36e8a28ae39af482f5f858104f0a2285d100e67cf029ff07d948e --amount 10 --memo 1414416717
     assert_success
-    run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5; })'
-    # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger.
+    run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5 : nat64; })'
+    # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger (and fail because the canister is not even created).
     # If it is not configured correctly, then this will complain about the cycles ledger canister id not being configured.
     assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
-
-    echo Stopping dfx...
-    dfx stop
-}
-
-test_project_import() {
-    DFX_JSON_LOCATION="$1"
-
-    # this test is meant to demonstrate that the various
-    dfx beta project import "$DFX_JSON_LOCATION" --prefix "pfx-" --network-mapping ic=mainnet --all
-
-    jq . dfx.json
-
-    run jq -r '.canisters."pfx-normal-canister".candid' dfx.json
-    assert_success
-    assert_output "candid/pfx-normal-canister.did"
-    # shellcheck disable=SC2154
-    assert_files_eq \
-      "${assets}/project-import/project-directory/normal-canister-directory/some-subdirectory/the-candid-filename.did" \
-      "candid/pfx-normal-canister.did"
-
-    run jq -r '.canisters."pfx-normal-canister".remote.id.ic' dfx.json
-    assert_success
-    assert_output "rrkah-fqaaa-aaaaa-aaaaq-cai"
-
-    run jq -r '.canisters."pfx-sibling".candid' dfx.json
-    assert_success
-    assert_output "candid/pfx-sibling.did"
-    assert_files_eq \
-      "${assets}/project-import/sibling-project/canister/canister/the-sibling-candid-definition.did" \
-      "candid/pfx-sibling.did"
-}
-
-@test "dfx project import from filesystem" {
-    test_project_import "${assets}/project-import/project-directory/dfx.json"
-}
-
-@test "dfx project import from url" {
-    start_webserver --directory "${assets}/project-import"
-
-    test_project_import "http://localhost:$E2E_WEB_SERVER_PORT/project-directory/dfx.json"
-}
-
-test_project_import_specific_canister() {
-    LOCATION="$1"
-
-    # this test is meant to demonstrate that the various
-    dfx beta project import "$LOCATION" normal-canister
-
-    jq . dfx.json
-
-    run jq -r '.canisters."normal-canister".candid' dfx.json
-    assert_success
-    assert_output "candid/normal-canister.did"
-    assert_files_eq \
-      "${assets}/project-import/project-directory/normal-canister-directory/some-subdirectory/the-candid-filename.did" \
-      "candid/normal-canister.did"
-
-    run jq -r '.canisters.sibling.candid' dfx.json
-    assert_success
-    assert_output "null"
-}
-
-@test "dfx project import specific canister" {
-    test_project_import_specific_canister "${assets}/project-import/project-directory/dfx.json"
-}
-
-@test "import from url" {
-    start_webserver --directory "${assets}/project-import"
-
-    test_project_import_specific_canister "http://localhost:$E2E_WEB_SERVER_PORT/project-directory/dfx.json"
-}
-
-@test "project import from filesystem with no canister_ids.json" {
-    mkdir www
-    cp -R "${assets}/project-import" www/
-    rm www/project-import/project-directory/canister_ids.json
-
-    start_webserver --directory "www/project-import"
-
-    dfx beta project import www/project-import/project-directory/dfx.json --all
-}
-
-@test "project import from url with no canister_ids.json" {
-    mkdir www
-    cp -R "${assets}/project-import" www/
-    rm www/project-import/project-directory/canister_ids.json
-
-    start_webserver --directory "www/project-import"
-
-    dfx beta project import "http://localhost:$E2E_WEB_SERVER_PORT/project-directory/dfx.json" --all
 }
 

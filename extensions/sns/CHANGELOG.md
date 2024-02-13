@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.3.1] - 2024-02-09
+- Same functionality as version `0.3.0`.
+
 ## [0.3.0] - 2024-02-07
 
 - Same functionality as version `0.2.1`.
@@ -28,7 +31,8 @@
 ## [0.1.0] - 2023-07-12
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.0...HEAD
+[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...HEAD
+[0.3.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.0...sns-v0.3.1
 [0.3.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.2.1...sns-v0.3.0
 [0.2.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.2.0...sns-v0.2.1
 [0.2.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.1.0...sns-v0.2.0

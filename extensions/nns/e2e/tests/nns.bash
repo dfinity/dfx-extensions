@@ -154,7 +154,7 @@ assert_nns_canister_id_matches() {
     assert_success
     assert_output "$SECP256K1_ACCOUNT_ID"
 
-    sleep 60 # give proposal time to restart the canister
+    sleep 10 # give proposal time to restart the canister
     run dfx --identity ident-1 ledger transfer 4b37224c5ed36e8a28ae39af482f5f858104f0a2285d100e67cf029ff07d948e --amount 10 --memo 1414416717
     assert_success
     run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5 : nat64; })'

@@ -1,7 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
-- Same functionality as version `0.3.1`.
+- Updated replica to 8e01c4db9a6676fdd2dd433ef29a44bb3ba1914b.
 
 ## [0.3.1] - 2024-02-09
 - `dfx nns install` now configures the cycles minting canister such that it plays nicely with the cycles ledger (which has to be installed separately).

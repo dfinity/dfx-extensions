@@ -1,7 +1,8 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
-- Fixes a bug that prevented SNS testflight from working in some cases.
+- Updated replica to 8e01c4db9a6676fdd2dd433ef29a44bb3ba1914b
+  - Fixes a bug that prevented SNS testflight from working in some cases.
 
 ## [0.3.1] - 2024-02-09
 - Same functionality as version `0.3.0`.

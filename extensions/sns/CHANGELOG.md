@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Fixes a bug that prevented SNS testflight from working in some cases.
 
 ## [0.3.1] - 2024-02-09
 - Same functionality as version `0.3.0`.

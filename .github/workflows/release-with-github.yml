@@ -36,36 +36,44 @@ on:
 jobs:
   create-release:
     runs-on: ubuntu-latest
-    if: ${{ !(inputs.semverBump == 'custom' && inputs.semverVersion == '') }}
-    outputs:
-      nev_version: ${{ steps.determine_version.outputs.NEW_VERSION }}
     steps:
+      - name: check parameters
+        if: ${{ inputs.semverBump == 'custom' && inputs.semverVersion == '' }}
+        run: |
+            echo "You have selected [custom] in the previous dropdown, but you have not provided the exact version. Please provide the exact version."
+            exit 1
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: cargo-bins/cargo-binstall@main
       - run: cargo binstall cargo-release -y
-      - name: Determine new version number by dry-running `cargo-release`
-        id: determine_version
-        continue-on-error: true
+
+      - name: Unify semver choice
+        env:
+          SEMVER_CHOICE: ${{ inputs.semverBump == 'custom' && inputs.semverVersion || inputs.semverBump }}
         run: |
-          if [[ "${{ inputs.semverBump }}" == "custom" ]]
-          then
-            cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverVersion }} &> cargo-release-output.txt
-          else
-            cargo release version -p ${{ inputs.whichCrate }} ${{ inputs.semverBump }} &> cargo-release-output.txt
-          fi
-          cat cargo-release-output.txt
-          NEW_VERSION=$(grep -oP 'Upgrading .* from .* to \K[^\s]*' cargo-release-output.txt | tr -d ' ')
-          echo "$NEW_VERSION"
+          echo "SEMVER_CHOICE is $SEMVER_CHOICE"
+          echo "SEMVER_CHOICE=$SEMVER_CHOICE" >> "$GITHUB_ENV"
+
+      - name: Determine new version number by dry-running `cargo-release`
+        run: |
+          echo "SEMVER_CHOICE is $SEMVER_CHOICE"
+          NEW_VERSION="$(
+            cargo release version -p ${{ inputs.whichCrate}} ${{ env.SEMVER_CHOICE }} 2>&1 \
+              | grep "Upgrading .* from .* to .*" \
+              | awk '{print $6}' \
+          )"
+
+          echo "New version is $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_ENV"
-          echo "NEW_VERSION=$NEW_VERSION" >> "$GITHUB_OUTPUT"
-          rm cargo-release-output.txt
-      - name: Switch to the release branch, and push it
+
+      - name: Switch to the release branch
         run: |
           BRANCH_NAME="release/${{ inputs.whichCrate }}-v${{ env.NEW_VERSION }}"
-          git checkout -b "$BRANCH_NAME"
-          git push --set-upstream origin "$BRANCH_NAME"
+          git switch -c "$BRANCH_NAME"
+
+
       - name: Set up git config
         run: |
           git config author.email "${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com"
@@ -74,34 +82,31 @@ jobs:
           git config committer.name "GitHub Actions Bot"
           git config user.email "${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com"
           git config user.name "${{ github.event.sender.login }}"
-      - name: Execute `cargo-release`
-        if: ${{ inputs.semverBump != 'custom' }}
-        run: cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverBump }}
-      - name: Execute `cargo-release`
-        if: ${{ inputs.semverBump == 'custom' }}
-        run: cargo release -p ${{ inputs.whichCrate }} --execute --no-confirm ${{ inputs.semverVersion }}
 
+      - name: Roll changelog, bump version, and push branch
+        run: |
+          # see https://opensource.axo.dev/cargo-dist/book/workspaces/cargo-release-guide.html#using-cargo-release-with-pull-requests
+          cargo release -p ${{ inputs.whichCrate }} "${{ env.SEMVER_CHOICE }}" --execute --no-confirm --config extensions/${{ inputs.whichCrate }}/prepare-release.toml
 
-  call-release-binaries-workflow:
-    needs: create-release
-    uses: ./.github/workflows/release.yml
-    with:
-      release_tag: ${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}
-
-  create-release-pr:
-    needs: [create-release, call-release-binaries-workflow]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
       - name: Open the release PR
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          TAG="${{ inputs.whichCrate }}-v${{ needs.create-release.outputs.nev_version }}"
+          TAG="${{ inputs.whichCrate }}-v${{ env.NEW_VERSION }}"
           HEAD="release/$TAG"
-          TITLE="chore(${{ inputs.whichCrate }}): release v${{ needs.create-release.outputs.nev_version }}"
+          TITLE="chore(${{ inputs.whichCrate }}): release v${{ env.NEW_VERSION }}"
           cat >BODY.md <<EOF
           PR created by this workflow: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           Link to release: https://github.com/${{ github.server_url }}/${{ github.repository }}/releases/tag/$TAG
+          After merging, run the following:
+
+          \`\`\`bash
+          git checkout main
+          git pull
+          cargo dist plan
+          cargo release -p ${{ inputs.whichCrate }} --execute
+          \`\`\`
           EOF
-          gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md
+          echo "Body:"
+          cat BODY.md
+          echo gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md

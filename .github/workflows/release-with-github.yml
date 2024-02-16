@@ -107,8 +107,5 @@ jobs:
           cargo release -p ${{ inputs.whichCrate }} --execute
           \`\`\`
           EOF
-          echo "Body:"
-          cat BODY.md
-          echo "git status:"
-          git status
+          echo 'The message "Warning: 1 uncommitted change" refers to BODY.md'
           gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md

@@ -27,14 +27,6 @@ candid.workspace = true
 # Temp hack until https://github.com/axodotdev/cargo-dist/issues/187 is resovled.
 publish = false
 # list of replacements to be made after issuing `cargo release -p nns SEMVER`
-pre-release-replacements = [
-  {file="CHANGELOG.md", search="Unreleased", replace="{{version}}"},
-  {file="CHANGELOG.md", search="\\.\\.\\.HEAD", replace="...{{tag_name}}", exactly=1},
-  {file="CHANGELOG.md", search="ReleaseDate", replace="{{date}}"},
-  {file="CHANGELOG.md", search="<!-- next-header -->", replace="<!-- next-header -->\n\n## [Unreleased] - ReleaseDate", exactly=1},
-  {file="CHANGELOG.md", search="<!-- next-url -->", replace="<!-- next-url -->\n[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD", exactly=1},
-  {file="extension.json", search="\"version\": .*", replace="\"version\": \"{{version}}\",", exactly=1},
-]
 
 [package.metadata.dist]
 include = ["extension.json", "sns-cli"]

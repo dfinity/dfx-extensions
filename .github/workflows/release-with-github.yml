@@ -109,4 +109,6 @@ jobs:
           EOF
           echo "Body:"
           cat BODY.md
+          echo "git status:"
+          git status
           gh pr create --base main --head "$HEAD" --title "$TITLE" --body-file BODY.md

@@ -41,8 +41,8 @@ standard_setup() {
 
     cache_root="${E2E_CACHE_ROOT:-"$HOME/.e2e-cache-root"}"
 
-    # dfxvm looks under HOME to determine the dfx version
-    DFXVM_DEFAULT="$(dfxvm default)"
+    # bypass dfxvm in tests, since dfxvm looks under HOME to determine the dfx version and to get binary paths
+    default_dfx_version="$(dfxvm default)"
 
     mkdir "$x/working-dir"
     mkdir -p "$cache_root"
@@ -59,12 +59,13 @@ standard_setup() {
 
     if [ "$(uname)" == "Darwin" ]; then
         export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/Library/Application Support/org.dfinity.dfx/network/local"
+        export PATH="$HOME/Library/Application\ Support/org.dfinity.dfx/versions/$default_dfx_version:$PATH"
     elif [ "$(uname)" == "Linux" ]; then
         export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/.local/share/dfx/network/local"
+        export PATH="$HOME/.local/share/dfx/versions/$default_dfx_version:$PATH"
     fi
     export E2E_NETWORKS_JSON="$DFX_CONFIG_ROOT/.config/dfx/networks.json"
 
-    dfxvm default "$(DFXVM_DEFAULT)"
     dfx cache install
 }
 

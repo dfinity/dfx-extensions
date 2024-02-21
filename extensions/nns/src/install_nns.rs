@@ -105,7 +105,6 @@ pub async fn install_nns(
             canister_name,
             &local_wasm_path,
             specified_id,
-            logger,
         )
         .await?
         .to_text();
@@ -582,7 +581,6 @@ pub async fn install_canister(
     canister_name: &str,
     wasm_path: &Path,
     specified_id: Principal,
-    logger: &Logger,
 ) -> anyhow::Result<Principal> {
     let mgr = ManagementCanister::create(agent);
     let builder = mgr
@@ -606,7 +604,6 @@ pub async fn install_canister(
         &call_sender,
         fs::read(wasm_path).with_context(|| format!("Unable to read {:?}", wasm_path))?,
         true,
-        logger,
     )
     .await?;
 

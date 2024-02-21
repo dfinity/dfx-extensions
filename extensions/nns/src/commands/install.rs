@@ -12,7 +12,7 @@ use dfx_core::{
 
 use clap::Parser;
 use dfx_extensions_utils::{new_logger, webserver_port};
-use ic_agent::agent::http_transport::ReqwestHttpReplicaV2Transport;
+use ic_agent::agent::http_transport::reqwest_transport::ReqwestHttpReplicaV2Transport;
 use ic_agent::Agent;
 
 /// Installs the NNS canisters, Internet Identity and the NNS frontend dapp

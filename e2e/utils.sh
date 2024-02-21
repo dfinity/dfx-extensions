@@ -52,7 +52,7 @@ standard_setup() {
     mkdir "$x/config-root"
     mkdir "$x/home-dir"
 
-    # we need to configure the default dfx version in the isolated home directory
+    # we need to configure dfxvm in the isolated home directory
     default_dfx_version="$(dfxvm default)"
     # don't re-download dfx for every test
     mkdir -p "$x/home-dir/$project_relative_path"

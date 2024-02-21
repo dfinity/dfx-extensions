@@ -41,6 +41,9 @@ standard_setup() {
 
     cache_root="${E2E_CACHE_ROOT:-"$HOME/.e2e-cache-root"}"
 
+    # dfxvm looks under HOME to determine the dfx version
+    # DFXVM_DEFAULT="$(dfxvm default)"
+
     mkdir "$x/working-dir"
     mkdir -p "$cache_root"
     mkdir "$x/config-root"

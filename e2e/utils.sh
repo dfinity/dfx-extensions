@@ -42,7 +42,7 @@ standard_setup() {
     cache_root="${E2E_CACHE_ROOT:-"$HOME/.e2e-cache-root"}"
 
     # dfxvm looks under HOME to determine the dfx version
-    # DFXVM_DEFAULT="$(dfxvm default)"
+    DFXVM_DEFAULT="$(dfxvm default)"
 
     mkdir "$x/working-dir"
     mkdir -p "$cache_root"
@@ -64,6 +64,7 @@ standard_setup() {
     fi
     export E2E_NETWORKS_JSON="$DFX_CONFIG_ROOT/.config/dfx/networks.json"
 
+    dfxvm default "$(DFXVM_DEFAULT)"
     dfx cache install
 }
 

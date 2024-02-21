@@ -79,7 +79,7 @@ standard_teardown() {
 
 dfx_new_frontend() {
     local project_name=${1:-e2e_project}
-    dfx new "${project_name}" --frontend
+    dfx new "${project_name}" --frontend sveltekit
     test -d "${project_name}"
     test -f "${project_name}"/dfx.json
     cd "${project_name}"

@@ -143,7 +143,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
      dfx start --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
 
-     dfx_new && dfx deploy
+     dfx_new_frontend && dfx deploy
      BACKEND_CANISTER=$(dfx canister id e2e_project_backend)
      FRONTEND_CANISTER=$(dfx canister id e2e_project_frontend)
 

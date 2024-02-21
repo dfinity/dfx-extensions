@@ -56,7 +56,7 @@ standard_setup() {
     default_dfx_version="$(dfxvm default)"
     # don't re-download dfx for every test
     mkdir -p "$x/home-dir/$project_relative_path"
-    ln "$x/home-dir/$project_relative_path/versions" "$HOME/$project_relative_path/versions"
+    ln "$HOME/$project_relative_path/versions" "$x/home-dir/$project_relative_path/versions"
 
     cd "$x/working-dir" || exit
 

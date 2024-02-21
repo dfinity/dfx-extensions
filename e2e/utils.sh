@@ -59,13 +59,14 @@ standard_setup() {
 
     if [ "$(uname)" == "Darwin" ]; then
         export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/Library/Application Support/org.dfinity.dfx/network/local"
-        export PATH="$HOME/Library/Application\ Support/org.dfinity.dfx/versions/$default_dfx_version:$PATH"
+        # export PATH="$HOME/Library/Application\ Support/org.dfinity.dfx/versions/$default_dfx_version:$PATH"
     elif [ "$(uname)" == "Linux" ]; then
         export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/.local/share/dfx/network/local"
-        export PATH="$HOME/.local/share/dfx/versions/$default_dfx_version:$PATH"
+        # export PATH="$HOME/.local/share/dfx/versions/$default_dfx_version:$PATH"
     fi
     export E2E_NETWORKS_JSON="$DFX_CONFIG_ROOT/.config/dfx/networks.json"
 
+    dfxvm default "$default_dfx_version"
     dfx cache install
 }
 

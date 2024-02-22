@@ -6,10 +6,10 @@ build_manually() (
   local extension_name="$1"
   package_version=$(cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
   cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
-  extensions_dir="$PREBUILT_EXTENSIONS_DIR"
+  extension_dir="$PREBUILT_EXTENSIONS_DIR/$extension_name"
   arch_platform="$(get_arch_and_platform)"
-  mkdir -p "${extensions_dir:?}/$extension_name"
-  tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" --strip-components 1 -C "$extensions_dir/$extension_name"
+  mkdir -p "${extension_dir}"
+  tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" --strip-components 1 -C "$extension_dir"
 )
 
 get_arch_and_platform() {

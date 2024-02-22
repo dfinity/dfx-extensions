@@ -10,7 +10,7 @@ build_manually() (
     arch_platform="$(get_arch_and_platform)"
     mkdir -p "${extensions_dir:?}/$extension_name"
     tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" --strip-components 1 -C "$extensions_dir/$extension_name"
-    ls -l "$PREBUILT_EXTENSIONS_DIR"
+    ls -lR "$PREBUILT_EXTENSIONS_DIR"
 )
 
 get_arch_and_platform() {

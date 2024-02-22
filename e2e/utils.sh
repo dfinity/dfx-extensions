@@ -41,10 +41,22 @@ standard_setup() {
 
     cache_root="${E2E_CACHE_ROOT:-"$HOME/.e2e-cache-root"}"
 
+    if [ "$(uname)" == "Darwin" ]; then
+        project_relative_path="Library/Application Support/org.dfinity.dfx"
+    elif [ "$(uname)" == "Linux" ]; then
+        project_relative_path=".local/share/dfx"
+    fi
+
     mkdir "$x/working-dir"
     mkdir -p "$cache_root"
     mkdir "$x/config-root"
     mkdir "$x/home-dir"
+
+    # we need to configure dfxvm in the isolated home directory
+    default_dfx_version="$(dfxvm default)"
+    # don't re-download dfx for every test
+    mkdir -p "$x/home-dir/$project_relative_path"
+    ln -s "$HOME/$project_relative_path/versions" "$x/home-dir/$project_relative_path/versions"
 
     cd "$x/working-dir" || exit
 
@@ -54,13 +66,10 @@ standard_setup() {
     export RUST_BACKTRACE=1
     export MOCK_KEYRING_LOCATION="$HOME/mock_keyring.json"
 
-    if [ "$(uname)" == "Darwin" ]; then
-        export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/Library/Application Support/org.dfinity.dfx/network/local"
-    elif [ "$(uname)" == "Linux" ]; then
-        export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/.local/share/dfx/network/local"
-    fi
+    export E2E_SHARED_LOCAL_NETWORK_DATA_DIRECTORY="$HOME/$project_relative_path/network/local"
     export E2E_NETWORKS_JSON="$DFX_CONFIG_ROOT/.config/dfx/networks.json"
 
+    dfxvm default "$default_dfx_version"
     dfx cache install
 }
 
@@ -70,7 +79,7 @@ standard_teardown() {
 
 dfx_new_frontend() {
     local project_name=${1:-e2e_project}
-    dfx new "${project_name}" --frontend
+    dfx new "${project_name}" --frontend sveltekit
     test -d "${project_name}"
     test -f "${project_name}"/dfx.json
     cd "${project_name}"

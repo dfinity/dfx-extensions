@@ -44,6 +44,13 @@ jobs:
         run: cargo binstall cargo-dist@0.10.0 -y
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
+      - name: Install dfx cache
+        run: dfx cache install
+      - name: Install extension manually
+        run: .github/workflows/install-extension-manually.sh ${{ matrix.extension }}
+      - name: Install nns manually
+        run: .github/workflows/install-extension-manually.sh nns
+        if: matrix.extension == "sns"
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
 

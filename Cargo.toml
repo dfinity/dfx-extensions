@@ -34,6 +34,7 @@ slog = "^2.7.0"
 tempfile = "3.5.0"
 tokio = "^1.36.0"
 url = "^2.4.1"
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "25d05cb2d7f3ec39541c825659199610e3fcea48" }
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]

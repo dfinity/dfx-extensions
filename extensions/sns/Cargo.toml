@@ -14,6 +14,7 @@ dfx-extensions-utils.workspace = true
 [dependencies]
 dfx-core.workspace = true
 dfx-extensions-utils.workspace = true
+ic-sns-cli.workspace = true
 
 anyhow.workspace = true
 clap.workspace = true

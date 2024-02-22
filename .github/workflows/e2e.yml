@@ -44,12 +44,8 @@ jobs:
         run: cargo binstall cargo-dist@0.10.0 -y
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
-      - name: Install dfx cache
-        run: dfx cache install
       - name: Set prebuilt extensions directory
-        run: |
-          echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
-          mkdir -p "$HOME/prebuilt-extensions"
+        run: echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
       - name: Build extension manually
         run: .github/workflows/build-extension-manually.sh ${{ matrix.extension }}
       - name: Build nns manually

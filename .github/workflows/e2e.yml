@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - main
-      - cache-v4
   pull_request:
 
 jobs:
@@ -46,7 +45,7 @@ jobs:
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
       - name: run test
-        run: timeout 2400 e2e/bats/bin/bats --show-output-of-passing-tests extensions/${{ matrix.extension }}/e2e/tests/*.bash
+        run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
 
   aggregate:
     name: e2e:required

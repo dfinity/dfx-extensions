@@ -18,11 +18,23 @@ jobs:
       fail-fast: false
       matrix:
         os: [ macos-12, ubuntu-20.04 ]
-        test_file_path: [ extensions/nns/e2e/tests/nns.bash, extensions/sns/e2e/tests/sns.bash ]
+        extension: [ nns, sns ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: ${{ runner.os }}-cargo-e2e-${{ matrix.extension }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-e2e-${{ matrix.extension }}-
+            ${{ runner.os }}-cargo-e2e-
       - name: Install brew
         uses: Homebrew/actions/setup-homebrew@master
         if: contains(matrix.os, 'macos-12') == false
@@ -34,7 +46,7 @@ jobs:
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
       - name: run test
-        run: timeout 2400 e2e/bats/bin/bats --verbose-run --show-output-of-passing-tests ${{ matrix.test_file_path }}
+        run: timeout 2400 e2e/bats/bin/bats --verbose-run --show-output-of-passing-tests  extensions/${{ matrix.extension }}/e2e/tests/*.bash
 
   aggregate:
     name: e2e:required

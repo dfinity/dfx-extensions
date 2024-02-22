@@ -1,6 +1,6 @@
 set -e
 
-export CARGO_HOME="$HOME"
+export ORIG_HOME="$HOME"
 load "$GIT_ROOT_DIR"/e2e/bats-support/load
 load "$GIT_ROOT_DIR"/e2e/bats-assert/load
 
@@ -24,8 +24,8 @@ install_shared_asset() {
 dfx_extension_install_manually() (
     cd "$GIT_ROOT_DIR"
     local extension_name="$1"
-    package_version=$(HOME="$CARGO_HOME" cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
-    HOME="$CARGO_HOME" cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
+    package_version=$(HOME="$ORIG_HOME" cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
+    HOME="$ORIG_HOME" cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
     extensions_dir="$(dfx cache show)/extensions"
     arch_platform="$(get_arch_and_platform)"
     rm -rf "$extensions_dir/$extension_name-$arch_platform" "${extensions_dir:?}/$extension_name" # remove old versions

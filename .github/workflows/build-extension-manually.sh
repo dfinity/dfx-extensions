@@ -2,16 +2,15 @@
 
 set -e
 
-install_manually() (
+build_manually() (
     local extension_name="$1"
     package_version=$(cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
     cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
-    extensions_dir="$(dfx cache show)/extensions"
+    extensions_dir="$PREBUILT_EXTENSIONS_DIR"
     arch_platform="$(get_arch_and_platform)"
-    rm -rf "$extensions_dir/$extension_name-$arch_platform" "${extensions_dir:?}/$extension_name" # remove old versions
-    mkdir -p "$extensions_dir"
-    tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" -C "$extensions_dir"
-    mv "$extensions_dir/$extension_name-$arch_platform" "$extensions_dir/$extension_name"
+    mkdir -p "${extensions_dir:?}/$extension_name"
+    tar xzf "target/distrib/$extension_name-$arch_platform.tar.gz" --strip-components 1 -C "$extensions_dir/$extension_name"
+    ls -l "$PREBUILT_EXTENSIONS_DIR"
 )
 
 get_arch_and_platform() {
@@ -33,4 +32,4 @@ get_arch_and_platform() {
     fi
 }
 
-install_manually "$1"
+build_manually "$1"

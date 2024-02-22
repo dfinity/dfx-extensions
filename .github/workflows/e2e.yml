@@ -46,10 +46,14 @@ jobs:
         uses: dfinity/setup-dfx@main
       - name: Install dfx cache
         run: dfx cache install
-      - name: Install extension manually
-        run: .github/workflows/install-extension-manually.sh ${{ matrix.extension }}
-      - name: Install nns manually
-        run: .github/workflows/install-extension-manually.sh nns
+      - name: Set prebuilt extensions directory
+        run: |
+          echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
+          mkdir -p "$HOME/prebuilt-extensions"
+      - name: Build extension manually
+        run: .github/workflows/build-extension-manually.sh ${{ matrix.extension }}
+      - name: Build nns manually
+        run: .github/workflows/build-extension-manually.sh nns
         if: matrix.extension == 'sns'
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash

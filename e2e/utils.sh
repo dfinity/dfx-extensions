@@ -20,6 +20,13 @@ install_shared_asset() {
     cp -R "$ASSET_ROOT"/* "$(dirname "$E2E_NETWORKS_JSON")"
 }
 
+dfx_extension_install_manually() (
+    local extension_name="$1"
+    extensions_dir="$(dfx cache show)/extensions"
+    mkdir -p "$extensions_dir"
+    cp -R "$PREBUILT_EXTENSIONS_DIR/$extension_name" "$extensions_dir/$extension_name"
+)
+
 standard_setup() {
     # We want to work from a temporary directory, different for every test.
     x=$(mktemp -d -t dfx-e2e-XXXXXXXX)

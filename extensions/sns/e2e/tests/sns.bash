@@ -6,6 +6,8 @@ load "$GIT_ROOT_DIR"/e2e/utils.sh
 
 setup() {
     standard_setup
+
+    dfx_extension_install_manually sns
 }
 
 teardown() {
@@ -64,6 +66,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 }
 
 @test "sns deploy fails without config file" {
+    dfx_extension_install_manually nns
     dfx_new
     dfx nns import
     rm -f sns.yml # Is not expected to be present anyway
@@ -73,6 +76,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 }
 
 @test "sns deploy succeeds" {
+    dfx_extension_install_manually nns
     dfx_new
     install_shared_asset subnet_type/shared_network_settings/system
     dfx start --clean --background --host 127.0.0.1:8080
@@ -109,6 +113,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 # This test asserts that the new subcommand `prepare-canister add-nns-root` can add NNS root
 # as a co-controller to a dapp.
 @test "sns prepare-canisters adds NNS Root" {
+     dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
      dfx start --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
@@ -133,6 +138,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 # This test asserts that the new subcommand `prepare-canister remove-nns-root` can remove NNS root
 # as a co-controller to a dapp.
 @test "sns prepare-canisters removes NNS Root" {
+     dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
      dfx start --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
@@ -184,6 +190,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 @test "sns propose can submit a proposal with the test neuron" {
     dfx_new
 
+    dfx_extension_install_manually nns
     install_shared_asset subnet_type/shared_network_settings/system
     install_asset sns/valid
 
@@ -202,6 +209,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 @test "sns propose can submit a proposal with neuron id" {
     dfx_new
 
+    dfx_extension_install_manually nns
     install_shared_asset subnet_type/shared_network_settings/system
     install_asset sns
 

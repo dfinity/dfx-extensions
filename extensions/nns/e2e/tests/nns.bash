@@ -8,6 +8,8 @@ assets="$(dirname "$BATS_TEST_FILENAME")"/../assets
 setup() {
     standard_setup
 
+    dfx_extension_install_manually nns
+
     dfx_new
 }
 

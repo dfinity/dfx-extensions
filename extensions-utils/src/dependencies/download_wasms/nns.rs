@@ -143,14 +143,14 @@ pub const INTERNET_IDENTITY: StandardCanister = StandardCanister {
     canister_name: "internet_identity",
     canister_id: "qhbym-qaaaa-aaaaa-aaafq-cai",
     wasm_name: "internet_identity_dev.wasm",
-    wasm_url: "https://github.com/dfinity/internet-identity/releases/download/release-2022-07-11/internet_identity_dev.wasm"
+    wasm_url: "https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm.gz"
 };
 /// Frontend dapp for voting and managing neurons.
 pub const NNS_DAPP: StandardCanister = StandardCanister {
     canister_name: "nns-dapp",
     canister_id: "qsgjb-riaaa-aaaaa-aaaga-cai",
     wasm_name: "nns-dapp_local.wasm",
-    wasm_url: "https://github.com/dfinity/nns-dapp/releases/download/tip/nns-dapp_t2.wasm",
+    wasm_url: "https://github.com/dfinity/nns-dapp/releases/latest/download/nns-dapp.wasm.gz",
 };
 /// Canister that can be used instead of cycle wallets
 pub const CYCLES_LEDGER: StandardCanister = StandardCanister {

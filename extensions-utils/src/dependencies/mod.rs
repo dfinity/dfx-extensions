@@ -26,7 +26,7 @@ pub fn execute_command(
     } else {
         command.env("PATH", dfx_cache_path);
     }
-    command.stdin(process::Stdio::null());
+    command.stdin(process::Stdio::inherit());
     command.stdout(process::Stdio::inherit());
     command.stderr(process::Stdio::inherit());
 

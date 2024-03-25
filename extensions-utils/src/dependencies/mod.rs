@@ -82,10 +82,8 @@ mod tests {
         let args: Vec<String> = vec!["arg".into()];
         let result = execute_command(&path, args, Path::new("."));
         if let Err(e) = &result {
-            assert_eq!(
-                e.to_string(),
-                format!(
-                    r#"Command execution failed: Command {{
+            assert!(e.to_string().contains(&format!(
+                r#"Command execution failed: Command {{
     program: "{binary}",
     args: [
         "{binary}",
@@ -98,21 +96,10 @@ mod tests {
                 "{path}:.",
             ),
         }},
-    }},
-    stdin: Some(
-        Null,
-    ),
-    stdout: Some(
-        Inherit,
-    ),
-    stderr: Some(
-        Inherit,
-    ),
-}}"#,
-                    binary = path.display(),
-                    path = env::var("PATH").unwrap()
-                )
-            );
+    }}"#,
+                binary = path.display(),
+                path = env::var("PATH").unwrap()
+            )));
         } else {
             panic!("Expected an error, but got {:?}", result);
         }

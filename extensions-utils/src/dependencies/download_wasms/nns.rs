@@ -181,7 +181,7 @@ pub const NNS_FRONTEND: [&StandardCanister; 2] = [&INTERNET_IDENTITY, &NNS_DAPP]
 /// Test account with well known public & private keys, used in NNS_LEDGER, NNS_DAPP and third party projects.
 /// The keys use the ED25519 curve, used for BasicIdentity on th eInternet Computer.
 /// The keys are as follows, in the tweetnacl format used by agent-js:
-/// ```
+/// ```ignore
 /// const publicKey = "Uu8wv55BKmk9ZErr6OIt5XR1kpEGXcOSOC1OYzrAwuk=";
 /// const privateKey =
 ///    "N3HB8Hh2PrWqhWH2Qqgr1vbU9T3gb1zgdBD8ZOdlQnVS7zC/nkEqaT1kSuvo4i3ldHWSkQZdw5I4LU5jOsDC6Q==";
@@ -195,7 +195,7 @@ pub const ED25519_TEST_ACCOUNT: &str =
 
 /// Test account for command line usage.  The test account is typically called ident-1
 /// The keys use the secp256k1 curve.  To use:
-/// ```
+/// ```ignore
 /// $ cat ~/.config/dfx/identity/ident-1/identity.pem
 /// -----BEGIN EC PRIVATE KEY-----
 /// MHQCAQEEICJxApEbuZznKFpV+VKACRK30i6+7u5Z13/DOl18cIC+oAcGBSuBBAAK
@@ -204,7 +204,7 @@ pub const ED25519_TEST_ACCOUNT: &str =
 /// -----END EC PRIVATE KEY-----
 /// ```
 /// The test account should match the output of:
-/// ```
+/// ```ignore
 /// $ dfx --identity ident-1 ledger account-id
 /// ```
 pub const SECP256K1_TEST_ACCOUNT: &str =

@@ -9,13 +9,13 @@ dfx sns [subcommand] [flag]
 
 Depending on the `dfx sns` subcommand you specify, additional arguments, options, and flags might apply. For reference information and examples that illustrate using `dfx sns` commands, select an appropriate command.
 
-| Command                                                            | Description                                                                   |
-| ------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| [`init-config-file validate`](#_dfx_sns_init-config-file_validate) | Checks whether the sns config file is valid.                                  |
-| [`deploy-testflight`](#_dfx_sns_deploy-testflight)                 | Creates a test deployment of the SNS canisters according to the local config. |
-| [`prepare-canisters`](#_dfx_sns_prepare-canisters)                 | Prepares dapp canister(s) for SNS decentralization.                           |
-| [`propose`](#_dfx_sns_propose)                                     | Submits a CreateServiceNervousSystem NNS Proposal.                            |
-| `help`                                                             | Displays usage information message for a specified subcommand.                |
+| Command                                                            | Description                                                                                        |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| [`init-config-file validate`](#_dfx_sns_init-config-file_validate) | Checks whether the sns config file is valid.                                                       |
+| [`deploy-testflight`](#_dfx_sns_deploy-testflight)                 | Creates a test deployment of the SNS canisters according to the local config.                      |
+| [`prepare-canisters`](#_dfx_sns_prepare-canisters)                 | Prepares dapp canister(s) for SNS decentralization by adding NNS root as one of their controllers. |
+| [`propose`](#_dfx_sns_propose)                                     | Submits a CreateServiceNervousSystem NNS Proposal.                                                 |
+| `help`                                                             | Displays usage information message for a specified subcommand.                                     |
 
 To view usage information for a specific subcommand, specify the subcommand and the `--help` flag. For example, to see usage information for `dfx sns validate`, you can run the following command:
 
@@ -35,7 +35,7 @@ dfx sns init-config-file validate
 
 ## dfx sns deploy-testflight
 
-Use the `dfx sns deploy-testflight` command to create a testflight deployment of the SNS canisters according to the local configuration file.
+Use the `dfx sns deploy-testflight` command to create a testflight deployment of the SNS canisters according to the local configuration file. See [the testflight documentation](https://internetcomputer.org/docs/current/developer-docs/daos/sns/testing/testing-on-mainnet) for more details.
 
 Note: A testflight deployment is unlike a real deployment in that there is no token swap and the SNS canisters do not have exclusive control over the dapp canisters.
 

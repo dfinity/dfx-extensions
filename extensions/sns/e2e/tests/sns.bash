@@ -30,11 +30,11 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 @test "sns init-config-file validate identifies a missing key" {
     dfx_new
     install_asset sns/valid
+    # make the config file invalid by removing lines that contain "transaction_fee"
     grep -v transaction_fee "${SNS_CONFIG_FILE_NAME}" | sponge "$SNS_CONFIG_FILE_NAME"
     run dfx sns init-config-file validate
     assert_failure
     assert_output --partial "transaction_fee"
-
 }
 
 @test "sns propose exists" {

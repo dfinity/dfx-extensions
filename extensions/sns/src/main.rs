@@ -9,7 +9,7 @@ pub const CONFIG_FILE_NAME: &str = "sns.yml";
 use std::path::PathBuf;
 
 // #![warn(clippy::missing_docs_in_private_items)]
-use crate::{commands::download::SnsDownloadOpts, commands::import::SnsImportOpts};
+use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 
 use clap::Parser;
 use ic_sns_cli::init_config_file::{self, InitConfigFileArgs};

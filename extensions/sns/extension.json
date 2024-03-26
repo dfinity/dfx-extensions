@@ -73,7 +73,7 @@
           "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"
         },
         "init-config-file": {
-          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"init-config-file\""
+          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"dfx sns init-config-file\""
         }
       }
     },

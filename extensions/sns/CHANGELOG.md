@@ -1,10 +1,11 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+
 - The behavior of the `dfx sns` extension has been updated to match the `sns-cli` tool.
   The main effect of this is that many deprecated commands have been removed, and the remaining commands have been renamed.
 - Renamed `dfx sns config` to `dfx sns init-config-file`
-- Removed `dfx sns config create`
+- Removed `dfx sns config create`. Instead, check the [sns-testing repo](https://github.com/dfinity/sns-testing/blob/main/example_sns_init.yaml) for an example template you can base your `sns_init.yaml` on.
 - Removed `dfx sns deploy`
 - Introduced `dfx sns deploy-testflight`, which can be used to create a test deployment of the SNS on mainnet or on a local replica.
 

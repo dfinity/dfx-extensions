@@ -1,6 +1,12 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- The behavior of the `dfx sns` extension has been updated to match the `sns-cli` tool.
+  The main effect of this is that many deprecated commands have been removed, and the remaining commands have been renamed.
+- Renamed `dfx sns config` to `dfx sns init-config-file`
+- Removed `dfx sns config create`
+- Removed `dfx sns deploy`
+- Introduced `dfx sns deploy-testflight`, which can be used to create a test deployment of the SNS on mainnet or on a local replica.
 
 ## [0.3.1] - 2024-02-09
 - Same functionality as version `0.3.0`.

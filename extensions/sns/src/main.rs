@@ -1,10 +1,7 @@
 //! Code for decentralizing dapps
 #![warn(clippy::missing_docs_in_private_items)]
 pub mod commands;
-pub mod create_config;
-pub mod deploy;
 mod errors;
-pub mod validate_config;
 
 /// The default location of an SNS configuration file.
 pub const CONFIG_FILE_NAME: &str = "sns.yml";
@@ -12,14 +9,13 @@ pub const CONFIG_FILE_NAME: &str = "sns.yml";
 use std::path::PathBuf;
 
 // #![warn(clippy::missing_docs_in_private_items)]
-use crate::{
-    commands::config::SnsConfigOpts, commands::deploy::DeployOpts,
-    commands::download::SnsDownloadOpts, commands::import::SnsImportOpts,
-    commands::prepare_canisters::SnsPrepareCanistersOpts,
-};
+use crate::{commands::download::SnsDownloadOpts, commands::import::SnsImportOpts};
 
-use crate::commands::propose::SnsProposeOpts;
 use clap::Parser;
+use ic_sns_cli::init_config_file::{self, InitConfigFileArgs};
+use ic_sns_cli::prepare_canisters::{self, PrepareCanistersArgs};
+use ic_sns_cli::propose::{self, ProposeArgs};
+use ic_sns_cli::{deploy_testflight, DeployTestflightArgs};
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -38,42 +34,67 @@ pub struct SnsOpts {
 /// Subcommands of `dfx sns`
 #[derive(Parser)]
 enum SubCommand {
-    /// Subcommands for working with configuration.
+    /// Deploy an sns directly to a subnet, skipping the sns-wasms canister.
+    /// The SNS canisters remain controlled by the developer after deployment.
+    /// For use in tests only.
     #[command()]
-    Config(SnsConfigOpts),
-    /// Subcommand for creating an SNS.
+    DeployTestflight(DeployTestflightArgs),
+    /// Manage the config file where the initial sns parameters are set.
     #[command()]
-    Deploy(DeployOpts),
+    InitConfigFile(InitConfigFileArgs),
+    /// Make changes to canisters you own to prepare for SNS Decentralization
+    #[command()]
+    PrepareCanisters(PrepareCanistersArgs),
+    /// Submit an NNS proposal to create new SNS.
+    #[command()]
+    Propose(ProposeArgs),
+
     /// Subcommand for importing sns API definitions and canister IDs.
     #[command()]
     Import(SnsImportOpts),
     /// Subcommand for downloading SNS WASMs.
     #[command()]
     Download(SnsDownloadOpts),
-    /// Subcommand for preparing dapp canister(s) for 1-proposal SNS creation
-    #[command()]
-    PrepareCanisters(SnsPrepareCanistersOpts),
-    /// Subcommand for submitting a CreateServiceNervousSystem NNS Proposal.
-    #[command()]
-    Propose(SnsProposeOpts),
 }
 
 /// Executes `dfx sns` and its subcommands.
 fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
-    let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
-        anyhow::Error::msg(
-            "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
-        )
-    })?;
 
     match opts.subcmd {
-        SubCommand::Config(v) => commands::config::exec(v, dfx_cache_path),
-        SubCommand::Import(v) => commands::import::exec(v, dfx_cache_path),
-        SubCommand::Deploy(v) => commands::deploy::exec(v, dfx_cache_path),
-        SubCommand::Download(v) => commands::download::exec(v, dfx_cache_path),
-        SubCommand::PrepareCanisters(v) => commands::prepare_canisters::exec(v, dfx_cache_path),
-        SubCommand::Propose(v) => commands::propose::exec(v, dfx_cache_path),
+        SubCommand::DeployTestflight(args) => {
+            deploy_testflight(args);
+            Ok(())
+        }
+        SubCommand::InitConfigFile(args) => {
+            init_config_file::exec(args);
+            Ok(())
+        }
+        SubCommand::PrepareCanisters(args) => {
+            prepare_canisters::exec(args);
+            Ok(())
+        }
+        SubCommand::Propose(args) => {
+            propose::exec(args);
+            Ok(())
+        }
+
+        SubCommand::Import(v) => {
+            let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
+                anyhow::Error::msg(
+                    "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
+                )
+            })?;
+            commands::import::exec(v, dfx_cache_path)
+        }
+        SubCommand::Download(v) => {
+            let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
+                anyhow::Error::msg(
+                    "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
+                )
+            })?;
+            commands::download::exec(v, dfx_cache_path)
+        }
     }?;
     Ok(())
 }

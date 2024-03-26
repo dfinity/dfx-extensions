@@ -30,4 +30,4 @@ publish = false
 # list of replacements to be made after issuing `cargo release -p nns SEMVER`
 
 [package.metadata.dist]
-include = ["extension.json", "sns-cli"]
+include = ["extension.json"]

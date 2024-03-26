@@ -14,19 +14,13 @@
     "deployment"
   ],
   "subcommands": {
-    "config": {
+    "init-config-file": {
       "about": "Subcommands for working with configuration.",
       "subcommands": {
-        "create": {
-          "about": "Command line options for creating an SNS configuration."
-        },
         "validate": {
           "about": "Command line options for validating an SNS configuration."
         }
       }
-    },
-    "deploy": {
-      "about": "Subcommand for creating an SNS."
     },
     "prepare-canisters": {
       "about": "Subcommand for preparing dapp canister(s) for 1-proposal SNS creation.",
@@ -54,21 +48,32 @@
     "propose": {
       "about": "Subcommand for submitting a CreateServiceNervousSystem NNS Proposal.",
       "args": {
-        "init_config_file": {
-          "about": "Path to a configuration file specifying the SNS to be created.",
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network.",
           "multiple": false
         },
         "neuron_id": {
-          "about": "The neuron with which to make the proposal. The current dfx identity must be able to operate this neuron (as a hotkey for instance).",
+          "about": "The neuron with which to make the proposal. The current dfx identity must be able to operate this neuron. If not specified, it will be assumed that the current dfx identity has a neuron with memo == 0. --neuron_memo is an alternative to this",
           "long": "neuron-id"
         },
         "neuron_memo": {
-          "about": "The memo to use in conjunction with the current dfx identity to identify the neuron with which to make the proposal. This calculates the subaccount address with which the Neuron was created with. The current dfx identity must be able to operate this neuron (as a hotkey for instance).",
+          "about": "This is an alternative to --neuron_id for specifying which neuron to make the proposal with. This is used in conjunction with the current principal to calculate the subaccount (belonging to the NNS governance canister) that holds the ICP that backs the proposing neuron",
           "long": "neuron-memo"
         },
         "test_neuron_proposer": {
-          "about": "A test only alternative to `--neuron-id` and `--neuron-memo` that works on a local dfx server where an NNS is installed with the test neuron. If used with the mainnet version of the ic, `dfx sns propose` will return a failure.",
+          "about": "This is a \"secret menu\" item. It is (yet) another alternative to --neuron_id (and --neuron_memo). As the name implies, this is only useful when running against a local instance of NNS (when deployed as described in the sns-testing Github repo). In addition to specifying which neuron to propose with, this also controls the principal that sends the request",
           "long": "test-neuron-proposer"
+        }
+      }
+    },
+    "deploy-testflight": {
+      "about": "Deploy an sns directly to a subnet, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
+      "args": {
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"
+        },
+        "init-config-file": {
+          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"init-config-file\""
         }
       }
     },

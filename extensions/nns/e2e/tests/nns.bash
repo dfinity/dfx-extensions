@@ -42,12 +42,6 @@ teardown() {
     assert_output --partial 'Common command-line options for `ic-admin`'
 }
 
-@test "sns binary exists and is executable" {
-    run "$(dfx cache show)/extensions/nns/sns-cli" --help
-    assert_failure
-    assert_output --partial "Initialize, deploy and interact with an SNS."
-}
-
 @test "dfx nns install command exists" {
     run dfx nns install --help
     assert_success

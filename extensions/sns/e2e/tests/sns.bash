@@ -31,6 +31,8 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     dfx_new
     install_asset sns/valid
     # make the config file invalid by removing lines that contain "transaction_fee"
+    # every test is run in a unique temporary directory, so we aren't modifying
+    # anything that will be used by other tests by doing this.
     grep -v transaction_fee "${SNS_CONFIG_FILE_NAME}" | sponge "$SNS_CONFIG_FILE_NAME"
     run dfx sns init-config-file validate
     assert_failure
@@ -66,8 +68,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     # Deploy the SNS
     install_asset sns/valid
     dfx sns init-config-file validate
-    # The remaining steps don't work any more as a pre-launch whitelist has been added.
-    # and the steps required have changed due to one-proposal
+    # The remaining steps don't work any more as the steps required have changed due to one-proposal
     #dfx sns propose
     # SNS canister IDs should be saved
     #dfx canister id sns_governance
@@ -151,7 +152,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 # This test asserts that the `propose` subcommand exist in the current extension version.
 @test "sns deploy-testflight exists" {
     run dfx sns deploy-testflight --help
-    assert_output --partial "Deploy an sns directly to a subnet, skipping the sns-wasms canister"
+    assert_output --partial "Deploy an sns directly to a local replica or the Internet Computer"
 }
 
 # This test asserts that a local dfx server wih the NNS installed can a

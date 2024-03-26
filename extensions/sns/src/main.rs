@@ -54,9 +54,10 @@ enum SubCommand {
     Propose(ProposeArgs),
 
     /// Subcommand for importing sns API definitions and canister IDs.
+    /// This and `Download` are only useful for SNS testflight
     #[command()]
     Import(SnsImportOpts),
-    /// Subcommand for downloading SNS WASMs.
+    /// Downloads SNS canister versions that are specified in your dfx.json (which probably got there through the `Import` command).
     #[command()]
     Download(SnsDownloadOpts),
 }

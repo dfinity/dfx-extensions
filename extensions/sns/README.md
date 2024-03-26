@@ -35,7 +35,7 @@ dfx sns init-config-file validate
 
 ## dfx sns deploy-testflight
 
-Use the `dfx sns deploy-testflight` command to create a testflight deployment of the SNS canisters according to the local configuration file. A testflight deploys an sns directly to a subnet, skipping the proposal, token swap, and sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. See [the testflight documentation](https://internetcomputer.org/docs/current/developer-docs/daos/sns/testing/testing-on-mainnet) for more details.
+Use the `dfx sns deploy-testflight` command to create a testflight deployment of the SNS canisters according to the local configuration file. A testflight is an sns deployed directly to a local replica or the Internet Computer, skipping the proposal, token swap, and sns-wasm canister. The SNS canisters remain controlled by the developer after deployment. See [the testflight documentation](https://internetcomputer.org/docs/current/developer-docs/daos/sns/testing/testing-on-mainnet) for more details.
 
 ### Basic usage
 

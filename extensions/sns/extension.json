@@ -67,7 +67,7 @@
       }
     },
     "deploy-testflight": {
-      "about": "Deploy an sns directly to a subnet, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
+      "about": "Deploy an sns directly to a local replica or the Internet Computer, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
       "args": {
         "network": {
           "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"

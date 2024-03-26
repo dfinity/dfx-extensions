@@ -12,10 +12,13 @@ use std::path::PathBuf;
 use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 
 use clap::Parser;
-use ic_sns_cli::init_config_file::{self, InitConfigFileArgs};
-use ic_sns_cli::prepare_canisters::{self, PrepareCanistersArgs};
-use ic_sns_cli::propose::{self, ProposeArgs};
-use ic_sns_cli::{deploy_testflight, DeployTestflightArgs};
+use ic_sns_cli::{
+    deploy_testflight,
+    init_config_file::{self, InitConfigFileArgs},
+    prepare_canisters::{self, PrepareCanistersArgs},
+    propose::{self, ProposeArgs},
+    DeployTestflightArgs,
+};
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -34,17 +37,18 @@ pub struct SnsOpts {
 /// Subcommands of `dfx sns`
 #[derive(Parser)]
 enum SubCommand {
+    /// Manage the config file where the initial sns parameters are set.
+    #[command()]
+    InitConfigFile(InitConfigFileArgs),
+    /// Adds or removes NNS root as a controller to canisters controlled by the current dfx identity to prepare for SNS Decentralization.
+    /// NNS root must be added as a controller to all canisters that will be controlled by the SNS before the proposal is submitted.
+    #[command()]
+    PrepareCanisters(PrepareCanistersArgs),
     /// Deploy an sns directly to a subnet, skipping the sns-wasms canister.
     /// The SNS canisters remain controlled by the developer after deployment.
     /// For use in tests only.
     #[command()]
     DeployTestflight(DeployTestflightArgs),
-    /// Manage the config file where the initial sns parameters are set.
-    #[command()]
-    InitConfigFile(InitConfigFileArgs),
-    /// Make changes to canisters you own to prepare for SNS Decentralization
-    #[command()]
-    PrepareCanisters(PrepareCanistersArgs),
     /// Submit an NNS proposal to create new SNS.
     #[command()]
     Propose(ProposeArgs),

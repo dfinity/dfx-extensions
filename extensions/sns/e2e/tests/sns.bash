@@ -17,65 +17,44 @@ teardown() {
 }
 
 # The location of the SNS init config.
-SNS_CONFIG_FILE_NAME="sns.yml"
-SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
+SNS_CONFIG_FILE_NAME="sns_init.yaml"
 
-@test "sns-cli binary exists and is executable" {
-    run "$(dfx cache show)"/extensions/sns/sns-cli --help
-    assert_output --partial "Initialize, deploy and interact with an SNS"
-}
-
-@test "sns config create and validate fail outside of a project" {
-    run dfx sns config create
-    assert_failure
-    assert_output --partial 'Error: Cannot find dfx configuration file in the current working directory. Did you forget to create one?'
-    run dfx sns config validate
-    assert_failure
-    assert_output --partial 'Error: Cannot find dfx configuration file in the current working directory. Did you forget to create one?'
-}
-
-@test "sns config create creates a default configuration" {
-    dfx_new
-    run dfx sns config create
-    assert_success
-    assert_output --regexp "Created SNS configuration at: .*/sns.yml"
-    : "Check that the file exists..."
-    test -e sns.yml
-}
-
-@test "sns config validate approves a valid configuration" {
+@test "sns init-config-file validate approves a valid configuration" {
     dfx_new
     install_asset sns/valid
-    run dfx sns config validate
+    run dfx sns init-config-file validate
     assert_success
-    assert_output --partial 'SNS config file is valid'
+    assert_output '' # no output if the file is valid
 }
 
-@test "sns config validate identifies a missing key" {
+@test "sns init-config-file validate identifies a missing key" {
     dfx_new
     install_asset sns/valid
-    grep -v token_name "${SNS_CONFIG_FILE_NAME}" | sponge "$SNS_CONFIG_FILE_NAME"
-    run dfx sns config validate
+    # make the config file invalid by removing lines that contain "transaction_fee"
+    # every test is run in a unique temporary directory, so we aren't modifying
+    # anything that will be used by other tests by doing this.
+    grep -v transaction_fee "${SNS_CONFIG_FILE_NAME}" | sponge "$SNS_CONFIG_FILE_NAME"
+    run dfx sns init-config-file validate
     assert_failure
-    assert_output --partial "Error: token-name must be specified"
-
+    assert_output --partial "transaction_fee"
 }
 
-@test "sns deploy exists" {
-    dfx sns deploy --help
+@test "sns propose exists" {
+    run dfx sns propose --help
+    assert_output --partial "Subcommand for submitting a CreateServiceNervousSystem NNS Proposal"
 }
 
-@test "sns deploy fails without config file" {
+@test "sns propose fails without config file" {
     dfx_extension_install_manually nns
     dfx_new
     dfx nns import
     rm -f sns.yml # Is not expected to be present anyway
-    run dfx sns deploy
+    run dfx sns propose --neuron-id 1
     assert_failure
-    assert_output --regexp "Error encountered when generating the SnsInitPayload: Unable to read .*sns.yml.* No such file or directory"
+    assert_output --partial "Unable to read the SNS configuration file"
 }
 
-@test "sns deploy succeeds" {
+@test "sns propose succeeds" {
     dfx_extension_install_manually nns
     dfx_new
     install_shared_asset subnet_type/shared_network_settings/system
@@ -88,9 +67,9 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
     cat dfx.json
     # Deploy the SNS
     install_asset sns/valid
-    dfx sns config validate
-    # The remaining steps don't work any more as a pre-launch whitelist has been added.
-    #dfx sns deploy
+    dfx sns init-config-file validate
+    # The remaining steps don't work any more as the steps required have changed due to one-proposal
+    #dfx sns propose
     # SNS canister IDs should be saved
     #dfx canister id sns_governance
     #dfx canister id sns_index
@@ -171,36 +150,9 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
 }
 
 # This test asserts that the `propose` subcommand exist in the current extension version.
-@test "sns propose exists" {
-    run dfx sns propose --help
-    assert_output --partial "dfx sns propose"
-}
-
-# This test asserts that at least one neuron flag must be specified to succeed
-@test "sns propose must use a neuron flag" {
-    install_asset sns/valid
-
-    run dfx sns propose sns_v2.yml
-    assert_failure
-    assert_output --partial "sns propose --dfx-cache-path <DFX_CACHE_PATH> <--neuron-id <NEURON_ID>|--neuron-memo <NEURON_MEMO>|--test-neuron-proposer> <INIT_CONFIG_FILE>"
-}
-
-# This test asserts that a local dfx server with the NNS installed can submit a
-# CreateServiceNervousSystem NNS Proposal with the test neuron
-@test "sns propose can submit a proposal with the test neuron" {
-    dfx_new
-
-    dfx_extension_install_manually nns
-    install_shared_asset subnet_type/shared_network_settings/system
-    install_asset sns/valid
-
-    dfx_start_for_nns_install
-    dfx nns install
-
-    run dfx sns propose --test-neuron-proposer "${SNS_CONFIG_FILE_V2_NAME}"
-    assert_success
-    assert_output --partial "🚀 Success!"
-    assert_output --partial "Proposal ID"
+@test "sns deploy-testflight exists" {
+    run dfx sns deploy-testflight --help
+    assert_output --partial "Deploy an sns directly to a local replica or the Internet Computer"
 }
 
 # This test asserts that a local dfx server wih the NNS installed can a
@@ -249,7 +201,7 @@ SNS_CONFIG_FILE_V2_NAME="sns_v2.yml"
     assert_success
 
     # Actually submit the proposal
-    run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_V2_NAME}"
+    run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_NAME}"
     assert_success
     assert_output --partial "🚀 Success!"
     assert_output --partial "Proposal ID"

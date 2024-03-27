@@ -5808,7 +5808,7 @@ checksum = "e6ecd384b10a64542d77071bd64bd7b231f4ed5940fba55e98c3de13824cf3d7"
 
 [[package]]
 name = "sns"
-version = "0.3.1"
+version = "0.4.0"
 dependencies = [
  "anyhow",
  "candid",

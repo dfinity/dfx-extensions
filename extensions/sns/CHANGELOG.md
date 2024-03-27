@@ -2,6 +2,8 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.4.0] - 2024-03-27
+
 - The behavior of the `dfx sns` extension has been updated to match the `sns-cli` tool.
   The main effect of this is that many deprecated commands have been removed, and the remaining commands have been renamed.
 - Renamed `dfx sns config` to `dfx sns init-config-file`
@@ -38,7 +40,8 @@
 ## [0.1.0] - 2023-07-12
 
 <!-- next-url -->
-[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...HEAD
+[Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...{{tag_name}}
 [0.3.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.0...sns-v0.3.1
 [0.3.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.2.1...sns-v0.3.0
 [0.2.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.2.0...sns-v0.2.1

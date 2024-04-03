@@ -17,6 +17,7 @@ dfx-extensions-utils.workspace = true
 ic-agent.workspace = true
 ic-utils.workspace = true
 candid.workspace = true
+ic-sns-cli.workspace = true
 
 anyhow.workspace = true
 backoff = "0.4.0"
@@ -38,4 +39,4 @@ tokio.workspace = true
 # list of replacements to be made after issuing `cargo release -p nns SEMVER`
 
 [package.metadata.dist]
-include = ["extension.json", "sns-cli", "ic-admin", "ic-nns-init"]
+include = ["extension.json", "ic-admin", "ic-nns-init"]

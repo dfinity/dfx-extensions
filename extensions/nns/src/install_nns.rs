@@ -16,6 +16,7 @@ use dfx_extensions_utils::{
     SnsCanisterInstallation, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND,
     NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT, SNS_CANISTERS,
 };
+use ic_sns_cli::{add_sns_wasm_for_tests, AddSnsWasmForTestsArgs};
 
 use anyhow::{anyhow, bail, Context};
 use backoff::backoff::Backoff;
@@ -546,20 +547,12 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
     } in SNS_CANISTERS
     {
         let wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
-        let args = vec![
-            "add-sns-wasm-for-tests".into(),
-            "--network".into(),
-            "local".into(),
-            "--override-sns-wasm-canister-id-for-tests".into(),
-            NNS_SNS_WASM.canister_id.into(),
-            "--wasm-file".into(),
-            wasm_path.clone().into_os_string(),
-            upload_name.into(),
-        ];
-        call_extension_bundled_binary("sns-cli", &args, dfx_cache_path)
-            .map_err(|e| anyhow!(
-                        "Failed to upload {upload_name} from {wasm_path:?} to the nns-sns-wasm canister by calling `sns-cli`: {e}"
-                    ))?;
+        add_sns_wasm_for_tests(AddSnsWasmForTestsArgs {
+            wasm_file: wasm_path.clone(),
+            canister_type: upload_name.to_string(),
+            override_sns_wasm_canister_id_for_tests: Some(NNS_SNS_WASM.canister_id.into()),
+            network: "local".to_string(),
+        });
     }
     Ok(())
 }

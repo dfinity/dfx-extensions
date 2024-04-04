@@ -1,6 +1,6 @@
 {
   "name": "sns",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "homepage": "https://github.com/dfinity/dfx-extensions",
   "authors": "DFINITY",
   "summary": "Toolkit for simulating decentralizing a dapp via SNS.",

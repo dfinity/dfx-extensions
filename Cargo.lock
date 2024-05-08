@@ -1380,7 +1380,7 @@ dependencies = [
 [[package]]
 name = "dfx-core"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/sdk?rev=a48addad12542814eeee9dd2cf3ce3447e04d6f7#a48addad12542814eeee9dd2cf3ce3447e04d6f7"
+source = "git+https://github.com/dfinity/sdk?rev=a089dab7dedc5174264c3bd1774fd56a7d6ed1f9#a089dab7dedc5174264c3bd1774fd56a7d6ed1f9"
 dependencies = [
  "aes-gcm",
  "argon2",

@@ -245,7 +245,7 @@ version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0fc5b45d93ef0529756f812ca52e44c221b35341892d3dcc34132ac02f3dd2af"
 dependencies = [
- "async-lock",
+ "async-lock 2.8.0",
  "autocfg",
  "cfg-if",
  "concurrent-queue",
@@ -265,7 +265,18 @@ version = "2.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "287272293e9d8c41773cec55e365490fe034813a2f172f502d6ddcf75b2f582b"
 dependencies = [
- "event-listener",
+ "event-listener 2.5.3",
+]
+
+[[package]]
+name = "async-lock"
+version = "3.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d034b430882f8381900d3fe6f0aaa3ad94f2cb4ac519b429692a1bc2dda4ae7b"
+dependencies = [
+ "event-listener 4.0.3",
+ "event-listener-strategy",
+ "pin-project-lite",
 ]
 
 [[package]]
@@ -1369,7 +1380,7 @@ dependencies = [
 [[package]]
 name = "dfx-core"
 version = "0.0.1"
-source = "git+https://github.com/dfinity/sdk?rev=9fd111de914cf43af05ac037c55dccfc9cf430ae#9fd111de914cf43af05ac037c55dccfc9cf430ae"
+source = "git+https://github.com/dfinity/sdk?rev=a48addad12542814eeee9dd2cf3ce3447e04d6f7#a48addad12542814eeee9dd2cf3ce3447e04d6f7"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1382,11 +1393,12 @@ dependencies = [
  "directories-next",
  "dunce",
  "flate2",
+ "handlebars",
  "hex",
  "humantime-serde",
  "ic-agent",
  "ic-identity-hsm",
- "ic-utils 0.33.0",
+ "ic-utils 0.34.0",
  "k256 0.11.6",
  "keyring",
  "lazy_static",
@@ -1720,6 +1732,27 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0206175f82b8d6bf6652ff7d71a1e27fd2e4efde587fd368662814d6ec1d9ce0"
 
 [[package]]
+name = "event-listener"
+version = "4.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67b215c49b2b248c855fb73579eb1f4f26c38ffdc12973e20e07b91d78d5646e"
+dependencies = [
+ "concurrent-queue",
+ "parking",
+ "pin-project-lite",
+]
+
+[[package]]
+name = "event-listener-strategy"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "958e4d70b6d5e81971bebec42271ec641e7ff4e170a6fa605f2b8a8b65cb97d3"
+dependencies = [
+ "event-listener 4.0.3",
+ "pin-project-lite",
+]
+
+[[package]]
 name = "fastrand"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2045,7 +2078,7 @@ dependencies = [
  "futures-core",
  "futures-sink",
  "futures-util",
- "http",
+ "http 0.2.12",
  "indexmap 2.2.6",
  "slab",
  "tokio",
@@ -2067,6 +2100,20 @@ checksum = "b5eceaaeec696539ddaf7b333340f1af35a5aa87ae3e4f3ead0532f72affab2e"
 dependencies = [
  "cfg-if",
  "crunchy",
+]
+
+[[package]]
+name = "handlebars"
+version = "4.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "faa67bab9ff362228eb3d00bd024a4965d8231bbb7921167f0cfa66c6626b225"
+dependencies = [
+ "log",
+ "pest",
+ "pest_derive",
+ "serde",
+ "serde_json",
+ "thiserror",
 ]
 
 [[package]]
@@ -2180,14 +2227,35 @@ dependencies = [
 ]
 
 [[package]]
+name = "http"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "21b9ddb458710bc376481b842f5da65cdf31522de232c1ca8146abce2a358258"
+dependencies = [
+ "bytes",
+ "fnv",
+ "itoa",
+]
+
+[[package]]
 name = "http-body"
 version = "0.4.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ceab25649e9960c0311ea418d17bee82c0dcec1bd053b5f9a66e265a693bed2"
 dependencies = [
  "bytes",
- "http",
+ "http 0.2.12",
  "pin-project-lite",
+]
+
+[[package]]
+name = "http-body"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1cac85db508abc24a2e48553ba12a996e87244a0395ce011e62b37158745d643"
+dependencies = [
+ "bytes",
+ "http 1.1.0",
 ]
 
 [[package]]
@@ -2229,8 +2297,8 @@ dependencies = [
  "futures-core",
  "futures-util",
  "h2",
- "http",
- "http-body",
+ "http 0.2.12",
+ "http-body 0.4.6",
  "httparse",
  "httpdate",
  "itoa",
@@ -2248,7 +2316,7 @@ version = "0.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1788965e61b367cd03a62950836d5cd41560c3577d90e40e0819373194d1661c"
 dependencies = [
- "http",
+ "http 0.2.12",
  "hyper",
  "log",
  "rustls 0.20.9",
@@ -2265,7 +2333,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ec3efd23720e2049821a693cbc7e65ea87c72f1c58ff2f9522ff332b1491e590"
 dependencies = [
  "futures-util",
- "http",
+ "http 0.2.12",
  "hyper",
  "rustls 0.21.10",
  "tokio",
@@ -2310,18 +2378,18 @@ dependencies = [
 
 [[package]]
 name = "ic-agent"
-version = "0.33.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f32c4711ca94eee9b7966116698b69ca99e7e24cba68c1f3dd86f2ed70218a7e"
+version = "0.34.0"
+source = "git+https://github.com/dfinity/agent-rs.git?rev=dac18df939dd7e63295083a2a9b2d024cb9b0c71#dac18df939dd7e63295083a2a9b2d024cb9b0c71"
 dependencies = [
+ "async-lock 3.3.0",
  "backoff",
  "cached 0.46.1",
  "candid",
  "ed25519-consensus",
  "futures-util",
  "hex",
- "http",
- "http-body",
+ "http 1.1.0",
+ "http-body 1.0.0",
  "ic-certification",
  "ic-transport-types",
  "ic-verify-bls-signature",
@@ -2333,7 +2401,7 @@ dependencies = [
  "rand",
  "rangemap",
  "reqwest",
- "ring 0.16.20",
+ "ring 0.17.8",
  "rustls-webpki",
  "sec1 0.7.3",
  "serde",
@@ -2893,9 +2961,8 @@ dependencies = [
 
 [[package]]
 name = "ic-identity-hsm"
-version = "0.33.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9d363914507e81896a6edd1768aa2524bd923b94ed4c27a9793a90b0880f741"
+version = "0.34.0"
+source = "git+https://github.com/dfinity/agent-rs.git?rev=dac18df939dd7e63295083a2a9b2d024cb9b0c71#dac18df939dd7e63295083a2a9b2d024cb9b0c71"
 dependencies = [
  "hex",
  "ic-agent",
@@ -3606,9 +3673,8 @@ dependencies = [
 
 [[package]]
 name = "ic-transport-types"
-version = "0.33.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d595b9f72e5952bcb22e5cda37ae1c8d6579a24aaa224b63b8d245f386bdcbb2"
+version = "0.34.0"
+source = "git+https://github.com/dfinity/agent-rs.git?rev=dac18df939dd7e63295083a2a9b2d024cb9b0c71#dac18df939dd7e63295083a2a9b2d024cb9b0c71"
 dependencies = [
  "candid",
  "hex",
@@ -3670,9 +3736,8 @@ dependencies = [
 
 [[package]]
 name = "ic-utils"
-version = "0.33.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a8e26bd17f2f188a608deae41b8c269a85e1e98118c9a7aa0803ad252552c0b2"
+version = "0.34.0"
+source = "git+https://github.com/dfinity/agent-rs.git?rev=dac18df939dd7e63295083a2a9b2d024cb9b0c71#dac18df939dd7e63295083a2a9b2d024cb9b0c71"
 dependencies = [
  "async-trait",
  "candid",
@@ -3687,6 +3752,7 @@ dependencies = [
  "strum_macros 0.24.3",
  "thiserror",
  "time",
+ "tokio",
 ]
 
 [[package]]
@@ -4263,7 +4329,7 @@ dependencies = [
  "hex",
  "ic-agent",
  "ic-sns-cli",
- "ic-utils 0.33.0",
+ "ic-utils 0.34.0",
  "reqwest",
  "rust_decimal",
  "serde",
@@ -5176,8 +5242,8 @@ dependencies = [
  "futures-core",
  "futures-util",
  "h2",
- "http",
- "http-body",
+ "http 0.2.12",
+ "http-body 0.4.6",
  "hyper",
  "hyper-rustls 0.24.2",
  "hyper-tls",

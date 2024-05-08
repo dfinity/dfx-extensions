@@ -48,26 +48,6 @@ pub fn replica_rev(dfx_cache_path: &Path) -> Result<String, DfxError> {
     Ok(rev)
 }
 
-pub fn webserver_port(dfx_cache_path: &Path) -> Result<u16, DfxError> {
-    let args = ["info", "webserver-port"];
-    let output = Command::new(dfx_cache_path.join("dfx"))
-        .args(args)
-        .output()
-        .map_err(DfxError::DfxExecutableError)?
-        .stdout
-        .iter()
-        .map(|c| *c as char)
-        .collect::<String>();
-    let port = output.trim().parse::<u16>();
-    if port.is_err() {
-        return Err(DfxError::MalformedCommandOutput {
-            command: args.join(" ").to_string(),
-            output: output.to_string(),
-        });
-    }
-    Ok(port.unwrap())
-}
-
 pub fn dfx_version(dfx_cache_path: &Path) -> Result<String, DfxError> {
     let args = ["--version"];
     let version_cmd_output = Command::new(dfx_cache_path.join("dfx"))

@@ -10,7 +10,8 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = { git = "https://github.com/dfinity/sdk", rev = "a089dab7dedc5174264c3bd1774fd56a7d6ed1f9" }
+dfx-core = { git = "https://github.com/dfinity/sdk", rev = "c8a6d7cdf58b2282bdd5b51f320a7a8e8fc7c1cc" }
+#dfx-core = { path = "../sdk/src/dfx-core" }
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "^1"

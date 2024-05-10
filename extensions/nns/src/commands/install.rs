@@ -6,7 +6,7 @@ use dfx_core::{
     config::model::dfinity::{Config, NetworksConfig},
     network::{
         provider::{create_network_descriptor, LocalBindDetermination},
-        root_key::fetch_root_key_when_local,
+        root_key::fetch_root_key_when_non_mainnet,
     },
 };
 
@@ -51,7 +51,7 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
     let networks_config = NetworksConfig::new()?;
     let logger = new_logger();
 
-    let config = Config::from_current_dir()?;
+    let config = Config::from_current_dir(None)?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }
@@ -67,7 +67,7 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
     let nns_url = get_and_check_replica_url(&network_descriptor, &logger)?;
     get_with_retries(&nns_url).await?;
 
-    fetch_root_key_when_local(&agent, &network_descriptor).await?;
+    fetch_root_key_when_non_mainnet(&agent, &network_descriptor).await?;
 
     install_nns(
         &agent,

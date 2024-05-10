@@ -24,7 +24,7 @@ pub struct SnsImportOpts {
 
 /// Executes the command line `dfx sns import`.
 pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let config = Config::from_current_dir()?;
+    let config = Config::from_current_dir(None)?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }

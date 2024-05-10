@@ -26,7 +26,7 @@ pub struct ImportOpts {
 
 /// Executes `dfx nns import`
 pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let config = Config::from_current_dir()?;
+    let config = Config::from_current_dir(None)?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }

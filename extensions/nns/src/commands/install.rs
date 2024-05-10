@@ -1,11 +1,9 @@
 //! Code for the command line: `dfx nns install`
-use std::path::Path;
-
 use crate::install_nns::{get_and_check_replica_url, get_with_retries, install_nns};
-use dfx_core::DfxInterface;
-
 use clap::Parser;
+use dfx_core::DfxInterface;
 use dfx_extensions_utils::new_logger;
+use std::path::Path;
 
 /// Installs the NNS canisters, Internet Identity and the NNS frontend dapp
 ///

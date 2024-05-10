@@ -7,7 +7,7 @@ mod project;
 
 pub use dependencies::{
     call::call_extension_bundled_binary,
-    dfx::{call_dfx_bundled_binary, dfx_version, replica_rev, webserver_port},
+    dfx::{call_dfx_bundled_binary, dfx_version, replica_rev},
     download_ic_binaries::download_ic_binary,
     download_wasms::{
         download_ic_repo_wasm,

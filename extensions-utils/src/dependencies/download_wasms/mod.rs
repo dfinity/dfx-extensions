@@ -62,7 +62,7 @@ pub async fn download_gz_and_maybe_ungzip(
                 .with_context(|| format!("Failed to unzip WASM to '{}'", filename.display()))?;
         } else {
             std::io::copy(&mut response.as_ref(), &mut file)
-                .with_context(|| format!("Failed to unzip WASM to '{}'", filename.display()))?;
+                .with_context(|| format!("Failed copy WASM to '{}'", filename.display()))?;
         }
         filename
     };

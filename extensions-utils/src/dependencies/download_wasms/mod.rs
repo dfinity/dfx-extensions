@@ -10,9 +10,23 @@ use url::Url;
 
 use std::path::{Component, Path};
 
-/// Downloads and unzips a file
-#[context("Failed to download and unzip '{:?}' from '{:?}'.", target, source.as_str())]
+/// Downloads a file (this function should be used for canister modules)
+#[context("Failed to download '{:?}' from '{:?}'.", target, source.as_str())]
 pub async fn download_gz(source: &Url, target: &Path) -> anyhow::Result<()> {
+    download_gz_and_maybe_ungzip(source, target, false).await
+}
+
+/// Downloads and unzips a file (this function should be used for x86 binaries)
+#[context("Failed to download and unzip '{:?}' from '{:?}'.", target, source.as_str())]
+pub async fn download_gz_and_ungzip(source: &Url, target: &Path) -> anyhow::Result<()> {
+    download_gz_and_maybe_ungzip(source, target, true).await
+}
+
+pub async fn download_gz_and_maybe_ungzip(
+    source: &Url,
+    target: &Path,
+    unzip: bool,
+) -> anyhow::Result<()> {
     if target.exists() {
         println!("Already downloaded: {}", target.to_string_lossy());
         return Ok(());
@@ -28,7 +42,6 @@ pub async fn download_gz(source: &Url, target: &Path) -> anyhow::Result<()> {
         .bytes()
         .await
         .with_context(|| "Download was interrupted")?;
-    let mut decoder = GzDecoder::new(&response[..]);
 
     let target_parent = target
         .parent()
@@ -43,8 +56,14 @@ pub async fn download_gz(source: &Url, target: &Path) -> anyhow::Result<()> {
                 filename.display()
             )
         })?;
-        std::io::copy(&mut decoder, &mut file)
-            .with_context(|| format!("Failed to unzip WASM to '{}'", filename.display()))?;
+        if unzip {
+            let mut decoder = GzDecoder::new(&response[..]);
+            std::io::copy(&mut decoder, &mut file)
+                .with_context(|| format!("Failed to unzip WASM to '{}'", filename.display()))?;
+        } else {
+            std::io::copy(&mut response.as_ref(), &mut file)
+                .with_context(|| format!("Failed copy WASM to '{}'", filename.display()))?;
+        }
         filename
     };
     fs::rename(&downloaded_filename, target).with_context(|| {

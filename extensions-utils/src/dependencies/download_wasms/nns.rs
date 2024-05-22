@@ -120,6 +120,13 @@ pub const NNS_SNS_WASM: IcNnsInitCanister = IcNnsInitCanister {
     test_wasm_name: None,
     canister_id: "qaa6y-5yaaa-aaaaa-aaafa-cai",
 };
+/// Canister that converts between bitcoin and ckBTC.
+pub const NNS_IC_CKBTC_MINTER: IcNnsInitCanister = IcNnsInitCanister {
+    canister_name: "nns-ic-ckbtc-minter",
+    wasm_name: "ic-ckbtc-minter.wasm",
+    test_wasm_name: None,
+    canister_id: "qjdve-lqaaa-aaaaa-aaaeq-cai",
+};
 /// ICRC1 ledger (used for ckETH).
 pub const ICRC1_LEDGER: IcNnsInitCanister = IcNnsInitCanister {
     canister_name: "nns-icrc1-ledger",
@@ -167,20 +174,18 @@ pub const CYCLES_LEDGER: StandardCanister = StandardCanister {
     wasm_url: "https://github.com/dfinity/cycles-ledger/releases/download/cycles-ledger-v0.2.8/cycles-ledger.wasm.gz",
 };
 /// Backend canisters deployed by `ic-nns-init`.
-pub const NNS_CORE: &[&IcNnsInitCanister; 10] = &[
-    &NNS_REGISTRY,       // 0
-    &NNS_GOVERNANCE,     // 1
-    &NNS_LEDGER,         // 2
-    &NNS_ROOT,           // 3
-    &NNS_CYCLES_MINTING, // 4
-    &NNS_LIFELINE,       // 5
-    &NNS_GENESIS_TOKENS, // 6
-    &NNS_IDENTITY,       // 7
-    &NNS_UI,             // 8
-    // Mainnet NNS ICP Archive Canister = 9;
-    &NNS_SNS_WASM, // 10
-                   // Mainnet NNS ICP Index Canister/Local Internet Identity = 11;
-                   // Mainnet NNS ICP Archive Canister/Local NNS Frontend Dapp = 12;
+pub const NNS_CORE: &[&IcNnsInitCanister; 11] = &[
+    &NNS_REGISTRY,        // 0
+    &NNS_GOVERNANCE,      // 1
+    &NNS_LEDGER,          // 2
+    &NNS_ROOT,            // 3
+    &NNS_CYCLES_MINTING,  // 4
+    &NNS_LIFELINE,        // 5
+    &NNS_GENESIS_TOKENS,  // 6
+    &NNS_IDENTITY,        // 7
+    &NNS_UI,              // 8
+    &NNS_IC_CKBTC_MINTER, // 9 - only in local deployment
+    &NNS_SNS_WASM,        // 10
 ];
 pub const NNS_CORE_MANUAL: &[&IcNnsInitCanister; 1] = &[
     &ICRC1_LEDGER, // 13 - only in local deployment

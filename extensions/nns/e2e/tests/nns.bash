@@ -128,7 +128,7 @@ assert_nns_canister_id_matches() {
     wasm_matches nns-genesis-token genesis-token-canister.wasm
     wasm_matches nns-sns-wasm sns-wasm-canister.wasm
     wasm_matches internet_identity internet_identity_dev.wasm
-    wasm_matches nns-dapp nns-dapp_local.wasm
+    wasm_matches nns-dapp nns-dapp_test.wasm
 
     echo "   Accounts should have funds..."
     account_has_funds() {
@@ -140,6 +140,10 @@ assert_nns_canister_id_matches() {
     ED25519_ACCOUNT_ID="5b315d2f6702cb3a27d826161797d7b2c2e131cd312aece51d4d5574d1247087"
     account_has_funds "$SECP256K1_ACCOUNT_ID"
     account_has_funds "$ED25519_ACCOUNT_ID"
+
+    echo "    The Internet Identity and NNS dapp should load"
+    curl "http://localhost:$(dfx info webserver-port)/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai" | grep "<title>Internet Identity</title>"
+    curl "http://localhost:$(dfx info webserver-port)/?canisterId=qsgjb-riaaa-aaaaa-aaaga-cai" | grep "<title>NNS Dapp</title>"
 
     echo "    The secp256k1 account can be controlled from the command line"
     install_asset nns

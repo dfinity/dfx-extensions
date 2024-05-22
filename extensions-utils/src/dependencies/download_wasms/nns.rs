@@ -156,7 +156,7 @@ pub const INTERNET_IDENTITY: StandardCanister = StandardCanister {
 pub const NNS_DAPP: StandardCanister = StandardCanister {
     canister_name: "nns-dapp",
     canister_id: "qsgjb-riaaa-aaaaa-aaaga-cai",
-    wasm_name: "nns-dapp_test.wasm.gz",
+    wasm_name: "nns-dapp_test.wasm",
     wasm_url: "https://github.com/dfinity/nns-dapp/releases/download/proposal-129748/nns-dapp_test.wasm.gz",
 };
 /// SNS aggregator canister.

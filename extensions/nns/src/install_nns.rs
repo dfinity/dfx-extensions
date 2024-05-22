@@ -169,7 +169,7 @@ pub async fn install_nns(
                 ("IDENTITY_SERVICE_URL".to_string(), format!("http://{}.localhost:8080", INTERNET_IDENTITY.canister_id)),
                 ("INDEX_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
                 ("LEDGER_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
-                ("OWN_CANISTER_ID".to_string(), NNS_DAPP.canister_id),
+                ("OWN_CANISTER_ID".to_string(), NNS_DAPP.canister_id.to_string()),
                 ("ROBOTS".to_string(), "<meta name=\"robots\" content=\"noindex, nofollow\" />".to_string()),
                 ("SNS_AGGREGATOR_URL".to_string(), format!("http://{}.localhost:8080", SNS_AGGREGATOR.canister_id)),
                 ("STATIC_HOST".to_string(), nns_url.to_string()),

@@ -1431,6 +1431,7 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "backoff",
+ "candid",
  "dfx-core",
  "flate2",
  "fn-error-context",
@@ -4412,6 +4413,7 @@ dependencies = [
  "futures-util",
  "hex",
  "ic-agent",
+ "ic-icrc1-ledger",
  "ic-sns-cli",
  "ic-utils 0.35.0",
  "reqwest 0.11.27",

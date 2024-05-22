@@ -10,11 +10,13 @@ use dfx_core::canister::install_canister_wasm;
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
-use dfx_extensions_utils::dependencies::download_wasms::nns::{CYCLES_LEDGER, NNS_CYCLES_MINTING};
+use dfx_extensions_utils::dependencies::download_wasms::nns::{
+    CYCLES_LEDGER, ICRC1_LEDGER, NNS_CYCLES_MINTING, NNS_DAPP, SNS_AGGREGATOR,
+};
 use dfx_extensions_utils::{
     call_extension_bundled_binary, download_nns_wasms, nns_wasm_dir, IcNnsInitCanister,
-    SnsCanisterInstallation, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND,
-    NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT, SNS_CANISTERS,
+    SnsCanisterInstallation, StandardCanister, ED25519_TEST_ACCOUNT, NNS_CORE, NNS_CORE_MANUAL,
+    NNS_FRONTEND, NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT, SNS_CANISTERS,
 };
 use ic_sns_cli::{add_sns_wasm_for_tests, AddSnsWasmForTestsArgs};
 
@@ -26,9 +28,11 @@ use fn_error_context::context;
 use futures_util::future::try_join_all;
 use ic_agent::export::Principal;
 use ic_agent::Agent;
+use ic_icrc1_ledger::{InitArgsBuilder, LedgerArgument};
 use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
 use reqwest::Url;
+use serde::Serialize;
 use sha2::{Digest, Sha256};
 use slog::Logger;
 use std::ffi::OsString;
@@ -36,6 +40,25 @@ use std::fs;
 use std::io::Write;
 use std::path::Component;
 use std::path::{Path, PathBuf};
+
+/// Init and post_upgrade arguments for NNS frontend dapp.
+#[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
+pub enum SchemaLabel {
+    Map,
+    AccountsInStableMemory,
+}
+#[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
+pub struct CanisterArguments {
+    pub args: Vec<(String, String)>,
+    pub schema: Option<SchemaLabel>,
+}
+
+/// Init and post_upgrade arguments for SNS aggregator.
+#[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
+pub struct Config {
+    pub update_interval_ms: u64,
+    pub fast_interval_ms: u64,
+}
 
 /// Installs NNS canisters on a local dfx server.
 /// # Notes:
@@ -87,6 +110,39 @@ pub async fn install_nns(
     eprintln!("Uploading NNS configuration data...");
     upload_nns_sns_wasms_canister_wasms(dfx_cache_path)?;
 
+    // Install manual backend canisters:
+    for IcNnsInitCanister {
+        wasm_name,
+        canister_name,
+        canister_id,
+        ..
+    } in NNS_CORE_MANUAL
+    {
+        let local_wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
+        let specified_id = Principal::from_text(canister_id)?;
+        let arg = if *canister_name == "nns-icrc1-ledger" {
+            let cketh_init_args = InitArgsBuilder::for_tests()
+                .with_token_symbol("ckETH".to_string())
+                .with_token_name("ckETH".to_string())
+                .build();
+            Some(Encode!(&(LedgerArgument::Init(cketh_init_args))).unwrap())
+        } else {
+            None
+        };
+        let installed_canister_id = install_canister(
+            network,
+            agent,
+            canister_name,
+            &local_wasm_path,
+            specified_id,
+            arg.as_deref(),
+        )
+        .await?
+        .to_text();
+        if canister_id != &installed_canister_id {
+            bail!("Canister '{canister_name}' was installed at an incorrect canister ID.  Expected '{canister_id}' but got '{installed_canister_id}'.");
+        }
+    }
     // Install the GUI canisters:
     for StandardCanister {
         wasm_url,
@@ -100,12 +156,50 @@ pub async fn install_nns(
             .with_context(|| format!("Could not parse url for {canister_name} wasm: {wasm_url}"))?;
         download(&parsed_wasm_url, &local_wasm_path).await?;
         let specified_id = Principal::from_text(canister_id)?;
+        let arg = if *canister_id == NNS_DAPP.canister_id {
+            let nns_dapp_metadata = vec![
+                ("API_HOST".to_string(), nns_url.to_string()),
+                ("CKETH_INDEX_CANISTER_ID".to_string(), ICRC1_LEDGER.canister_id.to_string()),
+                ("CKETH_LEDGER_CANISTER_ID".to_string(), ICRC1_LEDGER.canister_id.to_string()),
+                ("CYCLES_MINTING_CANISTER_ID".to_string(), "rkp4c-7iaaa-aaaaa-aaaca-cai".to_string()),
+                ("DFX_NETWORK".to_string(), "local".to_string()),
+                ("FEATURE_FLAGS".to_string(), "{\"ENABLE_CKBTC\":false,\"ENABLE_CKTESTBTC\":false,\"ENABLE_HIDE_ZERO_BALANCE\":true,\"ENABLE_VOTING_INDICATION\":true}".to_string()),
+                ("FETCH_ROOT_KEY".to_string(), "true".to_string()),
+                ("GOVERNANCE_CANISTER_ID".to_string(), "rrkah-fqaaa-aaaaa-aaaaq-cai".to_string()),
+                ("HOST".to_string(), nns_url.to_string()),
+                ("IDENTITY_SERVICE_URL".to_string(), format!("{}/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai", nns_url)),
+                ("INDEX_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
+                ("LEDGER_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
+                ("OWN_CANISTER_ID".to_string(), "qsgjb-riaaa-aaaaa-aaaga-cai".to_string()),
+                ("ROBOTS".to_string(), "<meta name=\"robots\" content=\"noindex, nofollow\" />".to_string()),
+                ("SNS_AGGREGATOR_URL".to_string(), format!("{}/?canisterId={}", nns_url, SNS_AGGREGATOR.canister_id)),
+                ("STATIC_HOST".to_string(), nns_url.to_string()),
+                ("TVL_CANISTER_ID".to_string(), "".to_string()),
+                ("WASM_CANISTER_ID".to_string(), "qaa6y-5yaaa-aaaaa-aaafa-cai".to_string())
+            ];
+            let nns_dapp_init_args = Some(CanisterArguments {
+                args: nns_dapp_metadata,
+                schema: Some(SchemaLabel::AccountsInStableMemory),
+            });
+            Some(Encode!(&nns_dapp_init_args).unwrap())
+        } else if *canister_id == SNS_AGGREGATOR.canister_id {
+            Some(
+                Encode!(&Some(Config {
+                    update_interval_ms: 1_000,
+                    fast_interval_ms: 100,
+                }))
+                .unwrap(),
+            )
+        } else {
+            None
+        };
         let installed_canister_id = install_canister(
             network,
             agent,
             canister_name,
             &local_wasm_path,
             specified_id,
+            arg.as_deref(),
         )
         .await?
         .to_text();
@@ -574,6 +668,7 @@ pub async fn install_canister(
     canister_name: &str,
     wasm_path: &Path,
     specified_id: Principal,
+    init_arg: Option<&[u8]>,
 ) -> anyhow::Result<Principal> {
     let mgr = ManagementCanister::create(agent);
     let builder = mgr
@@ -584,7 +679,8 @@ pub async fn install_canister(
     let canister_id: Principal = res.context("Canister creation call failed.")?.0;
     let canister_id_str = canister_id.to_text();
 
-    let install_args = Encode!(&())?;
+    let unit_args = Encode!(&())?;
+    let install_args = init_arg.unwrap_or(&unit_args);
     let install_mode = InstallMode::Install;
     let call_sender = CallSender::SelectedId;
 
@@ -592,7 +688,7 @@ pub async fn install_canister(
         agent,
         canister_id,
         Some(canister_name),
-        &install_args,
+        install_args,
         install_mode,
         &call_sender,
         fs::read(wasm_path).with_context(|| format!("Unable to read {:?}", wasm_path))?,

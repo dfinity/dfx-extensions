@@ -143,7 +143,7 @@ assert_nns_canister_id_matches() {
 
     echo "    The Internet Identity and NNS dapp should load"
     curl "http://localhost:$(dfx info webserver-port)/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai" | grep "<title>Internet Identity</title>"
-    curl "http://localhost:$(dfx info webserver-port)/?canisterId=qsgjb-riaaa-aaaaa-aaaga-cai" | grep "<title>NNS Dapp</title>"
+    curl "http://localhost:$(dfx info webserver-port)/?canisterId=qsgjb-riaaa-aaaaa-aaaga-cai" | gzip -d | grep "<title>NNS Dapp</title>"
 
     echo "    The secp256k1 account can be controlled from the command line"
     install_asset nns

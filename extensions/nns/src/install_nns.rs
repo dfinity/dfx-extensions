@@ -11,7 +11,7 @@ use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
 use dfx_extensions_utils::dependencies::download_wasms::nns::{
-    CYCLES_LEDGER, ICRC1_LEDGER, NNS_CYCLES_MINTING, NNS_DAPP, SNS_AGGREGATOR,
+    CYCLES_LEDGER, ICRC1_LEDGER, INTERNET_IDENTITY, NNS_CYCLES_MINTING, NNS_DAPP, SNS_AGGREGATOR,
 };
 use dfx_extensions_utils::{
     call_extension_bundled_binary, download_nns_wasms, nns_wasm_dir, IcNnsInitCanister,
@@ -44,7 +44,6 @@ use std::path::{Path, PathBuf};
 /// Init and post_upgrade arguments for NNS frontend dapp.
 #[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
 pub enum SchemaLabel {
-    Map,
     AccountsInStableMemory,
 }
 #[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
@@ -120,7 +119,7 @@ pub async fn install_nns(
     {
         let local_wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
         let specified_id = Principal::from_text(canister_id)?;
-        let arg = if *canister_name == "nns-icrc1-ledger" {
+        let arg = if *canister_id == ICRC1_LEDGER.canister_id {
             let cketh_init_args = InitArgsBuilder::for_tests()
                 .with_token_symbol("ckETH".to_string())
                 .with_token_name("ckETH".to_string())
@@ -167,12 +166,12 @@ pub async fn install_nns(
                 ("FETCH_ROOT_KEY".to_string(), "true".to_string()),
                 ("GOVERNANCE_CANISTER_ID".to_string(), "rrkah-fqaaa-aaaaa-aaaaq-cai".to_string()),
                 ("HOST".to_string(), nns_url.to_string()),
-                ("IDENTITY_SERVICE_URL".to_string(), format!("{}/?canisterId=qhbym-qaaaa-aaaaa-aaafq-cai", nns_url)),
+                ("IDENTITY_SERVICE_URL".to_string(), format!("http://{}.localhost:8080", INTERNET_IDENTITY.canister_id)),
                 ("INDEX_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
                 ("LEDGER_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
-                ("OWN_CANISTER_ID".to_string(), "qsgjb-riaaa-aaaaa-aaaga-cai".to_string()),
+                ("OWN_CANISTER_ID".to_string(), NNS_DAPP.canister_id),
                 ("ROBOTS".to_string(), "<meta name=\"robots\" content=\"noindex, nofollow\" />".to_string()),
-                ("SNS_AGGREGATOR_URL".to_string(), format!("{}/?canisterId={}", nns_url, SNS_AGGREGATOR.canister_id)),
+                ("SNS_AGGREGATOR_URL".to_string(), format!("http://{}.localhost:8080", SNS_AGGREGATOR.canister_id)),
                 ("STATIC_HOST".to_string(), nns_url.to_string()),
                 ("TVL_CANISTER_ID".to_string(), "".to_string()),
                 ("WASM_CANISTER_ID".to_string(), "qaa6y-5yaaa-aaaaa-aaafa-cai".to_string())

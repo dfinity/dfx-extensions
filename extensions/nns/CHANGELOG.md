@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Bump II and NNS dapp to their latest mainnet verions (II: release-2024-05-13; NNS-Dapp: proposal-129748) and install their dependencies (ICRC1 ledger and index for ckETH, ICP index, SNS aggregator).
 
 ## [0.4.0] - 2024-04-04
 - Same functionality as version `0.3.1`.

@@ -11,7 +11,8 @@ use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
 use dfx_extensions_utils::dependencies::download_wasms::nns::{
-    CYCLES_LEDGER, ICRC1_LEDGER, INTERNET_IDENTITY, NNS_CYCLES_MINTING, NNS_DAPP, SNS_AGGREGATOR,
+    CYCLES_LEDGER, ICP_INDEX, ICRC1_INDEX, ICRC1_LEDGER, INTERNET_IDENTITY, NNS_CYCLES_MINTING,
+    NNS_DAPP, NNS_LEDGER, SNS_AGGREGATOR,
 };
 use dfx_extensions_utils::{
     call_extension_bundled_binary, download_nns_wasms, nns_wasm_dir, IcNnsInitCanister,
@@ -28,6 +29,8 @@ use fn_error_context::context;
 use futures_util::future::try_join_all;
 use ic_agent::export::Principal;
 use ic_agent::Agent;
+use ic_icp_index::InitArg;
+use ic_icrc1_index_ng::{IndexArg, InitArg as IndexInitArg};
 use ic_icrc1_ledger::{InitArgsBuilder, LedgerArgument};
 use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
@@ -40,6 +43,7 @@ use std::fs;
 use std::io::Write;
 use std::path::Component;
 use std::path::{Path, PathBuf};
+use std::str::FromStr;
 
 /// Init and post_upgrade arguments for NNS frontend dapp.
 #[derive(Debug, Eq, PartialEq, CandidType, Serialize)]
@@ -120,11 +124,21 @@ pub async fn install_nns(
         let local_wasm_path = nns_wasm_dir(dfx_cache_path).join(wasm_name);
         let specified_id = Principal::from_text(canister_id)?;
         let arg = if *canister_id == ICRC1_LEDGER.canister_id {
-            let cketh_init_args = InitArgsBuilder::for_tests()
+            let cketh_ledger_args = InitArgsBuilder::for_tests()
                 .with_token_symbol("ckETH".to_string())
                 .with_token_name("ckETH".to_string())
                 .build();
-            Some(Encode!(&(LedgerArgument::Init(cketh_init_args))).unwrap())
+            Some(Encode!(&(LedgerArgument::Init(cketh_ledger_args))).unwrap())
+        } else if *canister_id == ICRC1_INDEX.canister_id {
+            let cketh_index_args = IndexArg::Init(IndexInitArg {
+                ledger_id: Principal::from_str(ICRC1_LEDGER.canister_id).unwrap(),
+            });
+            Some(Encode!(&Some(cketh_index_args)).unwrap())
+        } else if *canister_id == ICP_INDEX.canister_id {
+            let icp_index_args = InitArg {
+                ledger_id: Principal::from_str(NNS_LEDGER.canister_id).unwrap(),
+            };
+            Some(Encode!(&icp_index_args).unwrap())
         } else {
             None
         };
@@ -158,7 +172,7 @@ pub async fn install_nns(
         let arg = if *canister_id == NNS_DAPP.canister_id {
             let nns_dapp_metadata = vec![
                 ("API_HOST".to_string(), nns_url.to_string()),
-                ("CKETH_INDEX_CANISTER_ID".to_string(), ICRC1_LEDGER.canister_id.to_string()),
+                ("CKETH_INDEX_CANISTER_ID".to_string(), ICRC1_INDEX.canister_id.to_string()),
                 ("CKETH_LEDGER_CANISTER_ID".to_string(), ICRC1_LEDGER.canister_id.to_string()),
                 ("CYCLES_MINTING_CANISTER_ID".to_string(), "rkp4c-7iaaa-aaaaa-aaaca-cai".to_string()),
                 ("DFX_NETWORK".to_string(), "local".to_string()),
@@ -167,7 +181,7 @@ pub async fn install_nns(
                 ("GOVERNANCE_CANISTER_ID".to_string(), "rrkah-fqaaa-aaaaa-aaaaq-cai".to_string()),
                 ("HOST".to_string(), nns_url.to_string()),
                 ("IDENTITY_SERVICE_URL".to_string(), format!("http://{}.localhost:8080", INTERNET_IDENTITY.canister_id)),
-                ("INDEX_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
+                ("INDEX_CANISTER_ID".to_string(), ICP_INDEX.canister_id.to_string()),
                 ("LEDGER_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
                 ("OWN_CANISTER_ID".to_string(), NNS_DAPP.canister_id.to_string()),
                 ("ROBOTS".to_string(), "<meta name=\"robots\" content=\"noindex, nofollow\" />".to_string()),

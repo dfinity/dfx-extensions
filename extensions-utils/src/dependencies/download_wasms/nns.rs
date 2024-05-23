@@ -134,6 +134,20 @@ pub const ICRC1_LEDGER: IcNnsInitCanister = IcNnsInitCanister {
     test_wasm_name: None,
     canister_id: "qvhpv-4qaaa-aaaaa-aaagq-cai",
 };
+/// ICRC1 index (used for ckETH).
+pub const ICRC1_INDEX: IcNnsInitCanister = IcNnsInitCanister {
+    canister_name: "nns-icrc1-index-ng",
+    wasm_name: "ic-icrc1-index-ng.wasm",
+    test_wasm_name: None,
+    canister_id: "q4eej-kyaaa-aaaaa-aaaha-cai",
+};
+/// ICP index.
+pub const ICP_INDEX: IcNnsInitCanister = IcNnsInitCanister {
+    canister_name: "nns-icp-index",
+    wasm_name: "ic-icp-index-canister.wasm",
+    test_wasm_name: None,
+    canister_id: "q3fc5-haaaa-aaaaa-aaahq-cai",
+};
 /// Minimum data needed to download and deploy a standard canister via dfx deploy NAME.
 pub struct StandardCanister {
     /// The typical name of the canister, as seen in dfx.json or used in `dfx canister id NAME`.
@@ -162,7 +176,7 @@ pub const NNS_DAPP: StandardCanister = StandardCanister {
 /// SNS aggregator canister.
 pub const SNS_AGGREGATOR: StandardCanister = StandardCanister {
     canister_name: "sns-aggregator",
-    canister_id: "q4eej-kyaaa-aaaaa-aaaha-cai",
+    canister_id: "sgymv-uiaaa-aaaaa-aaaia-cai",
     wasm_name: "sns_aggregator.wasm.gz",
     wasm_url: "https://github.com/dfinity/nns-dapp/releases/download/proposal-129748/sns_aggregator.wasm.gz",
 };
@@ -187,8 +201,10 @@ pub const NNS_CORE: &[&IcNnsInitCanister; 11] = &[
     &NNS_IC_CKBTC_MINTER, // 9 - only in local deployment
     &NNS_SNS_WASM,        // 10
 ];
-pub const NNS_CORE_MANUAL: &[&IcNnsInitCanister; 1] = &[
+pub const NNS_CORE_MANUAL: &[&IcNnsInitCanister; 3] = &[
     &ICRC1_LEDGER, // 13 - only in local deployment
+    &ICRC1_INDEX,  // 14 - only in local deployment
+    &ICP_INDEX,    // 15 - only in local deployment
 ];
 /// Frontend canisters are not deployed by `ic-nns-init`. The deployment is normal, like any other canister.
 pub const NNS_FRONTEND: [&StandardCanister; 3] = [&INTERNET_IDENTITY, &NNS_DAPP, &SNS_AGGREGATOR];

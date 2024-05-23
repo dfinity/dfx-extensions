@@ -34,6 +34,8 @@ slog = "^2.7.0"
 tempfile = "3.5.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
+ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "7622861bcb3ccbdf52c9ff0bf692516fb1957072" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "7622861bcb3ccbdf52c9ff0bf692516fb1957072" }
 ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "7622861bcb3ccbdf52c9ff0bf692516fb1957072" }
 ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "7622861bcb3ccbdf52c9ff0bf692516fb1957072" }
 

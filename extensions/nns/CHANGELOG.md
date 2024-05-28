@@ -6,6 +6,8 @@
 ## [0.4.0] - 2024-04-04
 - Same functionality as version `0.3.1`.
 
+## [0.4.0] - 2024-04-04
+
 ## [0.3.1] - 2024-02-09
 - `dfx nns install` now configures the cycles minting canister such that it plays nicely with the cycles ledger (which has to be installed separately).
 

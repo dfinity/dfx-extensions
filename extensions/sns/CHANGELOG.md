@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- The `Principals` field of sns-init.yaml is no longer required.
 
 ## [0.4.0] - 2024-04-03
 

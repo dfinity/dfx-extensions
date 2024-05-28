@@ -132,6 +132,7 @@ pub async fn install_nns(
         } else if *canister_id == ICRC1_INDEX.canister_id {
             let cketh_index_args = IndexArg::Init(IndexInitArg {
                 ledger_id: Principal::from_str(ICRC1_LEDGER.canister_id).unwrap(),
+                retrieve_blocks_from_ledger_interval_seconds: None,
             });
             Some(Encode!(&Some(cketh_index_args)).unwrap())
         } else if *canister_id == ICP_INDEX.canister_id {

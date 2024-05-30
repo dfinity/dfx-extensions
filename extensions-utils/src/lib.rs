@@ -13,7 +13,8 @@ pub use dependencies::{
         download_ic_repo_wasm,
         nns::{
             download_nns_wasms, nns_wasm_dir, IcNnsInitCanister, StandardCanister,
-            ED25519_TEST_ACCOUNT, NNS_CORE, NNS_FRONTEND, NNS_SNS_WASM, SECP256K1_TEST_ACCOUNT,
+            ED25519_TEST_ACCOUNT, NNS_CORE, NNS_CORE_MANUAL, NNS_FRONTEND, NNS_SNS_WASM,
+            SECP256K1_TEST_ACCOUNT,
         },
         sns::{download_sns_wasms, SnsCanisterInstallation, SNS_CANISTERS},
     },

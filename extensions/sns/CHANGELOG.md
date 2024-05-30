@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.4.1] - 2024-05-29
+- The `Principals` field of sns-init.yaml is no longer required.
+
 ## [0.4.0] - 2024-04-03
 
 - The behavior of the `dfx sns` extension has been updated to match the `sns-cli` tool.
@@ -41,6 +44,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...{{tag_name}}
 [0.3.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.0...sns-v0.3.1
 [0.3.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.2.1...sns-v0.3.0

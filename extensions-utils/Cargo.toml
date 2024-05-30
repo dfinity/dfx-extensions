@@ -34,3 +34,4 @@ tempfile.workspace = true
 thiserror = "1.0.40"
 tokio.workspace = true
 url.workspace = true
+candid.workspace = true

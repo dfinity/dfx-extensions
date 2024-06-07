@@ -77,6 +77,19 @@
         }
       }
     },
+    "neuron-id-to-candid-subaccount": {
+      "about": "Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance",
+      "args": {
+        "neuron_id": {
+          "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
+        },
+        "escaped": {
+          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
+          "long": "escaped",
+          "values": 0
+        }
+      }
+    },
     "import": {
       "about": "Subcommand for importing sns API definitions and canister IDs.",
       "args": {

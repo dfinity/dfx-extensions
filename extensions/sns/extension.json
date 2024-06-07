@@ -84,7 +84,8 @@
           "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
         },
         "escaped": {
-          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false"
+          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
+          "long": "escaped"
         }
       }
     },

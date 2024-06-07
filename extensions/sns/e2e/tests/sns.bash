@@ -206,3 +206,14 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     assert_output --partial "🚀 Success!"
     assert_output --partial "Proposal ID"
 }
+
+# This test asserts that the `neuron-id-to-candid-subaccount` subcommand exist in the current extension version.
+@test "sns neuron-id-to-candid-subaccount exists" {
+    run dfx sns neuron-id-to-candid-subaccount --help
+    assert_output --partial "Converts a Neuron ID to a candid subaccount blob"
+}
+# check the output of a particular case of neuron-id-to-candid-subaccount
+@test "sns neuron-id-to-candid-subaccount has a reasonable output" {
+    run dfx sns neuron-id-to-candid-subaccount 9f5f9fda77a03e7177126d0be8c99e931a5381731d00da53ede363140e1be5d6
+    assert_output "blob \"\\9f\\5f\\9f\\da\\77\\a0\\3e\\71\\77\\12\\6d\\0b\\e8\\c9\\9e\\93\\1a\\53\\81\\73\\1d\\00\\da\\53\\ed\\e3\\63\\14\\0e\\1b\\e5\\d6\""
+}

@@ -1,5 +1,5 @@
 [workspace]
-members = ["extensions/sns", "extensions/nns", "extensions-utils"]
+members = ["extensions/orbit", "extensions/sns", "extensions/nns", "extensions-utils"]
 resolver = "2"
 
 [workspace.package]

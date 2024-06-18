@@ -201,7 +201,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     assert_success
 
     # Actually submit the proposal
-    run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_NAME}"
+    run dfx sns propose --neuron-id "${NEURON_ID}" "valid/${SNS_CONFIG_FILE_NAME}" --skip-confirmation
     assert_success
     assert_output --partial "🚀 Success!"
     assert_output --partial "Proposal ID"

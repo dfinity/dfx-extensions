@@ -62,7 +62,13 @@
         },
         "test_neuron_proposer": {
           "about": "This is a \"secret menu\" item. It is (yet) another alternative to --neuron_id (and --neuron_memo). As the name implies, this is only useful when running against a local instance of NNS (when deployed as described in the sns-testing Github repo). In addition to specifying which neuron to propose with, this also controls the principal that sends the request",
-          "long": "test-neuron-proposer"
+          "long": "test-neuron-proposer",
+          "values": 0
+        },
+        "skip-confirmation": {
+          "about": "If set, the command will not ask for confirmation before submitting the proposal",
+          "long": "skip-confirmation",
+          "values": 0
         }
       }
     },

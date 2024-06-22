@@ -15,6 +15,7 @@ use clap::Parser;
 use ic_sns_cli::{
     deploy_testflight,
     init_config_file::{self, InitConfigFileArgs},
+    neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},
     DeployTestflightArgs,
@@ -52,6 +53,10 @@ enum SubCommand {
     /// Submit an NNS proposal to create new SNS.
     #[command()]
     Propose(ProposeArgs),
+    /// Converts a Neuron ID to a candid subaccount blob suitable for use in
+    /// the `manage_neuron` method on SNS Governance.
+    #[command()]
+    NeuronIdToCandidSubaccount(NeuronIdToCandidSubaccountArgs),
 
     /// Subcommand for importing sns API definitions and canister IDs.
     /// This and `Download` are only useful for SNS testflight
@@ -81,6 +86,10 @@ fn main() -> anyhow::Result<()> {
         }
         SubCommand::Propose(args) => {
             propose::exec(args);
+            Ok(())
+        }
+        SubCommand::NeuronIdToCandidSubaccount(args) => {
+            neuron_id_to_candid_subaccount::exec(args);
             Ok(())
         }
 

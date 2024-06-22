@@ -1,6 +1,8 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Added the `neuron-id-to-candid-subaccount` command.
+- Added a warning/confirmation text to the `propose` command.
 
 ## [0.4.1] - 2024-05-29
 - The `Principals` field of sns-init.yaml is no longer required.

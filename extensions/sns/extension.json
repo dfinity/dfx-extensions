@@ -62,7 +62,13 @@
         },
         "test_neuron_proposer": {
           "about": "This is a \"secret menu\" item. It is (yet) another alternative to --neuron_id (and --neuron_memo). As the name implies, this is only useful when running against a local instance of NNS (when deployed as described in the sns-testing Github repo). In addition to specifying which neuron to propose with, this also controls the principal that sends the request",
-          "long": "test-neuron-proposer"
+          "long": "test-neuron-proposer",
+          "values": 0
+        },
+        "skip-confirmation": {
+          "about": "If set, the command will not ask for confirmation before submitting the proposal",
+          "long": "skip-confirmation",
+          "values": 0
         }
       }
     },
@@ -74,6 +80,19 @@
         },
         "init-config-file": {
           "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"dfx sns init-config-file\""
+        }
+      }
+    },
+    "neuron-id-to-candid-subaccount": {
+      "about": "Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance",
+      "args": {
+        "neuron_id": {
+          "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
+        },
+        "escaped": {
+          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
+          "long": "escaped",
+          "values": 0
         }
       }
     },

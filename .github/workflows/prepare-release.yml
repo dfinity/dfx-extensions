@@ -88,6 +88,7 @@ jobs:
       - name: Update dependencies.json, roll changelog, bump version, and push branch
         run: |
           .github/workflows/update-dependencies.sh ${{ inputs.whichCrate }} "${{ env.NEW_VERSION }}"
+          git commit -am "chore: transfer dependencies for ${{ inputs.whichCrate }} version ${{ env.NEW_VERSION }}"
           # see https://opensource.axo.dev/cargo-dist/book/workspaces/cargo-release-guide.html#using-cargo-release-with-pull-requests
           cargo release -p ${{ inputs.whichCrate }} "${{ env.SEMVER_CHOICE }}" --execute --no-confirm --config extensions/${{ inputs.whichCrate }}/prepare-release.toml
 

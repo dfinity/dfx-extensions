@@ -48,6 +48,8 @@ jobs:
           fetch-depth: 0
       - uses: cargo-bins/cargo-binstall@main
       - run: cargo binstall cargo-release -y
+      - name: Install sponge
+        run: sudo apt-get install --yes moreutils
 
       - name: Unify semver choice
         env:

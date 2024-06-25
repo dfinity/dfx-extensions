@@ -13,6 +13,9 @@
     "nns",
     "deployment"
   ],
+  "dependencies": {
+    "dfx": ">=0.17.0"
+  },
   "subcommands": {
     "init-config-file": {
       "about": "Subcommands for working with configuration.",

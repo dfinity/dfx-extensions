@@ -11,6 +11,9 @@
     "nns",
     "deployment"
   ],
+  "dependencies": {
+    "dfx": ">=0.17.0"
+  },
   "subcommands": {
     "import": {
       "about": "Import NNS API definitions and canister IDs.",

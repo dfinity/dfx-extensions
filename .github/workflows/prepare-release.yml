@@ -48,6 +48,8 @@ jobs:
           fetch-depth: 0
       - uses: cargo-bins/cargo-binstall@main
       - run: cargo binstall cargo-release -y
+      - name: Install sponge
+        run: sudo apt-get install --yes moreutils
 
       - name: Unify semver choice
         env:
@@ -83,8 +85,10 @@ jobs:
           git config user.email "${{ github.event.sender.id }}+${{ github.event.sender.login }}@users.noreply.github.com"
           git config user.name "${{ github.event.sender.login }}"
 
-      - name: Roll changelog, bump version, and push branch
+      - name: Update dependencies.json, roll changelog, bump version, and push branch
         run: |
+          .github/workflows/update-dependencies.sh ${{ inputs.whichCrate }} "${{ env.NEW_VERSION }}"
+          git commit -am "chore: transfer dependencies for ${{ inputs.whichCrate }} version ${{ env.NEW_VERSION }}"
           # see https://opensource.axo.dev/cargo-dist/book/workspaces/cargo-release-guide.html#using-cargo-release-with-pull-requests
           cargo release -p ${{ inputs.whichCrate }} "${{ env.SEMVER_CHOICE }}" --execute --no-confirm --config extensions/${{ inputs.whichCrate }}/prepare-release.toml
 

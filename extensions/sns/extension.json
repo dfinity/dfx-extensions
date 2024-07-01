@@ -17,11 +17,58 @@
     "dfx": ">=0.17.0"
   },
   "subcommands": {
+    "deploy-testflight": {
+      "about": "Deploy an sns directly to a local replica or the Internet Computer, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
+      "args": {
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"
+        },
+        "init-config-file": {
+          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"dfx sns init-config-file\""
+        }
+      }
+    },
+    "download": {
+      "about": "Subcommand for downloading SNS WASMs.",
+      "args": {
+        "ic_commit": {
+          "about": "IC commit of SNS canister WASMs to download",
+          "long": "ic-commit"
+        },
+        "wasms_dir": {
+          "about": "Path to store downloaded SNS canister WASMs",
+          "long": "wasms-dir"
+        }
+      }
+    },
+    "import": {
+      "about": "Subcommand for importing sns API definitions and canister IDs.",
+      "args": {
+        "network_mapping": {
+          "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
+          "long": "network-mapping"
+        }
+      }
+    },
     "init-config-file": {
       "about": "Subcommands for working with configuration.",
       "subcommands": {
         "validate": {
           "about": "Command line options for validating an SNS configuration."
+        }
+      }
+    },
+    ,
+    "neuron-id-to-candid-subaccount": {
+      "about": "Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance",
+      "args": {
+        "neuron_id": {
+          "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
+        },
+        "escaped": {
+          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
+          "long": "escaped",
+          "values": 0
         }
       }
     },
@@ -72,52 +119,6 @@
           "about": "If set, the command will not ask for confirmation before submitting the proposal",
           "long": "skip-confirmation",
           "values": 0
-        }
-      }
-    },
-    "deploy-testflight": {
-      "about": "Deploy an sns directly to a local replica or the Internet Computer, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
-      "args": {
-        "network": {
-          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"
-        },
-        "init-config-file": {
-          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"dfx sns init-config-file\""
-        }
-      }
-    },
-    "neuron-id-to-candid-subaccount": {
-      "about": "Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance",
-      "args": {
-        "neuron_id": {
-          "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
-        },
-        "escaped": {
-          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
-          "long": "escaped",
-          "values": 0
-        }
-      }
-    },
-    "import": {
-      "about": "Subcommand for importing sns API definitions and canister IDs.",
-      "args": {
-        "network_mapping": {
-          "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
-          "long": "network-mapping"
-        }
-      }
-    },
-    "download": {
-      "about": "Subcommand for downloading SNS WASMs.",
-      "args": {
-        "ic_commit": {
-          "about": "IC commit of SNS canister WASMs to download",
-          "long": "ic-commit"
-        },
-        "wasms_dir": {
-          "about": "Path to store downloaded SNS canister WASMs",
-          "long": "wasms-dir"
         }
       }
     }

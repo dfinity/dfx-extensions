@@ -35,7 +35,7 @@ pub struct SnsOpts {
     dfx_cache_path: Option<PathBuf>,
 }
 
-/// Subcommands of `dfx sns`
+/// Initialize, deploy and interact with an SNS.
 #[derive(Parser)]
 enum SubCommand {
     /// Manage the config file where the initial sns parameters are set.

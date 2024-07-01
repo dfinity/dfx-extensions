@@ -41,7 +41,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 
 @test "sns propose exists" {
     run dfx sns propose --help
-    assert_output --partial "Subcommand for submitting a CreateServiceNervousSystem NNS Proposal"
+    assert_output --partial "Submit an NNS proposal to create new SNS"
 }
 
 @test "sns propose fails without config file" {
@@ -152,7 +152,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 # This test asserts that the `propose` subcommand exist in the current extension version.
 @test "sns deploy-testflight exists" {
     run dfx sns deploy-testflight --help
-    assert_output --partial "Deploy an sns directly to a local replica or the Internet Computer"
+    assert_output --partial "Deploy an sns directly to a subnet, skipping the sns-wasms canister"
 }
 
 # This test asserts that a local dfx server wih the NNS installed can a

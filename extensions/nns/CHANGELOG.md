@@ -1,6 +1,8 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+
+## [0.4.2] - 2024-07-02
 - Corrected name of the extension in metadata from "sns" to "nns".
 
 ## [0.4.1] - 2024-05-29
@@ -33,6 +35,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.0]: https://github.com/dfinity/dfx-extensions/compare/nns-v0.3.1...{{tag_name}}
 [0.3.1]: https://github.com/dfinity/dfx-extensions/compare/nns-v0.3.0...nns-v0.3.1

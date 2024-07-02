@@ -1,6 +1,8 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+
+## [0.4.2] - 2024-07-02
 - Added the `neuron-id-to-candid-subaccount` command.
 - Added a warning/confirmation text to the `propose` command.
 
@@ -46,6 +48,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...{{tag_name}}
 [0.3.1]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.0...sns-v0.3.1

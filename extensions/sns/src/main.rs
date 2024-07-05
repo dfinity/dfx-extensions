@@ -112,3 +112,14 @@ fn main() -> anyhow::Result<()> {
     }?;
     Ok(())
 }
+
+#[test]
+fn verify_extension_manifest() {
+    let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    println!("Project root: {:?}", project_root);
+
+    let dest_path = project_root.join("extension.json");
+
+    dfx_extensions_utils::manifest::verify_extension_manifest::<SubCommand>(dest_path.as_path())
+        .unwrap();
+}

@@ -3,6 +3,7 @@
 pub mod dependencies;
 mod error;
 mod logger;
+pub mod manifest;
 mod project;
 
 pub use dependencies::{

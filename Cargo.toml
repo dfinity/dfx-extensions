@@ -10,7 +10,7 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = { git = "https://github.com/dfinity/sdk", rev = "cb67f24b7acb9aaa4609f38a34527a9436fb6b72" }
+dfx-core = { git = "https://github.com/dfinity/sdk", rev = "d8c1ede88d1978653d2e7d7005095fe38499e023" }
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "^1"
@@ -21,8 +21,8 @@ flate2 = { version = "1.0.25", default-features = false, features = [
 ] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = { git = "https://github.com/dfinity/agent-rs", rev = "8273d321e9a09fd8373bd4e38b0676ec6ad9c260" }
-ic-utils = { git = "https://github.com/dfinity/agent-rs", rev = "8273d321e9a09fd8373bd4e38b0676ec6ad9c260" }
+ic-agent = { git = "https://github.com/dfinity/agent-rs", rev = "be929fd7967249c879f48f2f494cbfc5805a7d98" }
+ic-utils = { git = "https://github.com/dfinity/agent-rs", rev = "be929fd7967249c879f48f2f494cbfc5805a7d98" }
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
     "json",
@@ -34,10 +34,11 @@ slog = "^2.7.0"
 tempfile = "3.5.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
-ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "f174aa82788f2dfc39b1cdb81fd19d691e77ac0b" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "f174aa82788f2dfc39b1cdb81fd19d691e77ac0b" }
-ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "f174aa82788f2dfc39b1cdb81fd19d691e77ac0b" }
-ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "f174aa82788f2dfc39b1cdb81fd19d691e77ac0b" }
+ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+serde_json = "1.0.79"
 
 # Config for 'cargo dist'
 [workspace.metadata.dist]

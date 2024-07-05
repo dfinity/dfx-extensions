@@ -65,7 +65,7 @@ pub const SNS_LEDGER_ARCHIVE: SnsCanisterInstallation = SnsCanisterInstallation 
 pub const SNS_INDEX: SnsCanisterInstallation = SnsCanisterInstallation {
     canister_name: "sns-index",
     upload_name: "index",
-    wasm_name: "ic-icrc1-index.wasm",
+    wasm_name: "ic-icrc1-index-ng.wasm",
 };
 /// SNS wasm files hosted by the nns-sns-wasms canister.
 ///

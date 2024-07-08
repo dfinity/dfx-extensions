@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Unchanged from 0.4.2
 
 ## [0.4.2] - 2024-07-02
 - Added the `neuron-id-to-candid-subaccount` command.

@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Unchanged from 0.4.2
 
 ## [0.4.3] - 2024-07-05
 - `dfx sns download` now downloads the index-ng canister, which is the version needed for SNS testflight

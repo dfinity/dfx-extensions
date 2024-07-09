@@ -3,6 +3,9 @@
 ## [Unreleased] - ReleaseDate
 - Unchanged from 0.4.2
 
+## [0.4.3] - 2024-07-05
+- `dfx sns download` now downloads the index-ng canister, which is the version needed for SNS testflight
+
 ## [0.4.2] - 2024-07-02
 - Added the `neuron-id-to-candid-subaccount` command.
 - Added a warning/confirmation text to the `propose` command.
@@ -49,6 +52,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.0]: https://github.com/dfinity/dfx-extensions/compare/sns-v0.3.1...{{tag_name}}

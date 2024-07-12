@@ -35,9 +35,9 @@ tempfile = "3.5.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
 ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "35e4f2c583b0657aa730740b5c8aca18a8718b8e" }
-ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "35e4f2c583b0657aa730740b5c8aca18a8718b8e" }
-ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "35e4f2c583b0657aa730740b5c8aca18a8718b8e" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "cc4ea40e8571b80043013e4e74bd2b89844230c7" }
 serde_json = "1.0.79"
 
 # Config for 'cargo dist'

@@ -2,6 +2,11 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.4.3] - 2024-07-05
+
+## [0.4.2] - 2024-07-02
+- Corrected name of the extension in metadata from "sns" to "nns".
+
 ## [0.4.1] - 2024-05-29
 - Bump II and NNS dapp to their latest mainnet verions (II: release-2024-05-13; NNS-Dapp: proposal-129748) and install their dependencies (ICRC1 ledger and index for ckETH, ICP index, SNS aggregator).
 
@@ -32,6 +37,8 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
+[0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.0]: https://github.com/dfinity/dfx-extensions/compare/nns-v0.3.1...{{tag_name}}
 [0.3.1]: https://github.com/dfinity/dfx-extensions/compare/nns-v0.3.0...nns-v0.3.1

@@ -1,6 +1,6 @@
 [package]
 name = "sns"
-version = "0.4.1"
+version = "0.4.3"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -12,6 +12,7 @@ build = "build.rs"
 dfx-extensions-utils.workspace = true
 
 [dependencies]
+serde_json.workspace = true
 dfx-core.workspace = true
 dfx-extensions-utils.workspace = true
 ic-sns-cli.workspace = true

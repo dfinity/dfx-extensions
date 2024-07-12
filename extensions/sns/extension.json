@@ -1,9 +1,9 @@
 {
   "name": "sns",
-  "version": "0.4.1",
+  "version": "0.4.3",
   "homepage": "https://github.com/dfinity/dfx-extensions",
   "authors": "DFINITY",
-  "summary": "Toolkit for simulating decentralizing a dapp via SNS.",
+  "summary": "Initialize, deploy and interact with an SNS",
   "categories": [
     "sns",
     "nns"
@@ -13,110 +13,233 @@
     "nns",
     "deployment"
   ],
+  "description": null,
   "subcommands": {
+    "deploy-testflight": {
+      "about": "Deploy an sns directly to a subnet, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
+      "args": {
+        "init_config_file": {
+          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"init-config-file\"",
+          "long": "init-config-file",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "initial_cycles_per_canister": {
+          "about": "The amount of cycles to initialize each SNS canister with. This can be omitted when deploying locally",
+          "long": "initial-cycles-per-canister",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "sns_canister_ids_save_to": {
+          "about": "Saves the SNS canister IDs in the specified json file for sns-quill",
+          "long": "sns-canister-ids-save-to",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "verbose": {
+          "about": "Print all error and info messages",
+          "long": "verbose",
+          "short": null,
+          "multiple": false,
+          "values": 0
+        },
+        "wallet_canister_override": {
+          "about": "The canister ID of the wallet to use on this subnet",
+          "long": "wallet-canister-override",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "wasms_dir": {
+          "about": "The directory with SNS canister WASMs",
+          "long": "wasms-dir",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
+    },
+    "download": {
+      "about": "Downloads SNS canister versions that are specified in your dfx.json (which probably got there through the `Import` command)",
+      "args": {
+        "ic_commit": {
+          "about": "IC commit of SNS canister WASMs to download",
+          "long": "ic-commit",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "wasms_dir": {
+          "about": "Path to store downloaded SNS canister WASMs",
+          "long": "wasms-dir",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
+    },
+    "import": {
+      "about": "Subcommand for importing sns API definitions and canister IDs. This and `Download` are only useful for SNS testflight",
+      "args": {
+        "network_mapping": {
+          "about": "Networks to import canisters ids for. --network-mapping <network name in both places> --network-mapping <network name here>=<network name in project being imported> Examples: --network-mapping ic --network-mapping ic=mainnet",
+          "long": "network-mapping",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
+    },
     "init-config-file": {
-      "about": "Subcommands for working with configuration.",
+      "about": "Manage the config file where the initial sns parameters are set",
+      "args": {
+        "init_config_file_path": {
+          "about": "Path to the init config file",
+          "long": "init-config-file-path",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
       "subcommands": {
         "validate": {
-          "about": "Command line options for validating an SNS configuration."
-        }
-      }
-    },
-    "prepare-canisters": {
-      "about": "Subcommand for preparing dapp canister(s) for 1-proposal SNS creation.",
-      "subcommands": {
-        "add-nns-root": {
-          "about": "Subcommand for adding NNS Root as a co-controller of the dapp canister.",
-          "args": {
-            "canister_ids": {
-              "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "values": "unlimited"
-            }
-          }
-        },
-        "remove-nns-root": {
-          "about": "Subcommand for removing NNS Root as a co-controller of the dapp canister.",
-          "args": {
-            "canister_ids": {
-              "about": "CanisterId of a dapp canister your current dfx identity controls.",
-              "values": "unlimited"
-            }
-          }
-        }
-      }
-    },
-    "propose": {
-      "about": "Subcommand for submitting a CreateServiceNervousSystem NNS Proposal.",
-      "args": {
-        "network": {
-          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network.",
-          "multiple": false
-        },
-        "neuron_id": {
-          "about": "The neuron with which to make the proposal. The current dfx identity must be able to operate this neuron. If not specified, it will be assumed that the current dfx identity has a neuron with memo == 0. --neuron_memo is an alternative to this",
-          "long": "neuron-id"
-        },
-        "neuron_memo": {
-          "about": "This is an alternative to --neuron_id for specifying which neuron to make the proposal with. This is used in conjunction with the current principal to calculate the subaccount (belonging to the NNS governance canister) that holds the ICP that backs the proposing neuron",
-          "long": "neuron-memo"
-        },
-        "test_neuron_proposer": {
-          "about": "This is a \"secret menu\" item. It is (yet) another alternative to --neuron_id (and --neuron_memo). As the name implies, this is only useful when running against a local instance of NNS (when deployed as described in the sns-testing Github repo). In addition to specifying which neuron to propose with, this also controls the principal that sends the request",
-          "long": "test-neuron-proposer",
-          "values": 0
-        },
-        "skip-confirmation": {
-          "about": "If set, the command will not ask for confirmation before submitting the proposal",
-          "long": "skip-confirmation",
-          "values": 0
-        }
-      }
-    },
-    "deploy-testflight": {
-      "about": "Deploy an sns directly to a local replica or the Internet Computer, skipping the sns-wasms canister. The SNS canisters remain controlled by the developer after deployment. For use in tests only",
-      "args": {
-        "network": {
-          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network"
-        },
-        "init-config-file": {
-          "about": "The initial config file, this file should have all the necessary parameters to deploy an SNS. See command \"dfx sns init-config-file\""
+          "about": "Validates that a init_config_file is well formed",
+          "args": {},
+          "subcommands": null
         }
       }
     },
     "neuron-id-to-candid-subaccount": {
       "about": "Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance",
       "args": {
-        "neuron_id": {
-          "about": "The (hex-encoded) SNS neuron ID to convert to a candid subaccount blob"
-        },
         "escaped": {
-          "about": "If true, print the escaped version of the candid string, useful for pasting into a bash script for example. Default is false",
+          "about": "If true, print an escaped version of the candid, useful for pasting into bash for example. Default is false",
           "long": "escaped",
+          "short": null,
+          "multiple": false,
+          "values": 0
+        },
+        "neuron_id": {
+          "about": "The SNS neuron ID to be converted to a candid subaccount blob",
+          "long": null,
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
+    },
+    "prepare-canisters": {
+      "about": "Adds or removes NNS root as a controller to canisters controlled by the current dfx identity to prepare for SNS Decentralization. NNS root must be added as a controller to all canisters that will be controlled by the SNS before the proposal is submitted",
+      "args": {
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": {
+        "add-nns-root": {
+          "about": "Add NNS Root as a co-controller of one or more canisters",
+          "args": {
+            "CANISTER": {
+              "about": "The canisters you want to operate on",
+              "long": null,
+              "short": null,
+              "multiple": false,
+              "values": "1..18446744073709551614"
+            }
+          },
+          "subcommands": null
+        },
+        "remove-nns-root": {
+          "about": "Remove NNS Root as a co-controller of one or more canisters",
+          "args": {
+            "CANISTER": {
+              "about": "The canisters you want to operate on",
+              "long": null,
+              "short": null,
+              "multiple": false,
+              "values": "1..18446744073709551614"
+            }
+          },
+          "subcommands": null
+        }
+      }
+    },
+    "propose": {
+      "about": "Submit an NNS proposal to create new SNS",
+      "args": {
+        "init_config_file": {
+          "about": "Path to a configuration file specifying the SNS to be created",
+          "long": null,
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "neuron_id": {
+          "about": "The neuron with which to make the proposal. The current dfx identity must be able to operate this neuron. If not specified, it will be assumed that the current dfx identity has a neuron with memo == 0. --neuron_memo is an alternative to this",
+          "long": "neuron-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "neuron_memo": {
+          "about": "This is an alternative to --neuron_id for specifying which neuron to make the proposal with. This is used in conjunction with the current principal to calculate the subaccount (belonging to the NNS governance canister) that holds the ICP that backs the proposing neuron",
+          "long": "neuron-memo",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "save_to": {
+          "about": "An optional flag to save the ProposalId of a successfully submitted CreateServiceNervousSystem proposal to the filesystem. The file must be writeable, and will be created if it does not exist. The ProposalId will be saved in JSON format. For example:",
+          "long": "save-to",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "skip_confirmation": {
+          "about": "If this flag is set, the proposal will be submitted without asking for confirmation. This is useful for automated scripts",
+          "long": "skip-confirmation",
+          "short": null,
+          "multiple": false,
+          "values": 0
+        },
+        "test_neuron_proposer": {
+          "about": "This is a \"secret menu\" item. It is (yet) another alternative to --neuron_id (and --neuron_memo). As the name implies, this is only useful when running against a local instance of NNS (when deployed as described in the sns-testing Github repo). In addition to specifying which neuron to propose with, this also controls the principal that sends the request",
+          "long": "test-neuron-proposer",
+          "short": null,
+          "multiple": false,
           "values": 0
         }
-      }
-    },
-    "import": {
-      "about": "Subcommand for importing sns API definitions and canister IDs.",
-      "args": {
-        "network_mapping": {
-          "about": "Networks to import canisters ids for.\n  --network-mapping <network name in both places>\n  --network-mapping <network name here>=<network name in project being imported>\nExamples:\n  --network-mapping ic\n  --network-mapping ic=mainnet",
-          "long": "network-mapping"
-        }
-      }
-    },
-    "download": {
-      "about": "Subcommand for downloading SNS WASMs.",
-      "args": {
-        "ic_commit": {
-          "about": "IC commit of SNS canister WASMs to download",
-          "long": "ic-commit"
-        },
-        "wasms_dir": {
-          "about": "Path to store downloaded SNS canister WASMs",
-          "long": "wasms-dir"
-        }
-      }
+      },
+      "subcommands": null
     }
-  }
+  },
+  "dependencies": {
+    "dfx": ">=0.17.0"
+  },
+  "canister_type": null
 }

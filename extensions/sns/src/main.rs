@@ -35,7 +35,7 @@ pub struct SnsOpts {
     dfx_cache_path: Option<PathBuf>,
 }
 
-/// Subcommands of `dfx sns`
+/// Initialize, deploy and interact with an SNS.
 #[derive(Parser)]
 enum SubCommand {
     /// Manage the config file where the initial sns parameters are set.
@@ -111,4 +111,15 @@ fn main() -> anyhow::Result<()> {
         }
     }?;
     Ok(())
+}
+
+#[test]
+fn verify_extension_manifest() {
+    let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+    println!("Project root: {:?}", project_root);
+
+    let dest_path = project_root.join("extension.json");
+
+    dfx_extensions_utils::manifest::verify_extension_manifest::<SubCommand>(dest_path.as_path())
+        .unwrap();
 }

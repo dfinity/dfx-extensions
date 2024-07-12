@@ -40,7 +40,10 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, destination_path
         dfx_core::fs::set_permissions(&temp_file, std::fs::Permissions::from_mode(0o500))
             .expect("Failed to set permissions");
     }
-    fs::rename(temp_file, destination_path).expect("Failed to move extension");
+    // fs::move is not safe here, as that operations would fail if src and dst are on different FSs.
+    fs::copy(temp_file.clone(), destination_path).unwrap_or_else(|err| {
+        panic!("Failed to copy extension from `{:?}` to `{:?}`: {}", temp_file, destination_path, err);
+    });
 }
 
 async fn download_bytes(url: &str) -> Vec<u8> {

@@ -53,6 +53,8 @@ jobs:
         if: matrix.extension == 'sns'
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
+      - name: run sns tests
+        run: timeout 2400 e2e/launch-simple-sns.sh
 
   aggregate:
     name: e2e:required

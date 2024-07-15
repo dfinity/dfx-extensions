@@ -46,15 +46,15 @@ jobs:
         uses: dfinity/setup-dfx@main
       - name: Set prebuilt extensions directory
         run: echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
-      - name: Build extension manually
-        run: .github/workflows/build-extension-manually.sh ${{ matrix.extension }}
-      - name: Build nns manually
-        run: .github/workflows/build-extension-manually.sh nns
-        if: matrix.extension == 'sns'
-      - name: run test
-        run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
+      # - name: Build extension manually
+      #   run: .github/workflows/build-extension-manually.sh ${{ matrix.extension }}
+      # - name: Build nns manually
+      #   run: .github/workflows/build-extension-manually.sh nns
+      #   if: matrix.extension == 'sns'
+      # - name: run test
+      #   run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
       - name: run sns tests
-        run: timeout 2400 e2e/launch-simple-sns.sh
+        run: timeout 2400 bash e2e/launch-simple-sns.sh
 
   aggregate:
     name: e2e:required

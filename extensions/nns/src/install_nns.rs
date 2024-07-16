@@ -108,7 +108,7 @@ pub async fn install_nns(
         test_accounts,
         sns_subnets: Some(subnet_id.to_string()),
         local_registry_file: network.local_server_descriptor.as_ref().map(|desc| {
-            desc.data_directory
+            desc.data_dir_by_settings_digest()
                 .join("state/replicated_state/registry.proto")
         }),
     };

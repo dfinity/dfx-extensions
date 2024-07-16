@@ -176,7 +176,7 @@ pub async fn install_nns(
         let specified_id = Principal::from_text(canister_id)?;
         let arg = if *canister_id == NNS_DAPP.canister_id {
             let nns_dapp_metadata = vec![
-                ("API_HOST".to_string(), nns_url.to_string()),
+                ("API_HOST".to_string(), "http://localhost:8080".to_string()),
                 ("CKETH_INDEX_CANISTER_ID".to_string(), ICRC1_INDEX.canister_id.to_string()),
                 ("CKETH_LEDGER_CANISTER_ID".to_string(), ICRC1_LEDGER.canister_id.to_string()),
                 ("CYCLES_MINTING_CANISTER_ID".to_string(), "rkp4c-7iaaa-aaaaa-aaaca-cai".to_string()),
@@ -184,14 +184,14 @@ pub async fn install_nns(
                 ("FEATURE_FLAGS".to_string(), "{\"ENABLE_CKBTC\":false,\"ENABLE_CKTESTBTC\":false,\"ENABLE_HIDE_ZERO_BALANCE\":true,\"ENABLE_VOTING_INDICATION\":true}".to_string()),
                 ("FETCH_ROOT_KEY".to_string(), "true".to_string()),
                 ("GOVERNANCE_CANISTER_ID".to_string(), "rrkah-fqaaa-aaaaa-aaaaq-cai".to_string()),
-                ("HOST".to_string(), nns_url.to_string()),
+                ("HOST".to_string(), "http://localhost:8080".to_string()),
                 ("IDENTITY_SERVICE_URL".to_string(), format!("http://{}.localhost:8080", INTERNET_IDENTITY.canister_id)),
                 ("INDEX_CANISTER_ID".to_string(), ICP_INDEX.canister_id.to_string()),
                 ("LEDGER_CANISTER_ID".to_string(), "ryjl3-tyaaa-aaaaa-aaaba-cai".to_string()),
                 ("OWN_CANISTER_ID".to_string(), NNS_DAPP.canister_id.to_string()),
                 ("ROBOTS".to_string(), "<meta name=\"robots\" content=\"noindex, nofollow\" />".to_string()),
                 ("SNS_AGGREGATOR_URL".to_string(), format!("http://{}.localhost:8080", SNS_AGGREGATOR.canister_id)),
-                ("STATIC_HOST".to_string(), nns_url.to_string()),
+                ("STATIC_HOST".to_string(), "http://localhost:8080".to_string()),
                 ("TVL_CANISTER_ID".to_string(), "".to_string()),
                 ("WASM_CANISTER_ID".to_string(), "qaa6y-5yaaa-aaaaa-aaafa-cai".to_string())
             ];

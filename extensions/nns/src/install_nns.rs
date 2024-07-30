@@ -107,6 +107,10 @@ pub async fn install_nns(
         nns_url: nns_url.to_string(),
         test_accounts,
         sns_subnets: Some(subnet_id.to_string()),
+        local_registry_file: network.local_server_descriptor.as_ref().map(|desc| {
+            desc.data_dir_by_settings_digest()
+                .join("state/replicated_state/registry.proto")
+        }),
     };
     ic_nns_init(&ic_nns_init_opts, dfx_cache_path).await?;
 
@@ -515,6 +519,8 @@ pub struct IcNnsInitOpts {
     /// A subnet for SNS canisters.
     /// Note: In this context we support at most one subnet.
     sns_subnets: Option<String>,
+    /// A file storing the registry content.
+    local_registry_file: Option<PathBuf>,
 }
 
 /// Calls the `ic-nns-init` executable.
@@ -532,6 +538,10 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
         "--wasm-dir".into(),
         opts.wasm_dir.as_os_str().into(),
     ];
+    if let Some(local_registry_file) = &opts.local_registry_file {
+        args.push("--initial-registry".into());
+        args.push(local_registry_file.into());
+    }
     for account in &opts.test_accounts {
         args.push("--initialize-ledger-with-test-accounts".into());
         args.push(account.into());

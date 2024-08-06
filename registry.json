@@ -1,0 +1,4 @@
+{
+  "nns": "https://raw.githubusercontent.com/dfinity/dfx-extensions/main/extensions/nns/extension.json",
+  "sns": "https://raw.githubusercontent.com/dfinity/dfx-extensions/main/extensions/sns/extension.json"
+}

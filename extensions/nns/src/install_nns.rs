@@ -255,7 +255,6 @@ pub async fn install_nns(
     }
     // ... and configure the backend NNS canisters:
     eprintln!("Configuring the NNS...");
-    set_xdr_rate(1234567, &nns_url, dfx_cache_path)?;
     set_cmc_authorized_subnets(&nns_url, &default_subnet_id.to_string(), dfx_cache_path)?;
 
     print_nns_details(provider_url)?;
@@ -578,30 +577,6 @@ pub async fn ic_nns_init(opts: &IcNnsInitOpts, dfx_cache_path: &Path) -> anyhow:
         args.push(subnets.into());
     }
     call_extension_bundled_binary("ic-nns-init", &args, dfx_cache_path)
-}
-
-/// Sets the exchange rate between ICP and cycles.
-///
-/// # Implementation
-/// This is done by proposal.  Just after starting a test server, ic-admin
-/// proposals with a test user pass immediately, as the small test neuron is
-/// the only neuron and has absolute majority.
-#[context("Failed to set an initial exchange rate between ICP and cycles. It may not be possible to create canisters or purchase cycles.")]
-pub fn set_xdr_rate(rate: u64, nns_url: &Url, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let summary = format!("Set the cycle exchange rate to {}.", rate.clone());
-    let xdr_permyriad_per_icp = rate.to_string();
-    let args = vec![
-        "--nns-url",
-        nns_url.as_str(),
-        "propose-xdr-icp-conversion-rate",
-        "--test-neuron-proposer",
-        "--summary",
-        &summary,
-        "--xdr-permyriad-per-icp",
-        &xdr_permyriad_per_icp,
-    ];
-    call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
-        .map_err(|e| anyhow!("Call to propose to set xdr rate failed: {e}"))
 }
 
 /// Sets the subnets the CMC is authorized to create canisters in.

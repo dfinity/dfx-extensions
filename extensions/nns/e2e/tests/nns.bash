@@ -152,7 +152,7 @@ assert_nns_canister_id_matches() {
     assert_success
     assert_output "$SECP256K1_ACCOUNT_ID"
 
-    echo "    The registry should be initialized"
+    echo "    The registry canister should be initialized"
     dfx canister call rwlgt-iiaaa-aaaaa-aaaaa-cai get_subnet_for_canister '(record {"principal"=opt principal"rwlgt-iiaaa-aaaaa-aaaaa-cai"})'
     assert_success
     assert_output --partial "Ok = record"

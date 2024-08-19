@@ -31,7 +31,7 @@ pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()
     let dfx = DfxInterface::anonymous().await?;
     let mut network_descriptor = dfx.network_descriptor().clone();
     if let Some(ref mut local_server_descriptor) = &mut network_descriptor.local_server_descriptor {
-      local_server_descriptor.load_settings_digest()?;
+        local_server_descriptor.load_settings_digest()?;
     }
 
     let logger = new_logger();

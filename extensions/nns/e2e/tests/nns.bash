@@ -152,6 +152,15 @@ assert_nns_canister_id_matches() {
     assert_success
     assert_output "$SECP256K1_ACCOUNT_ID"
 
+    echo "    The registry should be initialized"
+    dfx canister call rwlgt-iiaaa-aaaaa-aaaaa-cai get_subnet_for_canister '(record {"principal"=opt principal"rwlgt-iiaaa-aaaaa-aaaaa-cai"})'
+    assert_success
+    assert_output --partial "Ok = record"
+    assert_output --partial "subnet_id = opt principal"
+    dfx canister call rwlgt-iiaaa-aaaaa-aaaaa-cai get_subnet_for_canister '(record {"principal"=opt principal"aaaaa-aa"})'
+    assert_success
+    assert_output --partial "Err = \"Canister is not assigned to any subnet.\""
+
     sleep 10 # In slow CI the last upgrade proposal has not finished executing yet. Need to give a little spare time to restart all canisters
     run dfx --identity ident-1 ledger transfer 4b37224c5ed36e8a28ae39af482f5f858104f0a2285d100e67cf029ff07d948e --amount 10 --memo 1414416717
     assert_success

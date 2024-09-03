@@ -80,6 +80,12 @@ enum SubCommand {
 async fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
 
+    // Most of the branches in here convert SubCommand to SnsLibSubCommand.
+    // The purpose of this is to allow us to match on SnsLibSubCommand. This causes
+    // us to have a compiler error if we add a new subcommand to SnsLibSubCommand
+    // and don't have some corresponding handling here.
+    // TODO(NNS1-3184): Once we remove `Import` and `Download`, this extra step will no longer be
+    // needed as we can directly parse the monorepo's command type and subcommands.
     let subcommand: SnsLibSubCommand = match opts.subcmd {
         SubCommand::DeployTestflight(args) => SnsLibSubCommand::DeployTestflight(args),
         SubCommand::InitConfigFile(args) => SnsLibSubCommand::InitConfigFile(args),

@@ -13,13 +13,15 @@ use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 
 use clap::Parser;
 use ic_sns_cli::{
-    deploy_testflight,
+    add_sns_wasm_for_tests, deploy_testflight,
     init_config_file::{self, InitConfigFileArgs},
+    list::{self, ListArgs},
     neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},
-    DeployTestflightArgs,
+    AddSnsWasmForTestsArgs, DeployTestflightArgs, SubCommand as SnsLibSubCommand,
 };
+mod utils;
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -57,6 +59,12 @@ enum SubCommand {
     /// the `manage_neuron` method on SNS Governance.
     #[command()]
     NeuronIdToCandidSubaccount(NeuronIdToCandidSubaccountArgs),
+    /// Add a wasms for one of the SNS canisters, skipping the NNS proposal,
+    /// for tests.
+    #[command(hide(true))]
+    AddSnsWasmForTests(AddSnsWasmForTestsArgs),
+    /// List SNSes
+    List(ListArgs),
 
     /// Subcommand for importing sns API definitions and canister IDs.
     /// This and `Download` are only useful for SNS testflight
@@ -68,30 +76,20 @@ enum SubCommand {
 }
 
 /// Executes `dfx sns` and its subcommands.
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
 
-    match opts.subcmd {
-        SubCommand::DeployTestflight(args) => {
-            deploy_testflight(args);
-            Ok(())
-        }
-        SubCommand::InitConfigFile(args) => {
-            init_config_file::exec(args);
-            Ok(())
-        }
-        SubCommand::PrepareCanisters(args) => {
-            prepare_canisters::exec(args);
-            Ok(())
-        }
-        SubCommand::Propose(args) => {
-            propose::exec(args);
-            Ok(())
-        }
+    let subcommand: SnsLibSubCommand = match opts.subcmd {
+        SubCommand::DeployTestflight(args) => SnsLibSubCommand::DeployTestflight(args),
+        SubCommand::InitConfigFile(args) => SnsLibSubCommand::InitConfigFile(args),
+        SubCommand::PrepareCanisters(args) => SnsLibSubCommand::PrepareCanisters(args),
+        SubCommand::Propose(args) => SnsLibSubCommand::Propose(args),
         SubCommand::NeuronIdToCandidSubaccount(args) => {
-            neuron_id_to_candid_subaccount::exec(args);
-            Ok(())
+            SnsLibSubCommand::NeuronIdToCandidSubaccount(args)
         }
+        SubCommand::AddSnsWasmForTests(args) => SnsLibSubCommand::AddSnsWasmForTests(args),
+        SubCommand::List(args) => SnsLibSubCommand::List(args),
 
         SubCommand::Import(v) => {
             let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
@@ -99,7 +97,7 @@ fn main() -> anyhow::Result<()> {
                     "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
                 )
             })?;
-            commands::import::exec(v, dfx_cache_path)
+            return commands::import::exec(v, dfx_cache_path);
         }
         SubCommand::Download(v) => {
             let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
@@ -107,10 +105,23 @@ fn main() -> anyhow::Result<()> {
                     "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
                 )
             })?;
-            commands::download::exec(v, dfx_cache_path)
+            return commands::download::exec(v, dfx_cache_path);
         }
-    }?;
-    Ok(())
+    };
+
+    let agent = utils::get_mainnet_agent()?;
+
+    match subcommand {
+        SnsLibSubCommand::DeployTestflight(args) => deploy_testflight(args),
+        SnsLibSubCommand::InitConfigFile(args) => init_config_file::exec(args),
+        SnsLibSubCommand::PrepareCanisters(args) => prepare_canisters::exec(args),
+        SnsLibSubCommand::Propose(args) => propose::exec(args),
+        SnsLibSubCommand::NeuronIdToCandidSubaccount(args) => {
+            neuron_id_to_candid_subaccount::exec(args)
+        }
+        SnsLibSubCommand::AddSnsWasmForTests(args) => add_sns_wasm_for_tests(args),
+        SnsLibSubCommand::List(args) => list::exec(args, &agent).await,
+    }
 }
 
 #[test]

@@ -31,13 +31,13 @@ reqwest = { version = "^0.11.22", default-features = false, features = [
 ] }
 serde = "^1.0"
 slog = "^2.7.0"
-tempfile = "3.5.0"
+tempfile = "3"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
-ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
-ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
-ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
+ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "5ff84f5b82fc675683d6b70c4e1a81678813633a" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "5ff84f5b82fc675683d6b70c4e1a81678813633a" }
+ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "5ff84f5b82fc675683d6b70c4e1a81678813633a" }
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "5ff84f5b82fc675683d6b70c4e1a81678813633a" }
 serde_json = "1.0.79"
 
 # Config for 'cargo dist'

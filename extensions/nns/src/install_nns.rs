@@ -670,7 +670,7 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
             canister_type: upload_name.to_string(),
             override_sns_wasm_canister_id_for_tests: Some(NNS_SNS_WASM.canister_id.into()),
             network: "local".to_string(),
-        });
+        })?;
     }
     Ok(())
 }

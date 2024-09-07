@@ -158,6 +158,6 @@ assert_nns_canister_id_matches() {
     run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5 : nat64; })'
     # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger (and fail because the canister is not even created).
     # If it is not configured correctly, then this will complain about the cycles ledger canister id not being configured.
-    assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
+    assert_output --partial "No route to canister um5iw-rqaaa-aaaaq-qaaba-cai"
 }
 

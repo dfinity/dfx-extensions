@@ -34,10 +34,10 @@ slog = "^2.7.0"
 tempfile = "3.5.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
-ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "35bfcadd0f2a474057e42393917b8b3ac269627a" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "35bfcadd0f2a474057e42393917b8b3ac269627a" }
-ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "35bfcadd0f2a474057e42393917b8b3ac269627a" }
-ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "35bfcadd0f2a474057e42393917b8b3ac269627a" }
+ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
+ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "5849c6daf2037349bd36dcb6e26ce61c2c6570d0" }
 serde_json = "1.0.79"
 
 # Config for 'cargo dist'

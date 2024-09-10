@@ -2,9 +2,6 @@ use thiserror::Error;
 
 #[derive(Error, Debug)]
 pub enum DfxError {
-    #[error(transparent)]
-    DfxCacheError(dfx_core::error::cache::CacheError),
-
     #[error("Failed to execute dfx as a command: {0}")]
     DfxExecutableError(std::io::Error),
 

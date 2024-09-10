@@ -6,7 +6,16 @@ pub enum ProjectError {
     StructuredFileError(#[from] dfx_core::error::structured_file::StructuredFileError),
 
     #[error(transparent)]
-    IoError(#[from] dfx_core::error::fs::FsError),
+    CreateDirAllError(#[from] dfx_core::error::fs::CreateDirAllError),
+
+    #[error(transparent)]
+    ReadFileError(#[from] dfx_core::error::fs::ReadFileError),
+
+    #[error(transparent)]
+    WriteFileError(#[from] dfx_core::error::fs::WriteFileError),
+
+    #[error(transparent)]
+    CanonicalizePathError(#[from] dfx_core::error::fs::CanonicalizePathError),
 
     #[error("Can't convert string '{0}' to path: {1}")]
     ConvertingStringToPathFailed(String, std::convert::Infallible),

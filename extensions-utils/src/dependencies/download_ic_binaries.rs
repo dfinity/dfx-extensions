@@ -43,11 +43,17 @@ pub fn download_ic_binary(replica_rev: &str, binary_name: &str, destination_path
     // fs::move is not safe here, as that operations would fail if src and dst are on different FSs.
     if destination_path.exists() {
         fs::remove_file(destination_path).unwrap_or_else(|err| {
-            panic!("Failed to remove existing file `{:?}`: {}", destination_path, err);
+            panic!(
+                "Failed to remove existing file `{:?}`: {}",
+                destination_path, err
+            );
         });
     }
     fs::copy(temp_file.clone(), destination_path).unwrap_or_else(|err| {
-        panic!("Failed to copy extension from `{:?}` to `{:?}`: {}", temp_file, destination_path, err);
+        panic!(
+            "Failed to copy extension from `{:?}` to `{:?}`: {}",
+            temp_file, destination_path, err
+        );
     });
 }
 

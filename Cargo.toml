@@ -57,7 +57,7 @@ checksum = "sha256"
 # Whether to consider the binaries in a package for distribution (defaults true)
 dist = true
 # The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.22.1"
+cargo-dist-version = "0.10.0"
 # The installers to generate for each app
 installers = []
 # Publish jobs to run in CI

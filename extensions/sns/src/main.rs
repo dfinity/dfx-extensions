@@ -21,6 +21,8 @@ use ic_sns_cli::{
     DeployTestflightArgs,
 };
 
+// TEST COMMENT to trigger CI. DONOTMERGE
+
 /// Options for `dfx sns`.
 #[derive(Parser)]
 #[command(name("sns"))]

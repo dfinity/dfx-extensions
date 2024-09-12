@@ -631,6 +631,8 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
     let cmc_wasm_path_str = cmc_wasm_path.to_string_lossy();
     let wasm_hash_str = hex::encode(wasm_hash);
     let upgrade_arg_file_str = upgrade_arg_file.path().to_string_lossy();
+    let upgrade_arg_hash =
+        ic_http_utils::file_downloader::compute_sha256_hex(&upgrade_arg_file.path())?;
     let args = vec![
         "--nns-url",
         nns_url.as_str(),
@@ -650,6 +652,8 @@ pub fn set_cycles_ledger_canister_id_in_cmc(
         &wasm_hash_str,
         "--arg",
         &upgrade_arg_file_str,
+        "--arg-sha256",
+        &upgrade_arg_hash,
     ];
     call_extension_bundled_binary("ic-admin", args, dfx_cache_path)
         .map_err(|e| anyhow!("Call to set the cycles ledger canister id in the CMC: {e}"))
@@ -670,7 +674,7 @@ pub fn upload_nns_sns_wasms_canister_wasms(dfx_cache_path: &Path) -> anyhow::Res
             canister_type: upload_name.to_string(),
             override_sns_wasm_canister_id_for_tests: Some(NNS_SNS_WASM.canister_id.into()),
             network: "local".to_string(),
-        });
+        })?;
     }
     Ok(())
 }

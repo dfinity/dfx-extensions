@@ -1,7 +1,9 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
-- Unchanged from 0.4.2
+
+## [0.4.4] - 2024-09-12
+- Add `dfx sns list` command to view available SNSes
 
 ## [0.4.3] - 2024-07-05
 - `dfx sns download` now downloads the index-ng canister, which is the version needed for SNS testflight
@@ -52,6 +54,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.4]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

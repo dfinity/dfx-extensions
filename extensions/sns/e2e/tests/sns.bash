@@ -69,8 +69,6 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     dfx nns install
     echo "===== 7 ====="
     dfx nns import
-    echo "===== 8 ====="
-    dfx sns import
     echo "===== 9 ====="
     ls candid
     echo "===== 10 ====="

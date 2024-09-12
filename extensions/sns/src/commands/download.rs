@@ -18,13 +18,12 @@ pub struct SnsDownloadOpts {
 }
 
 /// Executes the command line `dfx sns import`.
-pub fn exec(opts: SnsDownloadOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let runtime = Runtime::new().expect("Unable to create a runtime");
+pub async fn exec(opts: SnsDownloadOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let ic_commit = if let Some(ic_commit) = opts.ic_commit {
         ic_commit
     } else {
         replica_rev(dfx_cache_path)?
     };
-    runtime.block_on(download_sns_wasms(&ic_commit, &opts.wasms_dir))?;
+    download_sns_wasms(&ic_commit, &opts.wasms_dir).await?;
     Ok(())
 }

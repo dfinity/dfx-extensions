@@ -2,7 +2,11 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.4.4] - 2024-09-12
+- Updated version of ic-admin used internally
+
 ## [0.4.3] - 2024-07-05
+- Unchanged from 0.4.2
 
 ## [0.4.2] - 2024-07-02
 - Corrected name of the extension in metadata from "sns" to "nns".
@@ -37,6 +41,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.4]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

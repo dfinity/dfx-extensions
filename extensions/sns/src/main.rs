@@ -103,7 +103,7 @@ async fn main() -> anyhow::Result<()> {
                     "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
                 )
             })?;
-            return commands::import::exec(v, dfx_cache_path);
+            return commands::import::exec(v, dfx_cache_path).await;
         }
         SubCommand::Download(v) => {
             let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
@@ -111,7 +111,7 @@ async fn main() -> anyhow::Result<()> {
                     "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
                 )
             })?;
-            return commands::download::exec(v, dfx_cache_path);
+            return commands::download::exec(v, dfx_cache_path).await;
         }
     };
 

@@ -55,19 +55,32 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 }
 
 @test "sns propose succeeds" {
+    echo "===== 1 ====="
     dfx_extension_install_manually nns
+    echo "===== 2 ====="
     dfx_new
+    echo "===== 3 ====="
     install_shared_asset subnet_type/shared_network_settings/system
+    echo "===== 4 ====="
     dfx start --pocketic --clean --background --host 127.0.0.1:8080
+    echo "===== 5 ====="
     wait_until_replica_healthy
+    echo "===== 6 ====="
     dfx nns install
+    echo "===== 7 ====="
     dfx nns import
+    echo "===== 8 ====="
     dfx sns import
+    echo "===== 9 ====="
     ls candid
+    echo "===== 10 ====="
     cat dfx.json
+    echo "===== 11 ====="    
     # Deploy the SNS
     install_asset sns/valid
+    echo "===== 12 ====="
     dfx sns init-config-file validate
+    echo "===== 13 ====="
     # The remaining steps don't work any more as the steps required have changed due to one-proposal
     #dfx sns propose
     # SNS canister IDs should be saved

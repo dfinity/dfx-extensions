@@ -7,7 +7,6 @@ use dfx_extensions_utils::{
 };
 
 use clap::Parser;
-use tokio::runtime::Runtime;
 
 /// Imports the sns canisters
 #[derive(Parser)]
@@ -23,7 +22,7 @@ pub struct SnsImportOpts {
 }
 
 /// Executes the command line `dfx sns import`.
-pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
+pub async fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let config = Config::from_current_dir(None)?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
@@ -33,7 +32,6 @@ pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
 
     let network_mappings = get_network_mappings(&opts.network_mapping)?;
 
-    let runtime = Runtime::new().expect("Unable to create a runtime");
     let ic_commit = if let Ok(v) = std::env::var("DFX_IC_COMMIT") {
         v
     } else {
@@ -41,13 +39,14 @@ pub fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     };
     let their_dfx_json_location =
         format!("https://raw.githubusercontent.com/dfinity/ic/{ic_commit}/rs/sns/cli/dfx.json");
-    runtime.block_on(import_canister_definitions(
+    import_canister_definitions(
         &logger,
         &mut config,
         &their_dfx_json_location,
         None,
         None,
         &network_mappings,
-    ))?;
+    )
+    .await?;
     Ok(())
 }

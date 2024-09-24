@@ -29,7 +29,7 @@ pub struct ImportOpts {
 pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let dfx = DfxInterfaceBuilder::new()
         .anonymous()
-        .with_extension_manager_from_cache_path(dfx_cache_path)
+        .with_extension_manager_from_cache_path(dfx_cache_path)?
         .build()
         .await?;
 

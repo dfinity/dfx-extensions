@@ -29,11 +29,11 @@ pub struct ImportOpts {
 pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let dfx = DfxInterfaceBuilder::new()
         .anonymous()
-        .with_extension_manager_from_cache_dir(dfx_cache_path)
+        .with_extension_manager_from_cache_path(dfx_cache_path)
         .build()
         .await?;
 
-    let config = Config::from_current_dir(None)?;
+    let config = dfx.config();
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }

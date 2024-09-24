@@ -30,7 +30,7 @@ pub struct InstallOpts {
 pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
     let dfx = DfxInterfaceBuilder::new()
         .anonymous()
-        .with_extension_manager_from_cache_dir(dfx_cache_path)
+        .with_extension_manager_from_cache_path(dfx_cache_path)
         .build()
         .await?;
     let mut network_descriptor = dfx.network_descriptor().clone();

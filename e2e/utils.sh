@@ -171,9 +171,9 @@ dfx_start() {
         # wait for it to close. Because `dfx start` leaves child processes running, we need
         # to close this pipe, otherwise Bats will wait indefinitely.
         if [[ $# -eq 0 ]]; then
-            dfx start --pocketic --clean --background --host "$FRONTEND_HOST" 3>&- # Start on random port for parallel test execution
+            dfx start --pocketic --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
         else
-            dfx start --pocketic --clean --background "$@" 3>&-
+            dfx start --pocketic --background --artificial-delay 100 "$@" 3>&-
         fi
 
         dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"

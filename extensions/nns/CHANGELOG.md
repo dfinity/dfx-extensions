@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.4.5] - 2024-09-20
+- Updated the version of IC canisters used internally, as the previous version had removed support for some NNS proposals that the extension needed internally.
+
 ## [0.4.4] - 2024-09-12
 - Updated version of ic-admin used internally
 
@@ -41,6 +44,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.5]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.4]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

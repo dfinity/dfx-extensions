@@ -17,6 +17,7 @@ Depending on the `dfx sns` subcommand you specify, additional arguments, options
 | [`propose`](#_dfx_sns_propose)                                     | Submits a CreateServiceNervousSystem NNS Proposal.                                                                 |
 | [`neuron-id-to-candid-subaccount`](#_dfx_sns_propose)              | Converts a Neuron ID to a candid subaccount blob suitable for use in the `manage_neuron` method on SNS Governance. |
 | [`list`](#_list)                                                   | Lists SNSes and their canister IDs.                                                                                |
+| [`health`](#_health)                                               | Lists SNSes and does basic checks of their memory, cycles, and version.                                            |
 | `help`                                                             | Displays usage information message for a specified subcommand.                                                     |
 
 To view usage information for a specific subcommand, specify the subcommand and the `--help` flag. For example, to see usage information for `dfx sns validate`, you can run the following command:
@@ -110,7 +111,11 @@ dfx sns propose --test-neuron-proposer sns_init.yaml
 
 ## dfx sns list
 
-Use the `dfx sns list` command to see all the SNSes and their canister IDs. You can also pass --json to get this information in json format rather than a human-readable table.
+Use the `dfx sns list` command to see all the SNSes and their canister IDs. You can also pass `--json` to get this information in json format rather than a human-readable table.
+
+## dfx sns health
+
+Use the `dfx sns health` command to see the health of all SNSes. You can also pass `--json` to get this information in json format rather than a human-readable table. By default, dapp canisters are not examined. You can include them with the `--include-dapps` subcommand.
 
 ### Basic usage
 

@@ -124,6 +124,26 @@
       },
       "subcommands": null
     },
+    "health": {
+      "about": "Report health of SNSes",
+      "args": {
+        "include_dapps": {
+          "about": "Includes dapp canisters in the output",
+          "long": "include-dapps",
+          "short": null,
+          "multiple": false,
+          "values": 0
+        },
+        "json": {
+          "about": "Output the SNS information as JSON (instead of a human-friendly table)",
+          "long": "json",
+          "short": null,
+          "multiple": false,
+          "values": 0
+        }
+      },
+      "subcommands": null
+    },
     "import": {
       "about": "Subcommand for importing sns API definitions and canister IDs. This and `Download` are only useful for SNS testflight",
       "args": {
@@ -288,5 +308,6 @@
   "dependencies": {
     "dfx": ">=0.17.0"
   },
-  "canister_type": null
+  "canister_type": null,
+  "download_url_template": "https://github.com/dfinity/dfx-extensions/releases/download/{{tag}}/{{basename}}.{{archive-format}}"
 }

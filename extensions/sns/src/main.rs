@@ -16,6 +16,7 @@ use ic_sns_cli::{
     add_sns_wasm_for_tests, deploy_testflight,
     init_config_file::{self, InitConfigFileArgs},
     list::{self, ListArgs},
+    health::{self, HealthArgs},
     neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},
@@ -65,6 +66,8 @@ enum SubCommand {
     AddSnsWasmForTests(AddSnsWasmForTestsArgs),
     /// List SNSes
     List(ListArgs),
+    /// Report health of SNSes
+    Health(HealthArgs),
 
     /// Subcommand for importing sns API definitions and canister IDs.
     /// This and `Download` are only useful for SNS testflight
@@ -96,6 +99,7 @@ async fn main() -> anyhow::Result<()> {
         }
         SubCommand::AddSnsWasmForTests(args) => SnsLibSubCommand::AddSnsWasmForTests(args),
         SubCommand::List(args) => SnsLibSubCommand::List(args),
+        SubCommand::Health(args) => SnsLibSubCommand::Health(args),
 
         SubCommand::Import(v) => {
             let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
@@ -127,6 +131,7 @@ async fn main() -> anyhow::Result<()> {
         }
         SnsLibSubCommand::AddSnsWasmForTests(args) => add_sns_wasm_for_tests(args),
         SnsLibSubCommand::List(args) => list::exec(args, &agent).await,
+        SnsLibSubCommand::Health(args) => health::exec(args, &agent).await,
     }
 }
 

@@ -92,7 +92,7 @@ pub async fn install_nns(
     verify_local_replica_type_is_system(network, networks_config)?;
     verify_nns_canister_ids_are_available(agent).await?;
     let provider_url = get_and_check_provider(network)?;
-    let nns_url = get_and_check_replica_url(network, logger)?;
+    let nns_url = provider_url.clone();
     let subnet_id = get_subnet_id(agent).await?.to_text();
 
     eprintln!("Installing the core backend wasm canisters...");

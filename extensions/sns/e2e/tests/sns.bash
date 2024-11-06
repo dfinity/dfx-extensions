@@ -56,13 +56,13 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 
 @test "sns propose succeeds" {
     echo "===== 1 ====="
-    source dfx_extension_install_manually nns
+    dfx_extension_install_manually nns
     echo "===== 2 ====="
     dfx_new
     echo "===== 3 ====="
     install_shared_asset subnet_type/shared_network_settings/system
     echo "===== 4 ====="
-    $DFX_START --clean --background --host 127.0.0.1:8080
+    dfx_start_for_nns_install
     echo "===== 5 ====="
     wait_until_replica_healthy
     echo "===== 6 ====="
@@ -105,9 +105,9 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 # This test asserts that the new subcommand `prepare-canister add-nns-root` can add NNS root
 # as a co-controller to a dapp.
 @test "sns prepare-canisters adds NNS Root" {
-     source dfx_extension_install_manually nns
+     dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
-     $DFX_START --clean --background --host 127.0.0.1:8080
+     dfx_start_for_nns_install
      wait_until_replica_healthy
 
      dfx_new_frontend && dfx deploy
@@ -130,9 +130,9 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 # This test asserts that the new subcommand `prepare-canister remove-nns-root` can remove NNS root
 # as a co-controller to a dapp.
 @test "sns prepare-canisters removes NNS Root" {
-     source dfx_extension_install_manually nns
+     dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
-     $DFX_START --clean --background --host 127.0.0.1:8080
+     dfx_start_for_nns_install
      wait_until_replica_healthy
 
      dfx_new_frontend && dfx deploy

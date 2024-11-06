@@ -25,12 +25,6 @@ dfx_extension_install_manually() (
     extensions_dir="$(dfx cache show)/extensions"
     mkdir -p "$extensions_dir"
     cp -R "$PREBUILT_EXTENSIONS_DIR/$extension_name" "$extensions_dir/$extension_name"
-    if [ "$USE_POCKET_IC" ]
-    then
-        export DFX_START="dfx start --pocketic"
-    else
-        export DFX_START="dfx start"
-    fi
 )
 
 standard_setup() {

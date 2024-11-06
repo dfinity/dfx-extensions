@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - main
+      - ens/sdk-1832-load-dfx-json-with-extension-canister
   pull_request:
 
 jobs:

@@ -175,7 +175,7 @@ dfx_start() {
     if [[ $# -eq 0 ]]; then
         $DFX_START --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
     else
-        $DFX_START --pocketic --background --artificial-delay 100 "$@" 3>&-
+        $DFX_START --background --artificial-delay 100 "$@" 3>&-
     fi
 
     dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"

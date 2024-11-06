@@ -18,6 +18,7 @@ jobs:
       matrix:
         os: [ macos-12, ubuntu-20.04 ]
         extension: [ nns, sns ]
+        pocketic: [ "", "true" ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,6 +55,8 @@ jobs:
         if: matrix.extension == 'sns'
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
+        env:
+          USE_POCKET_IC: ${{ matrix.pocketic }}
 
   aggregate:
     name: e2e:required

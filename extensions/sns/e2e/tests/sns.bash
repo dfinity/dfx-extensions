@@ -62,7 +62,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     echo "===== 3 ====="
     install_shared_asset subnet_type/shared_network_settings/system
     echo "===== 4 ====="
-    dfx start --pocketic --clean --background --host 127.0.0.1:8080
+    $DFX_START --clean --background --host 127.0.0.1:8080
     echo "===== 5 ====="
     wait_until_replica_healthy
     echo "===== 6 ====="
@@ -107,7 +107,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 @test "sns prepare-canisters adds NNS Root" {
      dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
-     dfx start --pocketic --clean --background --host 127.0.0.1:8080
+     $DFX_START --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
 
      dfx_new_frontend && dfx deploy
@@ -132,7 +132,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
 @test "sns prepare-canisters removes NNS Root" {
      dfx_extension_install_manually nns
      install_shared_asset subnet_type/shared_network_settings/system
-     dfx start --pocketic --clean --background --host 127.0.0.1:8080
+     $DFX_START --clean --background --host 127.0.0.1:8080
      wait_until_replica_healthy
 
      dfx_new_frontend && dfx deploy

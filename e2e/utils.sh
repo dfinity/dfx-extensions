@@ -25,6 +25,12 @@ dfx_extension_install_manually() (
     extensions_dir="$(dfx cache show)/extensions"
     mkdir -p "$extensions_dir"
     cp -R "$PREBUILT_EXTENSIONS_DIR/$extension_name" "$extensions_dir/$extension_name"
+    if [ "$USE_POCKET_IC" ]
+    then
+        export DFX_START="dfx start --pocketic"
+    else
+        export DFX_START="dfx start"
+    fi
 )
 
 standard_setup() {
@@ -156,13 +162,20 @@ dfx_start() {
 
     determine_network_directory
 
+    if [ "$USE_POCKET_IC" ]
+    then
+        DFX_START="dfx start --pocketic"
+    else
+        DFX_START="dfx start"
+    fi
+
     # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
     # wait for it to close. Because `dfx start` leaves child processes running, we need
     # to close this pipe, otherwise Bats will wait indefinitely.
     if [[ $# -eq 0 ]]; then
-        dfx start --pocketic --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
+        $DFX_START --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
     else
-        dfx start --pocketic --background --artificial-delay 100 "$@" 3>&-
+        $DFX_START --pocketic --background --artificial-delay 100 "$@" 3>&-
     fi
 
     dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"
@@ -189,9 +202,16 @@ dfx_start() {
 # - It may also be that ic-nns-install, if used on a non-standard port, installs only the core canisters not the UI.
 # - However until we have implemented good solutions, all tests on ic-nns-install must run on port 8080.
 dfx_start_for_nns_install() {
+    if [ "$USE_POCKET_IC" ]
+    then
+        DFX_START="dfx start --pocketic"
+    else
+        DFX_START="dfx start"
+    fi
+
     # TODO: When nns-dapp supports dynamic ports, this wait can be removed.
     timeout 300 sh -c \
-        "until dfx start --pocketic --clean --background --host 127.0.0.1:8080 --verbose ; do echo waiting for port 8080 to become free; sleep 3; done" \
+        "until $DFX_START --clean --background --host 127.0.0.1:8080 --verbose ; do echo waiting for port 8080 to become free; sleep 3; done" \
         || (echo "could not connect to replica on port 8080" && exit 1)
     # TODO: figure out how to plug bats' "run" into above statement,
     #       so that below asserts will work as expected

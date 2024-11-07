@@ -146,52 +146,6 @@ determine_network_directory() {
     fi
 }
 
-# Start the replica in the background.
-dfx_start() {
-    local port dfx_config_root webserver_port
-    dfx_patchelf
-
-    # Start on random port for parallel test execution
-    FRONTEND_HOST="127.0.0.1:0"
-
-    determine_network_directory
-    if [ "$USE_IC_REF" ]
-    then
-        if [[ $# -eq 0 ]]; then
-            dfx start --emulator --background --host "$FRONTEND_HOST" 3>&-
-        else
-            batslib_decorate "no arguments to dfx start --emulator supported yet"
-            fail
-        fi
-
-        test -f "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port"
-        port=$(cat "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port")
-    else
-        # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
-        # wait for it to close. Because `dfx start` leaves child processes running, we need
-        # to close this pipe, otherwise Bats will wait indefinitely.
-        if [[ $# -eq 0 ]]; then
-            dfx start --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
-        else
-            dfx start --background --artificial-delay 100 "$@" 3>&-
-        fi
-
-        dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"
-        printf "Configuration Root for DFX: %s\n" "${dfx_config_root}"
-        test -f "${dfx_config_root}/replica-1.port"
-        port=$(cat "${dfx_config_root}/replica-1.port")
-    fi
-
-    webserver_port=$(cat "$E2E_NETWORK_DATA_DIRECTORY/webserver-port")
-
-    printf "Replica Configured Port: %s\n" "${port}"
-    printf "Webserver Configured Port: %s\n" "${webserver_port}"
-
-    timeout 5 sh -c \
-        "until nc -z localhost ${port}; do echo waiting for replica; sleep 1; done" \
-        || (echo "could not connect to replica on port ${port}" && exit 1)
-}
-
 # Tries to start dfx on the default port, repeating until it succeeds or times out.
 #
 # Motivation: dfx nns install works only on port 8080, as URLs are compiled into the wasms.  This means that multiple
@@ -201,9 +155,16 @@ dfx_start() {
 # - It may also be that ic-nns-install, if used on a non-standard port, installs only the core canisters not the UI.
 # - However until we have implemented good solutions, all tests on ic-nns-install must run on port 8080.
 dfx_start_for_nns_install() {
+    if [ "$USE_POCKET_IC" ]
+    then
+        DFX_START="dfx start --pocketic"
+    else
+        DFX_START="dfx start"
+    fi
+
     # TODO: When nns-dapp supports dynamic ports, this wait can be removed.
     timeout 300 sh -c \
-        "until dfx start --clean --background --host 127.0.0.1:8080 --verbose ; do echo waiting for port 8080 to become free; sleep 3; done" \
+        "until $DFX_START --clean --background --host 127.0.0.1:8080 --verbose ; do echo waiting for port 8080 to become free; sleep 3; done" \
         || (echo "could not connect to replica on port 8080" && exit 1)
     # TODO: figure out how to plug bats' "run" into above statement,
     #       so that below asserts will work as expected
@@ -216,54 +177,6 @@ wait_until_replica_healthy() {
     echo "waiting for replica to become healthy"
     dfx ping --wait-healthy
     echo "replica became healthy"
-}
-
-# Start the replica in the background.
-dfx_replica() {
-    local replica_port dfx_config_root
-    dfx_patchelf
-    determine_network_directory
-    if [ "$USE_IC_REF" ]
-    then
-        # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
-        # wait for it to close. Because `dfx start` leaves child processes running, we need
-        # to close this pipe, otherwise Bats will wait indefinitely.
-        dfx replica --emulator --port 0 "$@" 3>&- &
-        export DFX_REPLICA_PID=$!
-
-        timeout 60 sh -c \
-            "until test -s \"$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port\"; do echo waiting for ic-ref port; sleep 1; done" \
-            || (echo "replica did not write to \"$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port\" file" && exit 1)
-
-        test -f "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port"
-        replica_port=$(cat "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port")
-
-    else
-        # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
-        # wait for it to close. Because `dfx start` leaves child processes running, we need
-        # to close this pipe, otherwise Bats will wait indefinitely.
-        dfx replica --port 0 "$@" 3>&- &
-        export DFX_REPLICA_PID=$!
-
-        timeout 60 sh -c \
-            "until test -s \"$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-1.port\"; do echo waiting for replica port; sleep 1; done" \
-            || (echo "replica did not write to port file" && exit 1)
-
-        dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"
-        test -f "${dfx_config_root}/replica-1.port"
-        replica_port=$(cat "${dfx_config_root}/replica-1.port")
-
-    fi
-
-    printf "Replica Configured Port: %s\n" "${replica_port}"
-
-    timeout 5 sh -c \
-        "until nc -z localhost ${replica_port}; do echo waiting for replica; sleep 1; done" \
-        || (echo "could not connect to replica on port ${replica_port}" && exit 1)
-
-    # ping the replica directly, because the bootstrap (that launches icx-proxy, which dfx ping usually connects to)
-    # is not running yet
-    dfx ping --wait-healthy "http://127.0.0.1:${replica_port}"
 }
 
 dfx_bootstrap() {
@@ -332,20 +245,6 @@ setup_actuallylocal_shared_network() {
     jq '.actuallylocal.providers=["http://127.0.0.1:'"$webserver_port"'"]' "$E2E_NETWORKS_JSON" | sponge "$E2E_NETWORKS_JSON"
 }
 
-setup_local_shared_network() {
-    local replica_port
-    if [ "$USE_IC_REF" ]
-    then
-        replica_port=$(get_ic_ref_port)
-    else
-        replica_port=$(get_replica_port)
-    fi
-
-    [ ! -f "$E2E_NETWORKS_JSON" ] && echo "{}" >"$E2E_NETWORKS_JSON"
-
-    jq ".local.bind=\"127.0.0.1:${replica_port}\"" "$E2E_NETWORKS_JSON" | sponge "$E2E_NETWORKS_JSON"
-}
-
 use_wallet_wasm() {
     # shellcheck disable=SC2154
     export DFX_WALLET_WASM="${archive}/wallet/$1/wallet.wasm"
@@ -379,10 +278,6 @@ get_replica_pid() {
   cat "$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-pid"
 }
 
-get_ic_ref_port() {
-  cat "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port"
-
-}
 get_replica_port() {
   cat "$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-1.port"
 }

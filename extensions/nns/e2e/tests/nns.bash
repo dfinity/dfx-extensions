@@ -191,15 +191,8 @@ assert_nns_canister_id_matches() {
       "categories": [],
       "keywords": [],
       "canister_type": {
-       "evaluation_order": [ "wasm" ],
        "defaults": {
          "type": "custom",
-         "build": [
-           "echo the embera build step for canister {{canister_name}} with candid {{canister.candid}} and main file {{canister.main}} and gzip is {{canister.gzip}}",
-           "mkdir -p .embera/{{canister_name}}",
-           "cp main.wasm {{canister.wasm}}"
-         ],
-         "gzip": true,
          "wasm": ".embera/{{canister_name}}/{{canister_name}}.wasm"
        }
       }

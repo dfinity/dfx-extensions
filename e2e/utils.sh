@@ -245,14 +245,6 @@ setup_actuallylocal_shared_network() {
     jq '.actuallylocal.providers=["http://127.0.0.1:'"$webserver_port"'"]' "$E2E_NETWORKS_JSON" | sponge "$E2E_NETWORKS_JSON"
 }
 
-setup_local_shared_network() {
-    local replica_port=$(get_replica_port)
-
-    [ ! -f "$E2E_NETWORKS_JSON" ] && echo "{}" >"$E2E_NETWORKS_JSON"
-
-    jq ".local.bind=\"127.0.0.1:${replica_port}\"" "$E2E_NETWORKS_JSON" | sponge "$E2E_NETWORKS_JSON"
-}
-
 use_wallet_wasm() {
     # shellcheck disable=SC2154
     export DFX_WALLET_WASM="${archive}/wallet/$1/wallet.wasm"
@@ -286,10 +278,6 @@ get_replica_pid() {
   cat "$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-pid"
 }
 
-get_ic_ref_port() {
-  cat "$E2E_NETWORK_DATA_DIRECTORY/ic-ref.port"
-
-}
 get_replica_port() {
   cat "$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-1.port"
 }

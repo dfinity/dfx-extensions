@@ -178,5 +178,44 @@ assert_nns_canister_id_matches() {
 @test "dfx nns install with a canister type defined by another extension" {
     install_shared_asset subnet_type/shared_network_settings/system
     dfx_start_for_nns_install
+
+    CACHE_DIR=$(dfx cache show)
+    mkdir -p "$CACHE_DIR"/extensions/embera
+    cat > "$CACHE_DIR"/extensions/embera/extension.json <<EOF
+    {
+      "name": "embera",
+      "version": "0.1.0",
+      "homepage": "https://github.com/dfinity/dfx-extensions",
+      "authors": "DFINITY",
+      "summary": "Test extension for e2e purposes.",
+      "categories": [],
+      "keywords": [],
+      "canister_type": {
+       "evaluation_order": [ "wasm" ],
+       "defaults": {
+         "type": "custom",
+         "build": [
+           "echo the embera build step for canister {{canister_name}} with candid {{canister.candid}} and main file {{canister.main}} and gzip is {{canister.gzip}}",
+           "mkdir -p .embera/{{canister_name}}",
+           "cp main.wasm {{canister.wasm}}"
+         ],
+         "gzip": true,
+         "wasm": ".embera/{{canister_name}}/{{canister_name}}.wasm"
+       }
+      }
+    }
+EOF
+    cat > dfx.json <<EOF
+    {
+      "canisters": {
+        "c1": {
+          "type": "embera",
+          "candid": "main.did",
+          "main": "main-file.embera"
+        }
+      }
+    }
+EOF
+
     dfx nns install
 }

@@ -1,7 +1,7 @@
 //! Code for the command line: `dfx nns install`
 use crate::install_nns::{get_and_check_replica_url, get_with_retries, install_nns};
 use clap::Parser;
-use dfx_core::DfxInterfaceBuilder;
+use dfx_core::DfxInterface;
 use dfx_extensions_utils::new_logger;
 use std::path::Path;
 
@@ -28,11 +28,7 @@ pub struct InstallOpts {
 
 /// Executes `dfx nns install`.
 pub async fn exec(opts: InstallOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let dfx = DfxInterfaceBuilder::new()
-        .anonymous()
-        .with_extension_manager_from_cache_path(dfx_cache_path)?
-        .build()
-        .await?;
+    let dfx = DfxInterface::anonymous().await?;
     let mut network_descriptor = dfx.network_descriptor().clone();
     if let Some(ref mut local_server_descriptor) = &mut network_descriptor.local_server_descriptor {
         local_server_descriptor.load_settings_digest()?;

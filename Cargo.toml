@@ -10,7 +10,7 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = { git = "https://github.com/dfinity/sdk", rev = "10391754ccd8d5eb92890f896369bd7c8b62af56" }
+dfx-core = { git = "https://github.com/dfinity/sdk", rev = "993ae6df38caef8aae5291570b78954334d16b21" }
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "^1"
@@ -21,8 +21,8 @@ flate2 = { version = "1.0.25", default-features = false, features = [
 ] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = "0.38" # { git = "https://github.com/dfinity/agent-rs", rev = "6e11a350112f9b907c4d590d8217f340e153d898" }
-ic-utils = "0.38" # { git = "https://github.com/dfinity/agent-rs", rev = "6e11a350112f9b907c4d590d8217f340e153d898" }
+ic-agent = { git = "https://github.com/dfinity/agent-rs", rev = "6e11a350112f9b907c4d590d8217f340e153d898" }
+ic-utils = { git = "https://github.com/dfinity/agent-rs", rev = "6e11a350112f9b907c4d590d8217f340e153d898" }
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
     "json",

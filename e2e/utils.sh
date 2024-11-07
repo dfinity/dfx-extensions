@@ -146,47 +146,6 @@ determine_network_directory() {
     fi
 }
 
-# Start the replica in the background.
-dfx_start() {
-    local port dfx_config_root webserver_port
-    dfx_patchelf
-
-    # Start on random port for parallel test execution
-    FRONTEND_HOST="127.0.0.1:0"
-
-    determine_network_directory
-
-    if [ "$USE_POCKET_IC" ]
-    then
-        DFX_START="dfx start --pocketic"
-    else
-        DFX_START="dfx start"
-    fi
-
-    # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
-    # wait for it to close. Because `dfx start` leaves child processes running, we need
-    # to close this pipe, otherwise Bats will wait indefinitely.
-    if [[ $# -eq 0 ]]; then
-        $DFX_START --background --host "$FRONTEND_HOST" --artificial-delay 100 3>&- # Start on random port for parallel test execution
-    else
-        $DFX_START --background --artificial-delay 100 "$@" 3>&-
-    fi
-
-    dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"
-    printf "Configuration Root for DFX: %s\n" "${dfx_config_root}"
-    test -f "${dfx_config_root}/replica-1.port"
-    port=$(cat "${dfx_config_root}/replica-1.port")
-
-    webserver_port=$(cat "$E2E_NETWORK_DATA_DIRECTORY/webserver-port")
-
-    printf "Replica Configured Port: %s\n" "${port}"
-    printf "Webserver Configured Port: %s\n" "${webserver_port}"
-
-    timeout 5 sh -c \
-        "until nc -z localhost ${port}; do echo waiting for replica; sleep 1; done" \
-        || (echo "could not connect to replica on port ${port}" && exit 1)
-}
-
 # Tries to start dfx on the default port, repeating until it succeeds or times out.
 #
 # Motivation: dfx nns install works only on port 8080, as URLs are compiled into the wasms.  This means that multiple

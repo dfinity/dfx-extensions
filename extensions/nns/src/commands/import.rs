@@ -1,10 +1,8 @@
 //! Code for the command line: `dfx nns import`
 use std::{collections::BTreeMap, path::Path};
 
-use dfx_core::config::cache::get_version_from_cache_path;
 use dfx_core::config::model::canister_id_store::CanisterIds;
 use dfx_core::config::model::dfinity::Config;
-use dfx_core::extension::manager::ExtensionManager;
 use dfx_extensions_utils::{
     get_canisters_json_object, get_network_mappings, import_canister_definitions, new_logger,
     replica_rev, set_remote_canister_ids, ImportNetworkMapping, NNS_CORE,
@@ -28,9 +26,7 @@ pub struct ImportOpts {
 
 /// Executes `dfx nns import`
 pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let version = get_version_from_cache_path(dfx_cache_path)?;
-    let extension_manager = ExtensionManager::new(&version)?;
-    let config = Config::from_current_dir(Some(&extension_manager))?;
+    let config = Config::from_current_dir(None)?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }

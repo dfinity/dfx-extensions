@@ -175,3 +175,8 @@ assert_nns_canister_id_matches() {
     fi
 }
 
+@test "dfx nns install with a canister type defined by another extension" {
+    install_shared_asset subnet_type/shared_network_settings/system
+    dfx_start_for_nns_install
+    dfx nns install
+}

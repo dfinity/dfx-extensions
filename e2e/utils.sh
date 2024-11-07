@@ -179,37 +179,6 @@ wait_until_replica_healthy() {
     echo "replica became healthy"
 }
 
-# Start the replica in the background.
-dfx_replica() {
-    local replica_port dfx_config_root
-    dfx_patchelf
-    determine_network_directory
-
-    # Bats creates a FD 3 for test output, but child processes inherit it and Bats will
-    # wait for it to close. Because `dfx start` leaves child processes running, we need
-    # to close this pipe, otherwise Bats will wait indefinitely.
-    dfx replica --port 0 "$@" 3>&- &
-    export DFX_REPLICA_PID=$!
-
-    timeout 60 sh -c \
-        "until test -s \"$E2E_NETWORK_DATA_DIRECTORY/replica-configuration/replica-1.port\"; do echo waiting for replica port; sleep 1; done" \
-        || (echo "replica did not write to port file" && exit 1)
-
-    dfx_config_root="$E2E_NETWORK_DATA_DIRECTORY/replica-configuration"
-    test -f "${dfx_config_root}/replica-1.port"
-    replica_port=$(cat "${dfx_config_root}/replica-1.port")
-
-    printf "Replica Configured Port: %s\n" "${replica_port}"
-
-    timeout 5 sh -c \
-        "until nc -z localhost ${replica_port}; do echo waiting for replica; sleep 1; done" \
-        || (echo "could not connect to replica on port ${replica_port}" && exit 1)
-
-    # ping the replica directly, because the bootstrap (that launches icx-proxy, which dfx ping usually connects to)
-    # is not running yet
-    dfx ping --wait-healthy "http://127.0.0.1:${replica_port}"
-}
-
 dfx_bootstrap() {
     # This only works because we use the network by name
     #    (implicitly: --network local)

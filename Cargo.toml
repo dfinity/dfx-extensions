@@ -21,8 +21,8 @@ flate2 = { version = "1.0.25", default-features = false, features = [
 ] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = { git = "https://github.com/dfinity/agent-rs", rev = "4642e30ab6cf148ad94bda0c12f1b9330377de36" }
-ic-utils = { git = "https://github.com/dfinity/agent-rs", rev = "4642e30ab6cf148ad94bda0c12f1b9330377de36" }
+ic-agent = { git = "https://github.com/dfinity/agent-rs", rev = "729398880545a1f49a4c6286d0dd0c94254b236f" }
+ic-utils = { git = "https://github.com/dfinity/agent-rs", rev = "729398880545a1f49a4c6286d0dd0c94254b236f" }
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
     "json",

@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Fixed a bug where `dfx nns install` and `dfx nns import` would fail if a canister type in dfx.json was defined by an extension.
 
 ## [0.4.6] - 2024-10-10
 - Unchanged from 0.4.5

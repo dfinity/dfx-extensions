@@ -1,6 +1,7 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+- Fixed a bug where `dfx sns import` would fail if a canister type in dfx.json was defined by an extension.
 
 ## [0.4.6] - 2024-10-11
 - Added `dfx sns health` command.

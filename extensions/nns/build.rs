@@ -1,7 +1,7 @@
 use std::env;
 use std::path::PathBuf;
 
-const REPLICA_REV: &str = "61f05b60fb3464cec774da4dc81aca0dc4fa8366";
+const REPLICA_REV: &str = "0f96a6f4661f0d87bd9149a88846db9674360291";
 
 const BINARY_DEPENDENCIES: &[(&str, &str)] = &[
     // (downloaded binary name, renamed binary name)

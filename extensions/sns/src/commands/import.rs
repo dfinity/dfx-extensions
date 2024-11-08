@@ -7,6 +7,8 @@ use dfx_extensions_utils::{
 };
 
 use clap::Parser;
+use dfx_core::config::cache::get_version_from_cache_path;
+use dfx_core::extension::manager::ExtensionManager;
 
 /// Imports the sns canisters
 #[derive(Parser)]
@@ -23,7 +25,9 @@ pub struct SnsImportOpts {
 
 /// Executes the command line `dfx sns import`.
 pub async fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let config = Config::from_current_dir(None)?;
+    let version = get_version_from_cache_path(dfx_cache_path)?;
+    let extension_manager = ExtensionManager::new(&version)?;
+    let config = Config::from_current_dir(Some(&extension_manager))?;
     if config.is_none() {
         anyhow::bail!(crate::errors::DFXJSON_NOT_FOUND);
     }

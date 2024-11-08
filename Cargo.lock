@@ -1356,8 +1356,9 @@ dependencies = [
 
 [[package]]
 name = "dfx-core"
-version = "0.0.1"
-source = "git+https://github.com/dfinity/sdk?rev=993ae6df38caef8aae5291570b78954334d16b21#993ae6df38caef8aae5291570b78954334d16b21"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e454e8c92953264dfd491c0850fe2f4503fcdaae2ad267fdb23e529d3612e12d"
 dependencies = [
  "aes-gcm",
  "argon2",
@@ -1374,9 +1375,9 @@ dependencies = [
  "handlebars",
  "hex",
  "humantime-serde",
- "ic-agent 0.37.1 (git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898)",
+ "ic-agent 0.38.0",
  "ic-identity-hsm",
- "ic-utils 0.37.1",
+ "ic-utils 0.38.0",
  "itertools 0.10.5",
  "k256 0.11.6",
  "keyring",
@@ -2474,7 +2475,7 @@ dependencies = [
  "hyper-rustls 0.27.3",
  "hyper-util",
  "ic-certification",
- "ic-transport-types 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-transport-types 0.37.1",
  "ic-verify-bls-signature",
  "k256 0.13.4",
  "leb128",
@@ -2502,8 +2503,9 @@ dependencies = [
 
 [[package]]
 name = "ic-agent"
-version = "0.37.1"
-source = "git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898#6e11a350112f9b907c4d590d8217f340e153d898"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "def8c34690d68caa452486af1fff4782d2f5a9d4c5b4e0e1afca648c616fa380"
 dependencies = [
  "async-lock 3.4.0",
  "backoff",
@@ -2515,7 +2517,7 @@ dependencies = [
  "http 1.1.0",
  "http-body 1.0.1",
  "ic-certification",
- "ic-transport-types 0.37.1 (git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898)",
+ "ic-transport-types 0.38.2",
  "ic-verify-bls-signature",
  "k256 0.13.4",
  "leb128",
@@ -2952,11 +2954,12 @@ dependencies = [
 
 [[package]]
 name = "ic-identity-hsm"
-version = "0.37.1"
-source = "git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898#6e11a350112f9b907c4d590d8217f340e153d898"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fe9975ba49e50ccf10d8268b168b9a35da165904f56725a333e8294d7e5f1d92"
 dependencies = [
  "hex",
- "ic-agent 0.37.1 (git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898)",
+ "ic-agent 0.38.0",
  "pkcs11",
  "sha2 0.10.8",
  "simple_asn1",
@@ -3058,7 +3061,7 @@ source = "git+https://github.com/dfinity/ic?rev=61f05b60fb3464cec774da4dc81aca0d
 dependencies = [
  "anyhow",
  "candid",
- "ic-agent 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-agent 0.37.1",
  "ic-base-types",
  "ic-nervous-system-clients",
  "ic-nns-common",
@@ -3423,7 +3426,7 @@ dependencies = [
  "clap 4.5.20",
  "futures",
  "hex",
- "ic-agent 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-agent 0.37.1",
  "ic-base-types",
  "ic-crypto-sha2",
  "ic-nervous-system-agent",
@@ -3745,8 +3748,9 @@ dependencies = [
 
 [[package]]
 name = "ic-transport-types"
-version = "0.37.1"
-source = "git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898#6e11a350112f9b907c4d590d8217f340e153d898"
+version = "0.38.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "894b183f280e87b29aac98e7de0972cf632435e1f0a462969d9f5e0ccacc4d25"
 dependencies = [
  "candid",
  "hex",
@@ -3754,6 +3758,7 @@ dependencies = [
  "leb128",
  "serde",
  "serde_bytes",
+ "serde_cbor",
  "serde_repr",
  "sha2 0.10.8",
  "thiserror",
@@ -3809,13 +3814,14 @@ dependencies = [
 
 [[package]]
 name = "ic-utils"
-version = "0.37.1"
-source = "git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898#6e11a350112f9b907c4d590d8217f340e153d898"
+version = "0.38.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "75135bc8838398f2b4a512b900ee1d58fbf34bdedb74aedc0ae772e785535814"
 dependencies = [
  "async-trait",
  "candid",
  "futures-util",
- "ic-agent 0.37.1 (git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898)",
+ "ic-agent 0.38.0",
  "once_cell",
  "semver",
  "serde",
@@ -4509,13 +4515,13 @@ dependencies = [
  "fn-error-context",
  "futures-util",
  "hex",
- "ic-agent 0.37.1 (git+https://github.com/dfinity/agent-rs?rev=6e11a350112f9b907c4d590d8217f340e153d898)",
+ "ic-agent 0.38.0",
  "ic-http-utils",
  "ic-icp-index",
  "ic-icrc1-index-ng",
  "ic-icrc1-ledger",
  "ic-sns-cli",
- "ic-utils 0.37.1",
+ "ic-utils 0.38.0",
  "reqwest 0.11.27",
  "rust_decimal",
  "serde",
@@ -4960,9 +4966,9 @@ dependencies = [
  "base64 0.13.1",
  "candid",
  "hex",
- "ic-agent 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-agent 0.37.1",
  "ic-cdk",
- "ic-transport-types 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-transport-types 0.37.1",
  "reqwest 0.12.8",
  "schemars",
  "serde",
@@ -6278,7 +6284,7 @@ dependencies = [
  "dfx-extensions-utils",
  "fn-error-context",
  "futures-util",
- "ic-agent 0.37.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic-agent 0.37.1",
  "ic-sns-cli",
  "serde_json",
  "slog",

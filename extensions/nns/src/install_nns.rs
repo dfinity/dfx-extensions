@@ -89,7 +89,19 @@ pub async fn install_nns(
     logger: &Logger,
 ) -> anyhow::Result<()> {
     eprintln!("Checking out the environment...");
-    verify_local_replica_type_is_system(network, networks_config)?;
+    // check if we're talking to PocketIC defaulting to false if we aren't sure
+    let is_pocketic = if let Some(descriptor) = &network.local_server_descriptor {
+        // PocketIC server has `/_/topology` endpoint while the replica does not
+        let endpoint = format!("http://{}/_/topology", descriptor.bind_address);
+        let status = reqwest::get(endpoint).await?.status();
+        status.is_success()
+    } else {
+        false
+    };
+    // PocketIC has multiple subnets and thus supports default application subnet type.
+    if !is_pocketic {
+        verify_local_replica_type_is_system(network, networks_config)?;
+    }
     verify_nns_canister_ids_are_available(agent).await?;
     let provider_url = get_and_check_provider(network)?;
     let nns_url = provider_url.clone();

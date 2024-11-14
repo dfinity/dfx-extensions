@@ -14,9 +14,9 @@ use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 use clap::Parser;
 use ic_sns_cli::{
     add_sns_wasm_for_tests, deploy_testflight,
+    health::{self, HealthArgs},
     init_config_file::{self, InitConfigFileArgs},
     list::{self, ListArgs},
-    health::{self, HealthArgs},
     neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},

@@ -91,6 +91,22 @@ assert_nns_canister_id_matches() {
     #assert_nns_canister_id_matches nns-dapp
 }
 
+@test "dfx nns install on application subnet" {
+    echo Setting up...
+    install_shared_asset subnet_type/shared_network_settings/application
+    dfx_start_for_nns_install
+
+    run dfx nns install
+
+    if [[ "$USE_POCKET_IC" ]]
+    then
+      assert_success
+    else
+      assert_failure
+      assert_output --partial "The replica subnet_type needs to be 'system' to run NNS canisters."
+    fi
+}
+
 @test "dfx nns install runs" {
 
     echo Setting up...

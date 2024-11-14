@@ -2,6 +2,7 @@
 
 ## [Unreleased] - ReleaseDate
 - Fixed a bug where `dfx nns install` and `dfx nns import` would fail if a canister type in dfx.json was defined by an extension.
+- Added support for application subnets for `dfx start --pocketic`.
 
 ## [0.4.7] - 2024-11-08
 - Added support for `dfx start --pocketic`.

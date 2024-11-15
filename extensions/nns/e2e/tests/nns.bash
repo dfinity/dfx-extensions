@@ -118,6 +118,10 @@ assert_nns_canister_id_matches() {
         echo "No application subnet found in the PocketIC instance topology."
         exit 1
       fi
+      while [[ "$(dfx canister call rkp4c-7iaaa-aaaaa-aaaca-cai get_default_subnets '()' --query | grep "${APP_SUBNET_ID}")" == "" ]]
+      do
+        sleep 1
+      done
       run dfx canister call rkp4c-7iaaa-aaaaa-aaaca-cai get_default_subnets '()' --query
       assert_success
       assert_output --partial "${APP_SUBNET_ID}"

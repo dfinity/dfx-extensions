@@ -3009,7 +3009,7 @@ dependencies = [
  "ic-sns-root",
  "ic-sns-swap",
  "ic-sns-wasm",
- "pocket-ic",
+ "pocket-ic 5.0.0",
  "serde",
  "tempfile",
  "thiserror",
@@ -4614,6 +4614,7 @@ dependencies = [
  "ic-icrc1-ledger",
  "ic-sns-cli",
  "ic-utils 0.38.0",
+ "pocket-ic 6.0.0",
  "reqwest 0.11.27",
  "rust_decimal",
  "serde",
@@ -5048,6 +5049,35 @@ checksum = "953ec861398dccce10c670dfeaf3ec4911ca479e9c02154b3a215178c5f566f2"
 name = "pocket-ic"
 version = "5.0.0"
 source = "git+https://github.com/dfinity/ic?rev=0f96a6f4661f0d87bd9149a88846db9674360291#0f96a6f4661f0d87bd9149a88846db9674360291"
+dependencies = [
+ "base64 0.13.1",
+ "candid",
+ "hex",
+ "ic-certification",
+ "ic-transport-types 0.37.1",
+ "reqwest 0.12.9",
+ "schemars",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "serde_json",
+ "sha2 0.10.8",
+ "slog",
+ "strum",
+ "strum_macros",
+ "thiserror",
+ "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "wslpath",
+]
+
+[[package]]
+name = "pocket-ic"
+version = "6.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "124a2380ca6f557adf8b02517cbfd2f564113230e14cda6f6aadd3dfe156293c"
 dependencies = [
  "base64 0.13.1",
  "candid",

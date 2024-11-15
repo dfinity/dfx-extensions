@@ -30,6 +30,7 @@ ic-icrc1-index-ng.workspace = true
 ic-icrc1-ledger.workspace = true
 ic-http-utils.workspace = true
 hex = "0.4.3"
+pocket-ic.workspace = true
 reqwest.workspace = true
 rust_decimal = "1.29.1"
 serde.workspace = true

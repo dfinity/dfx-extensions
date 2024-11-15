@@ -23,6 +23,7 @@ fn-error-context = "0.2.1"
 futures-util = "0.3.28"
 ic-agent = "=0.38.0"
 ic-utils = "=0.38.0"
+pocket-ic = "6.0.0"
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
     "json",

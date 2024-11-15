@@ -34,6 +34,7 @@ use ic_icrc1_index_ng::{IndexArg, InitArg as IndexInitArg};
 use ic_icrc1_ledger::{InitArgsBuilder, LedgerArgument};
 use ic_utils::interfaces::management_canister::builders::InstallMode;
 use ic_utils::interfaces::ManagementCanister;
+use pocket_ic::common::rest::Topology;
 use reqwest::Url;
 use serde::Serialize;
 use sha2::{Digest, Sha256};
@@ -89,23 +90,40 @@ pub async fn install_nns(
     logger: &Logger,
 ) -> anyhow::Result<()> {
     eprintln!("Checking out the environment...");
-    // check if we're talking to PocketIC defaulting to false if we aren't sure
-    let is_pocketic = if let Some(descriptor) = &network.local_server_descriptor {
-        // PocketIC server has `/_/topology` endpoint while the replica does not
+    // Retrieve the PocketIC instance topology.
+    let topology = if let Some(descriptor) = &network.local_server_descriptor {
         let endpoint = format!("http://{}/_/topology", descriptor.bind_address);
-        let status = reqwest::get(endpoint).await?.status();
-        status.is_success()
+        let resp = reqwest::get(endpoint).await?;
+        if resp.status().is_success() {
+            Some(resp.json::<Topology>().await?)
+        } else {
+            None
+        }
     } else {
-        false
+        None
     };
     // PocketIC has multiple subnets and thus supports default application subnet type.
-    if !is_pocketic {
+    if topology.is_none() {
         verify_local_replica_type_is_system(network, networks_config)?;
     }
     verify_nns_canister_ids_are_available(agent).await?;
     let provider_url = get_and_check_provider(network)?;
     let nns_url = provider_url.clone();
-    let subnet_id = get_subnet_id(agent).await?.to_text();
+    let root_subnet_id = get_subnet_id(agent).await?;
+    let sns_subnet_id = topology
+        .as_ref()
+        .and_then(|topology| topology.get_sns())
+        .unwrap_or(root_subnet_id);
+    let default_subnet_id = topology
+        .as_ref()
+        .and_then(|topology| {
+            topology
+                .get_app_subnets()
+                .first()
+                .cloned()
+                .or_else(|| topology.get_system_subnets().first().cloned())
+        })
+        .unwrap_or(root_subnet_id);
 
     eprintln!("Installing the core backend wasm canisters...");
     download_nns_wasms(dfx_cache_path).await?;
@@ -118,7 +136,7 @@ pub async fn install_nns(
         wasm_dir: nns_wasm_dir(dfx_cache_path),
         nns_url: nns_url.to_string(),
         test_accounts,
-        sns_subnets: Some(subnet_id.to_string()),
+        sns_subnets: Some(sns_subnet_id.to_string()),
         local_registry_file: network.local_server_descriptor.as_ref().map(|desc| {
             desc.data_dir_by_settings_digest()
                 .join("state/replicated_state/registry.proto")
@@ -240,7 +258,7 @@ pub async fn install_nns(
     // ... and configure the backend NNS canisters:
     eprintln!("Configuring the NNS...");
     set_xdr_rate(1234567, &nns_url, dfx_cache_path)?;
-    set_cmc_authorized_subnets(&nns_url, &subnet_id, dfx_cache_path)?;
+    set_cmc_authorized_subnets(&nns_url, &default_subnet_id.to_string(), dfx_cache_path)?;
     set_cycles_ledger_canister_id_in_cmc(&nns_url, dfx_cache_path)?;
 
     print_nns_details(provider_url)?;

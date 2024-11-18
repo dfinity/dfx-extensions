@@ -101,6 +101,30 @@ assert_nns_canister_id_matches() {
     if [[ "$USE_POCKET_IC" ]]
     then
       assert_success
+
+      SNS_SUBNET_ID=$(curl http://localhost:8080/_/topology | jq -r '.subnet_configs | map_values(select(.subnet_kind=="SNS")) | keys[]')
+      if [[ "${SNS_SUBNET_ID}" == "" ]]
+      then
+        echo "No SNS subnet found in the PocketIC instance topology."
+        exit 1
+      fi
+      run dfx canister call qaa6y-5yaaa-aaaaa-aaafa-cai get_sns_subnet_ids '(record {})' --query
+      assert_success
+      assert_output --partial "${SNS_SUBNET_ID}"
+
+      APP_SUBNET_ID=$(curl http://localhost:8080/_/topology | jq -r '.subnet_configs | map_values(select(.subnet_kind=="Application")) | keys[]')
+      if [[ "${APP_SUBNET_ID}" == "" ]]
+      then
+        echo "No application subnet found in the PocketIC instance topology."
+        exit 1
+      fi
+      while [[ "$(dfx canister call rkp4c-7iaaa-aaaaa-aaaca-cai get_default_subnets '()' --query | grep "${APP_SUBNET_ID}")" == "" ]]
+      do
+        sleep 1
+      done
+      run dfx canister call rkp4c-7iaaa-aaaaa-aaaca-cai get_default_subnets '()' --query
+      assert_success
+      assert_output --partial "${APP_SUBNET_ID}"
     else
       assert_failure
       assert_output --partial "The replica subnet_type needs to be 'system' to run NNS canisters."
@@ -181,12 +205,7 @@ assert_nns_canister_id_matches() {
     run dfx --identity ident-1 canister call rkp4c-7iaaa-aaaaa-aaaca-cai notify_mint_cycles '(record { block_index = 5 : nat64; })'
     # If cycles ledger is configured correctly, then notify_mint_cycles will try to call the cycles ledger (and fail because the canister is not even created).
     # If it is not configured correctly, then this will complain about the cycles ledger canister id not being configured.
-    if [ "$USE_POCKET_IC" ]
-    then
-      assert_output --partial "No route to canister um5iw-rqaaa-aaaaq-qaaba-cai"
-    else
-      assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
-    fi
+    assert_output --partial "Canister um5iw-rqaaa-aaaaq-qaaba-cai not found"
 }
 
 @test "dfx nns install with a canister type defined by another extension" {

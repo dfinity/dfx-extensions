@@ -45,7 +45,7 @@ jobs:
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
         with:
-          dfx-version: "0.24.1"
+          dfx-version: "0.24.2"
       - name: Set prebuilt extensions directory
         run: echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
       - name: Build extension manually

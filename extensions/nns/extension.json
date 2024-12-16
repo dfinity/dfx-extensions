@@ -1,6 +1,6 @@
 {
   "name": "nns",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "homepage": "https://github.com/dfinity/dfx-extensions",
   "authors": "DFINITY",
   "summary": "Toolkit for interacting with the Network Nervous System.",

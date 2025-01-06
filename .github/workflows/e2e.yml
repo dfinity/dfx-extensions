@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ macos-12, ubuntu-20.04 ]
+        os: [ macos-14, ubuntu-20.04 ]
         extension: [ nns, sns ]
         pocketic: [ "", "pocketic" ]
     steps:
@@ -37,7 +37,7 @@ jobs:
             ${{ runner.os }}-cargo-e2e-
       - name: Install brew
         uses: Homebrew/actions/setup-homebrew@master
-        if: contains(matrix.os, 'macos-12') == false
+        if: contains(matrix.os, 'macos-14') == false
       - name: Install sponge and timeout 
         run: brew install coreutils sponge
       - name: Install cargo-dist

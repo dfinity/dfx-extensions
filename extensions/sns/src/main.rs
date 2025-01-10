@@ -24,6 +24,8 @@ use ic_sns_cli::{
 };
 mod utils;
 
+// test comment
+
 /// Options for `dfx sns`.
 #[derive(Parser)]
 #[command(name("sns"))]

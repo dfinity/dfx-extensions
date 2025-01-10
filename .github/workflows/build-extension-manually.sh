@@ -4,7 +4,7 @@ set -e -o pipefail
 
 build_manually() (
   local extension_name="$1"
-  package_version=$(cargo metadata --format-version=1 | jq -r '.workspace_members[]' | grep "$extension_name" | cut -d" " -f2)
+  package_version=$(cargo metadata --format-version=1 | jq -r --arg name "$extension_name" '.packages[] | select(.name == $name) | .version')
   echo "package version for $extension_name: $package_version"
   cargo dist build --tag="$extension_name-v$package_version" # cargo-dist needs git tag only metadata-related stuff; it won't do git checkout, it will build from HEAD
   extension_dir="$PREBUILT_EXTENSIONS_DIR/$extension_name"

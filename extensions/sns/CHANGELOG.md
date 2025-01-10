@@ -1,9 +1,12 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
-- Fixed a bug where `dfx sns import` would fail if a canister type in dfx.json was defined by an extension.
+- Improved the behavior of SNS Testflight. There is currently an incompatibilty between the `sns-init.yaml` format and SNS Testflight. [Refer to this forum post](https://forum.dfinity.org/t/error-when-deploying-sns-testflight-to-mainnet/38282/6?u=andre-popovitch) for more information and workarounds.
+
+## [0.4.8] - 2024-12-16
 
 ## [0.4.7] - 2024-11-08
+- Fixed a bug where `dfx sns import` would fail if a canister type in dfx.json was defined by an extension.
 - Added support for `dfx start --pocketic`.
 
 ## [0.4.6] - 2024-10-11
@@ -64,6 +67,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.4.8]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.6]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.5]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

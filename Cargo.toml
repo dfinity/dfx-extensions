@@ -10,7 +10,7 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = "0.1.1"
+dfx-core = "0.1.2"
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "^1"
@@ -21,8 +21,8 @@ flate2 = { version = "1.0.25", default-features = false, features = [
 ] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = "=0.38.0"
-ic-utils = "=0.38.0"
+ic-agent = "0.39"
+ic-utils = "0.39"
 pocket-ic = "6.0.0"
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
@@ -35,11 +35,11 @@ slog = "^2.7.0"
 tempfile = "3.12.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
-ic-http-utils = { git = "https://github.com/dfinity/ic", rev = "0f96a6f4661f0d87bd9149a88846db9674360291" }
-ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "0f96a6f4661f0d87bd9149a88846db9674360291" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "0f96a6f4661f0d87bd9149a88846db9674360291" }
-ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "0f96a6f4661f0d87bd9149a88846db9674360291" }
-ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "0f96a6f4661f0d87bd9149a88846db9674360291" }
+ic-http-utils = { git = "https://github.com/dfinity/ic", rev = "760e1f764b56f4f655a09789c245da487eccc5cb" }
+ic-icp-index = { git = "https://github.com/dfinity/ic", rev = "760e1f764b56f4f655a09789c245da487eccc5cb" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "760e1f764b56f4f655a09789c245da487eccc5cb" }
+ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "760e1f764b56f4f655a09789c245da487eccc5cb" }
+ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "760e1f764b56f4f655a09789c245da487eccc5cb" }
 serde_json = "1.0.79"
 
 # Config for 'cargo dist'

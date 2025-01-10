@@ -61,7 +61,7 @@ fn generate_args(cmd: &clap::Command) -> BTreeMap<String, ExtensionSubcommandArg
                         if min == 0 && max == usize::MAX {
                             ArgNumberOfValues::Unlimited
                         } else if min == max {
-                            ArgNumberOfValues::Number(min as usize)
+                            ArgNumberOfValues::Number(min)
                         } else {
                             // max is inclusive, but ArgNumberOfValues::Range wants an exclusive range
                             ArgNumberOfValues::Range(min..(max.saturating_add(1)))
@@ -76,7 +76,7 @@ fn generate_args(cmd: &clap::Command) -> BTreeMap<String, ExtensionSubcommandArg
 }
 
 pub fn verify_extension_manifest<Command: clap::CommandFactory>(path: &Path) -> anyhow::Result<()> {
-    // read the mainfest from the path and deserizlize it
+    // read the manifest from the path and deserialize it
     let current_manifest_string = std::fs::read_to_string(path).context(format!(
         "Could not read the extension manifest at {}",
         path.display(),

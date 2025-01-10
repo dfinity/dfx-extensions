@@ -4,7 +4,6 @@ use dfx_extensions_utils::replica_rev;
 
 use clap::Parser;
 use std::path::{Path, PathBuf};
-use tokio::runtime::Runtime;
 
 /// Downloads the SNS canister WASMs
 #[derive(Parser)]

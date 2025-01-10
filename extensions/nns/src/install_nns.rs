@@ -85,7 +85,7 @@ pub async fn install_nns(
     networks_config: &NetworksConfig,
     dfx_cache_path: &Path,
     ledger_accounts: &[String],
-    logger: &Logger,
+    _logger: &Logger,
 ) -> anyhow::Result<()> {
     eprintln!("Checking out the environment...");
     // Retrieve the PocketIC instance topology.

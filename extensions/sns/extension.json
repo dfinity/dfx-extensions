@@ -303,6 +303,54 @@
         }
       },
       "subcommands": null
+    },
+    "upgrade-sns-controlled-canister": {
+      "about": "Uploads a given Wasm to a (newly deployed) store canister and submits a proposal to upgrade using that Wasm",
+      "args": {
+        "candid_arg": {
+          "about": "Upgrade argument for the Candid service",
+          "long": "candid-arg",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "proposal_url": {
+          "about": "URL (starting with https://) of a web page with a public announcement of this upgrade",
+          "long": "proposal-url",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "sns_neuron_id": {
+          "about": "SNS neuron ID (subaccount) to be used for proposing the upgrade",
+          "long": "sns-neuron-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "summary": {
+          "about": "Human-readable text explaining why this upgrade is being done (may be markdown)",
+          "long": "summary",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "target_canister_id": {
+          "about": "ID of the target canister to be upgraded",
+          "long": "target-canister-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "wasm_path": {
+          "about": "Path to a ICP WASM module file (may be gzipped)",
+          "long": "wasm-path",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
     }
   },
   "dependencies": {

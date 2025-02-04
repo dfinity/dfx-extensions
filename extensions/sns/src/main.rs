@@ -11,7 +11,8 @@ use std::path::PathBuf;
 // #![warn(clippy::missing_docs_in_private_items)]
 use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 
-use clap::Parser;
+use clap::{ArgGroup, Args, Parser};
+use ic_agent::Agent;
 use ic_sns_cli::{
     add_sns_wasm_for_tests, deploy_testflight,
     health::{self, HealthArgs},
@@ -20,9 +21,32 @@ use ic_sns_cli::{
     neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},
+    upgrade_sns_controlled_canister::{self, UpgradeSnsControlledCanisterArgs},
     AddSnsWasmForTestsArgs, DeployTestflightArgs, SubCommand as SnsLibSubCommand,
 };
 mod utils;
+
+#[derive(Args, Clone, Debug, Default)]
+#[clap(
+group(ArgGroup::new("network-select").multiple(false)),
+)]
+pub struct NetworkOpt {
+    /// Override the compute network to connect to. By default, the local network is used.
+    /// A valid URL (starting with `http:` or `https:`) can be used here, and a special
+    /// ephemeral network will be created specifically for this request. E.g.
+    /// "http://localhost:12345/" is a valid network name.
+    #[arg(long, global(true), group = "network-select")]
+    network: Option<String>,
+
+    /// Shorthand for --network=playground.
+    /// Borrows short-lived canisters on the real IC network instead of creating normal canisters.
+    #[clap(long, global(true), group = "network-select")]
+    playground: bool,
+
+    /// Shorthand for --network=ic.
+    #[clap(long, global(true), group = "network-select")]
+    ic: bool,
+}
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -36,6 +60,13 @@ pub struct SnsOpts {
     /// Path to cache of DFX which executed this extension.
     #[arg(long, env = "DFX_CACHE_PATH", global = true)]
     dfx_cache_path: Option<PathBuf>,
+
+    /// The user identity to run this command as. It contains your principal as well as some things DFX associates with it like the wallet.
+    #[arg(long, global = true)]
+    identity: Option<String>,
+
+    #[command(flatten)]
+    network: NetworkOpt,
 }
 
 /// Initialize, deploy and interact with an SNS.
@@ -68,6 +99,9 @@ enum SubCommand {
     List(ListArgs),
     /// Report health of SNSes
     Health(HealthArgs),
+    /// Uploads a given Wasm to a (newly deployed) store canister and submits a proposal to upgrade
+    /// using that Wasm.
+    UpgradeSnsControlledCanister(UpgradeSnsControlledCanisterArgs),
 
     /// Subcommand for importing sns API definitions and canister IDs.
     /// This and `Download` are only useful for SNS testflight
@@ -76,6 +110,42 @@ enum SubCommand {
     /// Downloads SNS canister versions that are specified in your dfx.json (which probably got there through the `Import` command).
     #[command()]
     Download(SnsDownloadOpts),
+}
+
+impl NetworkOpt {
+    pub fn to_network_name(&self) -> Option<String> {
+        if self.playground {
+            Some("playground".to_string())
+        } else if self.ic {
+            Some("ic".to_string())
+        } else {
+            self.network.clone()
+        }
+    }
+}
+
+
+pub async fn agent(network: NetworkOpt, identity: Option<String>) -> anyhow::Result<Agent> {
+    let network = match network.to_network_name() {
+        Some(network) => network,
+        None => {
+            eprintln!(
+                "No network specified. Defaulting to the local network. To connect to the mainnet IC instead, try passing `--network=ic`"
+            );
+            "local".to_string()
+        }
+    };
+
+    match utils::get_agent(&network, identity.clone()).await {
+        Ok(agent) => Ok(agent),
+        Err(err) => {
+            eprintln!("Failed to get agent due to: {err}. \nFalling back to mainnet agent.");
+            Agent::builder()
+                .with_url("https://ic0.app/")
+                .build()
+                .map_err(|e| anyhow::anyhow!(e))
+        }
+    }
 }
 
 /// Executes `dfx sns` and its subcommands.
@@ -100,6 +170,9 @@ async fn main() -> anyhow::Result<()> {
         SubCommand::AddSnsWasmForTests(args) => SnsLibSubCommand::AddSnsWasmForTests(args),
         SubCommand::List(args) => SnsLibSubCommand::List(args),
         SubCommand::Health(args) => SnsLibSubCommand::Health(args),
+        SubCommand::UpgradeSnsControlledCanister(args) => {
+            SnsLibSubCommand::UpgradeSnsControlledCanister(args)
+        }
 
         SubCommand::Import(v) => {
             let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
@@ -119,8 +192,6 @@ async fn main() -> anyhow::Result<()> {
         }
     };
 
-    let agent = utils::get_mainnet_agent()?;
-
     match subcommand {
         SnsLibSubCommand::DeployTestflight(args) => deploy_testflight(args),
         SnsLibSubCommand::InitConfigFile(args) => init_config_file::exec(args),
@@ -130,13 +201,28 @@ async fn main() -> anyhow::Result<()> {
             neuron_id_to_candid_subaccount::exec(args)
         }
         SnsLibSubCommand::AddSnsWasmForTests(args) => add_sns_wasm_for_tests(args),
-        SnsLibSubCommand::List(args) => list::exec(args, &agent).await,
-        SnsLibSubCommand::Health(args) => health::exec(args, &agent).await,
+        SnsLibSubCommand::List(args) => {
+            let agent = agent(opts.network, opts.identity).await?;
+            list::exec(args, &agent).await
+        }
+        SnsLibSubCommand::Health(args) => {
+            let agent = agent(opts.network, opts.identity).await?;
+
+            health::exec(args, &agent).await
+        }
+        SnsLibSubCommand::UpgradeSnsControlledCanister(args) => {
+            let agent = agent(opts.network, opts.identity).await?;
+            match upgrade_sns_controlled_canister::exec(args, &agent).await {
+                Ok(_) => Ok(()),
+                Err(err) => {
+                    anyhow::bail!("{}", err)
+                }
+            }
+        }
     }
 }
 
 #[test]
-#[ignore] // TODO: remove once a dfx-core release containing <https://github.com/dfinity/sdk/pull/4060> is merged and this repo is updated to use that version.
 fn verify_extension_manifest() {
     let project_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     println!("Project root: {:?}", project_root);

@@ -1,9 +1,12 @@
 <!-- next-header -->
 
 ## [Unreleased] - ReleaseDate
+
+## [0.5.0] - 2025-02-04
 - Fixed a bug where `dfx nns install` and `dfx nns import` would fail if a canister type in dfx.json was defined by an extension.
 - Added support for application subnets for `dfx start --pocketic`.
 - Configure the PocketIC SNS subnet in the SNS-W canister and the default subnet in the CMC canister.
+- No breaking changes since 0.4.7, but bumping the minor version number to keep it in sync with the SNS extension.
 
 ## [0.4.7] - 2024-11-08
 - Added support for `dfx start --pocketic`.
@@ -53,6 +56,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.6]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.5]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

@@ -2,8 +2,7 @@
 
 ## [Unreleased] - ReleaseDate
 - Improved the behavior of SNS Testflight. There is currently an incompatibilty between the `sns-init.yaml` format and SNS Testflight. [Refer to this forum post](https://forum.dfinity.org/t/error-when-deploying-sns-testflight-to-mainnet/38282/6?u=andre-popovitch) for more information and workarounds.
-
-## [0.4.8] - 2024-12-16
+- Added `UpgradeSnsControlledCanister` command
 
 ## [0.4.7] - 2024-11-08
 - Fixed a bug where `dfx sns import` would fail if a canister type in dfx.json was defined by an extension.

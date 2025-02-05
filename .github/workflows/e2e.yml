@@ -40,8 +40,11 @@ jobs:
         if: contains(matrix.os, 'macos-14') == false
       - name: Install sponge and timeout 
         run: brew install coreutils sponge
-      - name: Install cargo-dist
-        run: curl --proto '=https' --tlsv1.2 -LsSf https://axodotdev.artifacts.axodotdev.host/cargo-dist/v0.10.0/cargo-dist-installer.sh | sh
+      - name: Install dist
+        # copied from dist generated release.yml
+        # should be updated when dist version is updated
+        shell: bash
+        run: "curl --proto '=https' --tlsv1.2 -LsSf https://github.com/axodotdev/cargo-dist/releases/download/v0.28.0/cargo-dist-installer.sh | sh"
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
         with:

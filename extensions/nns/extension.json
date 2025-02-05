@@ -12,7 +12,7 @@
     "deployment"
   ],
   "dependencies": {
-    "dfx": ">=0.17.0"
+    "dfx": ">=0.24.1"
   },
   "subcommands": {
     "import": {

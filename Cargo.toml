@@ -42,29 +42,6 @@ ic-icrc1-ledger = { git = "https://github.com/dfinity/ic", rev = "2dd2ccee9679aa
 ic-sns-cli = { git = "https://github.com/dfinity/ic", rev = "2dd2ccee9679aaf23cf57daaa703c46f7962c29f" }
 serde_json = "1.0.79"
 
-# Config for 'cargo dist'
-[workspace.metadata.dist]
-# CI backends to support
-ci = ["github"]
-# Target platforms to build apps for (Rust target-triple syntax)
-targets = [
-    "aarch64-apple-darwin",
-    "x86_64-apple-darwin",
-    "x86_64-unknown-linux-gnu",
-]
-# The archive format to use for non-windows builds (defaults .tar.xz)
-unix-archive = ".tar.gz"
-# Checksums to generate for each App
-checksum = "sha256"
-# Whether to consider the binaries in a package for distribution (defaults true)
-dist = true
-# The preferred cargo-dist version to use in CI (Cargo.toml SemVer syntax)
-cargo-dist-version = "0.10.0"
-# The installers to generate for each app
-installers = []
-# Publish jobs to run in CI
-pr-run-mode = "skip"
-
 
 # The profile that 'cargo dist' will build with
 [profile.dist]

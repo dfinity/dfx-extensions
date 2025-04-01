@@ -1,7 +1,6 @@
+use dfx_extensions_utils::dependencies::dfx::NNS_SNS_REPLICA_REV;
 use std::env;
 use std::path::PathBuf;
-
-const REPLICA_REV: &str = "760e1f764b56f4f655a09789c245da487eccc5cb";
 
 const BINARY_DEPENDENCIES: &[(&str, &str)] = &[
     // (downloaded binary name, renamed binary name)
@@ -24,7 +23,11 @@ fn main() {
         let bin_in_manifest_dir = manifest_dir.join(renamed_binary_name);
         let bin_in_target_dir = target_dir.join(renamed_binary_name);
         dbg!(&bin_in_manifest_dir, &bin_in_target_dir);
-        dfx_extensions_utils::download_ic_binary(REPLICA_REV, binary_name, &bin_in_manifest_dir);
+        dfx_extensions_utils::download_ic_binary(
+            NNS_SNS_REPLICA_REV,
+            binary_name,
+            &bin_in_manifest_dir,
+        );
         if bin_in_target_dir.exists() {
             std::fs::remove_file(&bin_in_target_dir).unwrap();
         }

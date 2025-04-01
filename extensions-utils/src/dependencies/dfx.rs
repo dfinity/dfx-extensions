@@ -6,6 +6,9 @@ use std::ffi::OsStr;
 use std::path::Path;
 use std::process::Command;
 
+/// The replica revision of the NNS/SNS canisters which might have dependencies among each other.
+pub const NNS_SNS_REPLICA_REV: &str = "760e1f764b56f4f655a09789c245da487eccc5cb";
+
 /// Calls a binary from dfx cache.
 ///
 /// # Returns
@@ -25,27 +28,6 @@ where
 {
     let binary = dfx_cache_path.join(command);
     execute_command(&binary, args, dfx_cache_path)
-}
-
-pub fn replica_rev(dfx_cache_path: &Path) -> Result<String, DfxError> {
-    let args = ["info", "replica-rev"];
-    let rev = Command::new(dfx_cache_path.join("dfx"))
-        .args(args)
-        .output()
-        .map_err(DfxError::DfxExecutableError)?
-        .stdout
-        .iter()
-        .map(|c| *c as char)
-        .collect::<String>()
-        .trim()
-        .to_string();
-    if rev.len() != 40 {
-        return Err(DfxError::MalformedCommandOutput {
-            command: args.join(" ").to_string(),
-            output: rev,
-        });
-    }
-    Ok(rev)
 }
 
 pub fn dfx_version(dfx_cache_path: &Path) -> Result<String, DfxError> {

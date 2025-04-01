@@ -4,18 +4,14 @@ use std::path::{Path, PathBuf};
 
 use fn_error_context::context;
 
-use crate::{download_ic_repo_wasm, replica_rev};
+use crate::{dependencies::dfx::NNS_SNS_REPLICA_REV, download_ic_repo_wasm};
 
 use super::sns::download_sns_wasms;
 
 /// Downloads all the core NNS wasms, excluding only the front-end wasms II and NNS-dapp.
 #[context("Failed to download NNS wasm files.")]
 pub async fn download_nns_wasms(dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let ic_commit = if let Ok(env_ic_commit) = std::env::var("DFX_IC_COMMIT") {
-        env_ic_commit
-    } else {
-        replica_rev(dfx_cache_path)?
-    };
+    let ic_commit = std::env::var("DFX_IC_COMMIT").unwrap_or(NNS_SNS_REPLICA_REV.to_string());
     let wasm_dir = &nns_wasm_dir(dfx_cache_path);
     for IcNnsInitCanister {
         wasm_name,

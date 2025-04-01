@@ -6,8 +6,9 @@ use dfx_core::config::model::canister_id_store::CanisterIds;
 use dfx_core::config::model::dfinity::Config;
 use dfx_core::extension::manager::ExtensionManager;
 use dfx_extensions_utils::{
-    get_canisters_json_object, get_network_mappings, import_canister_definitions, new_logger,
-    replica_rev, set_remote_canister_ids, ImportNetworkMapping, NNS_CORE,
+    dependencies::dfx::NNS_SNS_REPLICA_REV, get_canisters_json_object, get_network_mappings,
+    import_canister_definitions, new_logger, set_remote_canister_ids, ImportNetworkMapping,
+    NNS_CORE,
 };
 
 use clap::Parser;
@@ -38,11 +39,7 @@ pub async fn exec(opts: ImportOpts, dfx_cache_path: &Path) -> anyhow::Result<()>
     let logger = new_logger();
 
     let network_mappings = get_network_mappings(&opts.network_mapping)?;
-    let ic_commit = if let Ok(env_ic_commit) = std::env::var("DFX_IC_COMMIT") {
-        env_ic_commit
-    } else {
-        replica_rev(dfx_cache_path)?
-    };
+    let ic_commit = std::env::var("DFX_IC_COMMIT").unwrap_or(NNS_SNS_REPLICA_REV.to_string());
     let dfx_url_str = {
         let ic_project = std::env::var("DFX_IC_SRC").unwrap_or_else(|_| {
             format!("https://raw.githubusercontent.com/dfinity/ic/{ic_commit}")

@@ -124,7 +124,6 @@ impl NetworkOpt {
     }
 }
 
-
 pub async fn agent(network: NetworkOpt, identity: Option<String>) -> anyhow::Result<Agent> {
     let network = match network.to_network_name() {
         Some(network) => network,
@@ -183,12 +182,7 @@ async fn main() -> anyhow::Result<()> {
             return commands::import::exec(v, dfx_cache_path).await;
         }
         SubCommand::Download(v) => {
-            let dfx_cache_path = &opts.dfx_cache_path.ok_or_else(|| {
-                anyhow::Error::msg(
-                    "Missing path to dfx cache. Pass it as CLI argument: `--dfx-cache-path=PATH`",
-                )
-            })?;
-            return commands::download::exec(v, dfx_cache_path).await;
+            return commands::download::exec(v).await;
         }
     };
 

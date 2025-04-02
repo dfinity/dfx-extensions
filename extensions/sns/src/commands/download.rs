@@ -1,8 +1,6 @@
 //! Code for the command line `dfx sns import`
-use dfx_extensions_utils::download_sns_wasms;
-use dfx_extensions_utils::replica_rev;
-
 use clap::Parser;
+use dfx_extensions_utils::{dependencies::dfx::NNS_SNS_REPLICA_REV, download_sns_wasms};
 use std::path::{Path, PathBuf};
 
 /// Downloads the SNS canister WASMs
@@ -17,12 +15,8 @@ pub struct SnsDownloadOpts {
 }
 
 /// Executes the command line `dfx sns import`.
-pub async fn exec(opts: SnsDownloadOpts, dfx_cache_path: &Path) -> anyhow::Result<()> {
-    let ic_commit = if let Some(ic_commit) = opts.ic_commit {
-        ic_commit
-    } else {
-        replica_rev(dfx_cache_path)?
-    };
+pub async fn exec(opts: SnsDownloadOpts) -> anyhow::Result<()> {
+    let ic_commit = opts.ic_commit.unwrap_or(NNS_SNS_REPLICA_REV.to_string());
     download_sns_wasms(&ic_commit, &opts.wasms_dir).await?;
     Ok(())
 }

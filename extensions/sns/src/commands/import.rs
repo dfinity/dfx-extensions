@@ -2,9 +2,8 @@
 use std::path::Path;
 
 use dfx_core::config::model::dfinity::Config;
-use dfx_extensions_utils::{
-    get_network_mappings, import_canister_definitions, new_logger, replica_rev,
-};
+use dfx_extensions_utils::dependencies::dfx::NNS_SNS_REPLICA_REV;
+use dfx_extensions_utils::{get_network_mappings, import_canister_definitions, new_logger};
 
 use clap::Parser;
 use dfx_core::config::cache::get_version_from_cache_path;
@@ -36,11 +35,7 @@ pub async fn exec(opts: SnsImportOpts, dfx_cache_path: &Path) -> anyhow::Result<
 
     let network_mappings = get_network_mappings(&opts.network_mapping)?;
 
-    let ic_commit = if let Ok(v) = std::env::var("DFX_IC_COMMIT") {
-        v
-    } else {
-        replica_rev(dfx_cache_path)?
-    };
+    let ic_commit = std::env::var("DFX_IC_COMMIT").unwrap_or(NNS_SNS_REPLICA_REV.to_string());
     let their_dfx_json_location =
         format!("https://raw.githubusercontent.com/dfinity/ic/{ic_commit}/rs/sns/cli/dfx.json");
     import_canister_definitions(

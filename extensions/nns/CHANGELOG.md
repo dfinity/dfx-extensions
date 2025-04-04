@@ -2,6 +2,10 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.1] - 2025-04-04
+- Use the same IC commit for NNS/SNS binaries and wasms.
+- Bump the IC commit so that a fix of `ic_nns_init` is included.
+
 ## [0.5.0] - 2025-02-04
 - Fixed a bug where `dfx nns install` and `dfx nns import` would fail if a canister type in dfx.json was defined by an extension.
 - Added support for application subnets for `dfx start --pocketic`.
@@ -56,6 +60,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.6]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.1] - 2025-04-04
+- Unchanged from v0.5.0
+
 ## [0.5.0] - 2025-02-04
 - Improved the behavior of SNS Testflight. There is currently an incompatibilty between the `sns-init.yaml` format and SNS Testflight. [Refer to this forum post](https://forum.dfinity.org/t/error-when-deploying-sns-testflight-to-mainnet/38282/6?u=andre-popovitch) for more information and workarounds.
 - Added `UpgradeSnsControlledCanister` command.
@@ -69,6 +72,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.8]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

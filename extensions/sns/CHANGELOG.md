@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.2] - 2025-05-23
+- Unchanged from v0.5.1
+
 ## [0.5.1] - 2025-04-04
 - Unchanged from v0.5.0
 
@@ -72,6 +75,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.8]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

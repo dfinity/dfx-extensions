@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.2] - 2025-05-23
+- Bump the IC commit so that `ic_nns_init` uses candid for NNS Governance init payload.
+
 ## [0.5.1] - 2025-04-04
 - Use the same IC commit for NNS/SNS binaries and wasms.
 - Bump the IC commit so that a fix of `ic_nns_init` is included.
@@ -60,6 +63,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.4.7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

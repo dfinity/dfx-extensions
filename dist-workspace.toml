@@ -23,5 +23,8 @@ cargo-dist-version = "0.28.0"
 installers = []
 # Which actions to run on pull requests
 pr-run-mode = "skip"
-# Use custom runners for ubuntu, as the default 20.04 is unsupported
-github-custom-runners = { global = "ubuntu-22.04" }
+# Use custom runners for ubuntu, as the default 20.04 is unsupported. The "global" runner is used
+# for tasks like "plan", "host", "announce" and "build-global-artifacts" that are not specific to a
+# target, and the "x86_64-unknown-linux-gnu" runner is used to build the extensions for the specific
+# target.
+github-custom-runners = { global = "ubuntu-22.04", x86_64-unknown-linux-gnu = "ubuntu-22.04" }

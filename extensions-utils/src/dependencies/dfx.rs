@@ -7,7 +7,7 @@ use std::path::Path;
 use std::process::Command;
 
 /// The replica revision of the NNS/SNS canisters which might have dependencies among each other.
-pub const NNS_SNS_REPLICA_REV: &str = "ab3f07eadc3220acf0f5d2d3d355e4ba814716b6";
+pub const NNS_SNS_REPLICA_REV: &str = "6b847e22fd4ada36d6e140795c9d659a69764d59";
 
 /// Calls a binary from dfx cache.
 ///

@@ -159,7 +159,7 @@ dfx_start_for_nns_install() {
     then
         DFX_START="dfx start --pocketic"
     else
-        DFX_START="dfx start"
+        DFX_START="dfx start --replica"
     fi
 
     # TODO: When nns-dapp supports dynamic ports, this wait can be removed.

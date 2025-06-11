@@ -54,10 +54,7 @@ jobs:
       - name: Build extension manually
         run: .github/workflows/build-extension-manually.sh ${{ matrix.extension }}
       - name: Build nns manually
-        run: |
-          export LMDB_H_PATH=/opt/homebrew/opt/lmdb/include/lmdb.h
-          export LMDB_NO_BUILD=true
-          .github/workflows/build-extension-manually.sh nns
+        run: .github/workflows/build-extension-manually.sh nns
         if: matrix.extension == 'sns'
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash

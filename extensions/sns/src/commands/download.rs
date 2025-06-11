@@ -1,7 +1,7 @@
 //! Code for the command line `dfx sns import`
 use clap::Parser;
 use dfx_extensions_utils::{dependencies::dfx::NNS_SNS_REPLICA_REV, download_sns_wasms};
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 /// Downloads the SNS canister WASMs
 #[derive(Parser)]

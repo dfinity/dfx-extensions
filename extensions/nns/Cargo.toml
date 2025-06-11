@@ -1,6 +1,6 @@
 [package]
 name = "nns"
-version = "0.5.2"
+version = "0.5.3"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -34,7 +34,7 @@ pocket-ic.workspace = true
 reqwest.workspace = true
 rust_decimal = "1.29.1"
 serde.workspace = true
-sha2 = "0.10.6"
+sha2.workspace = true
 slog.workspace = true
 tempfile.workspace = true
 tokio.workspace = true

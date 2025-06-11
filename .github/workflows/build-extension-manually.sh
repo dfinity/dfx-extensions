@@ -2,6 +2,9 @@
 
 set -e -o pipefail
 
+export LMDB_H_PATH="$(brew --prefix lmdb)/include/lmdb.h"
+export LMDB_NO_BUILD=true
+
 build_manually() (
   local extension_name="$1"
   package_version=$(cargo metadata --format-version=1 | jq -r --arg name "$extension_name" '.packages[] | select(.name == $name) | .version')

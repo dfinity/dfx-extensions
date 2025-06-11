@@ -38,8 +38,13 @@ jobs:
       - name: Install brew
         uses: Homebrew/actions/setup-homebrew@master
         if: contains(matrix.os, 'macos-14') == false
-      - name: Install packages
+      - name: Install homebrew packages
         run: brew install coreutils sponge protobuf lmdb
+      - name: Install libunwind
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          apt update
+          apt install -y libunwind-dev
       - name: Install dist
         # copied from dist generated release.yml
         # should be updated when dist version is updated

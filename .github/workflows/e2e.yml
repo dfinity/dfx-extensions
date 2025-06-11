@@ -43,8 +43,8 @@ jobs:
       - name: Install libunwind
         if: contains(matrix.os, 'ubuntu')
         run: |
-          apt update
-          apt install -y libunwind-dev
+          sudo apt update
+          sudo apt install -y libunwind-dev
       - name: Install dist
         # copied from dist generated release.yml
         # should be updated when dist version is updated

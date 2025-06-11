@@ -10,6 +10,7 @@ echo
 echo
 echo "LMDB_H_PATH"
 echo "${LMDB_H_PATH}"
+ls -ldh "${LMDB_H_PATH}"
 echo
 echo "BEGIN brew list lmdb"
 echo

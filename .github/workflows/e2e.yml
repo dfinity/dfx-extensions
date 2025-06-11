@@ -39,7 +39,7 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
         if: contains(matrix.os, 'macos-14') == false
       - name: Install sponge and timeout 
-        run: brew install coreutils sponge protobuf
+        run: brew install coreutils sponge protobuf lmdb
       - name: Install dist
         # copied from dist generated release.yml
         # should be updated when dist version is updated
@@ -56,6 +56,9 @@ jobs:
       - name: Build nns manually
         run: .github/workflows/build-extension-manually.sh nns
         if: matrix.extension == 'sns'
+        env:
+          LMDB_H_PATH: /opt/homebrew/opt/lmdb/include/lmdb.h
+          LMDB_NO_BUILD: true
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
         env:

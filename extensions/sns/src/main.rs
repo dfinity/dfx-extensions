@@ -213,6 +213,15 @@ async fn main() -> anyhow::Result<()> {
                 }
             }
         }
+        SnsLibSubCommand::RefundAfterSnsControlledCanisterUpgrade(args) => {
+            let agent = agent(opts.network, opts.identity).await?;
+            match upgrade_sns_controlled_canister::refund(args, &agent).await {
+                Ok(_) => Ok(()),
+                Err(err) => {
+                    anyhow::bail!("{}", err)
+                }
+            }
+        }
     }
 }
 

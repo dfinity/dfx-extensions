@@ -2,6 +2,10 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.5.3] - 2025-05-23
+- Bump the IC commit so that we are ready for large/chunked Registry values. We might not actually need such support, but it is safer to upgrade.
+- Added support for refund-after-sns-controlled-canister-upgrade.
+
 ## [0.5.2] - 2025-05-23
 - Unchanged from v0.5.1
 
@@ -75,6 +79,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.5.3]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

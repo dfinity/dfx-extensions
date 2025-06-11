@@ -6,7 +6,7 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use dfx_core::canister::install_canister_wasm;
+use dfx_core::{error::cli::UserConsent, canister::install_canister_wasm};
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
@@ -658,6 +658,9 @@ pub async fn install_canister(
     let install_args = init_arg.unwrap_or(&unit_args);
     let install_mode = InstallMode::Install;
     let call_sender = CallSender::SelectedId;
+    fn ask_for_consent(_: &str) -> Result<(), UserConsent> {
+        Ok(())
+    }
 
     install_canister_wasm(
         agent,
@@ -667,7 +670,7 @@ pub async fn install_canister(
         install_mode,
         &call_sender,
         fs::read(wasm_path).with_context(|| format!("Unable to read {:?}", wasm_path))?,
-        true,
+        ask_for_consent,
     )
     .await?;
 

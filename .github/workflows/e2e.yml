@@ -38,7 +38,7 @@ jobs:
       - name: Install brew
         uses: Homebrew/actions/setup-homebrew@master
         if: contains(matrix.os, 'macos-14') == false
-      - name: Install sponge and timeout 
+      - name: Install packages
         run: brew install coreutils sponge protobuf lmdb
       - name: Install dist
         # copied from dist generated release.yml

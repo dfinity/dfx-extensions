@@ -2,8 +2,19 @@
 
 set -e -o pipefail
 
-export LMDB_H_PATH=/opt/homebrew/opt/lmdb/include/lmdb.h
+export LMDB_H_PATH="$(find / -name lmdb.h | grep homebrew | grep include)"
 export LMDB_NO_BUILD=true
+
+# DO NOT MERGE
+echo
+echo
+echo BEGIN LMDB_H_PATH
+echo
+echo "${LMDB_H_PATH}"
+echo
+echo END LMDB_H_PATH
+echo
+echo
 
 build_manually() (
   local extension_name="$1"

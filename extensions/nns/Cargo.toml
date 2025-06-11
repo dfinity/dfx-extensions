@@ -1,6 +1,6 @@
 [package]
 name = "nns"
-version = "0.5.2"
+version = "1.0.0"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true

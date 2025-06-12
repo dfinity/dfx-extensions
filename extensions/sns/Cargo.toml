@@ -33,6 +33,7 @@ publish = false
 
 [package.metadata.dist]
 include = ["extension.json"]
+allow-dirty = true
 
 [package.metadata.dist.system-dependencies]
 ubuntu = [

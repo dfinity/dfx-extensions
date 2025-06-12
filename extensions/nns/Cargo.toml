@@ -45,6 +45,7 @@ tokio.workspace = true
 
 [package.metadata.dist]
 include = ["extension.json", "ic-admin", "ic-nns-init"]
+allow-dirty = true
 
 [package.metadata.dist.system-dependencies]
 ubuntu = [

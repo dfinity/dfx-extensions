@@ -137,12 +137,17 @@ jobs:
         run: |
           ${{ matrix.packages_install }}
 
+      # Some stuff in the `ic` repo needs protoc and lmdb. Also, when building
+      # on linux, libunwind is needed. Supposedly, there is a way to install
+      # this crap without having to touch this generated release.yml file, but
+      # Gemini and I were not able to get that to work, so this has been hacked
+      # in. Anyway, if anyone ever has to regenerate this release.yml file,
+      # please, make sure this extra stuff doesn't get blow away 🙏
       - name: Install System Dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
           brew install protobuf lmdb
           echo "LMDB_H_PATH=$(brew --prefix lmdb)/include/lmdb.h" >> $GITHUB_ENV
-
       - name: Install System Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
@@ -152,6 +157,8 @@ jobs:
 
       - name: Build artifacts
         run: |
+          # This hack is needed so that lmdb.h can be found (by a build.rs)
+          # while building stuff from the `ic` repo.
           export LMDB_H_PATH
           export LMDB_NO_BUILD=true
 

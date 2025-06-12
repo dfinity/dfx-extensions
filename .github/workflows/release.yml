@@ -140,21 +140,25 @@ jobs:
       - name: Install System Dependencies (macOS)
         if: runner.os == 'macOS'
         run: |
-          echo "INSTALLING protobuf AND lmdb (VIA BREW)"
           brew install protobuf lmdb
+          echo "LMDB_H_PATH=$(brew --prefix lmdb)/include/lmdb.h" >> $GITHUB_ENV
 
       - name: Install System Dependencies (Linux)
         if: runner.os == 'Linux'
         run: |
-          echo "INSTALLING protobuf-compiler, liblmdb-dev, AND libunwind-dev (VIA apt-get)"
           sudo apt-get update
           sudo apt-get install -y protobuf-compiler liblmdb-dev libunwind-dev
+          echo "LMDB_H_PATH=/usr/include/lmdb.h" >> $GITHUB_ENV
 
       - name: Build artifacts
         run: |
+          export LMDB_H_PATH
+          export LMDB_NO_BUILD=true
+
           # Actually do builds and make zips and whatnot
           dist build ${{ needs.plan.outputs.tag-flag }} --print=linkage --output-format=json ${{ matrix.dist_args }} > dist-manifest.json
           echo "dist ran successfully"
+
       - id: cargo-dist
         name: Post-build
         # We force bash here just because github makes it really hard to get values up

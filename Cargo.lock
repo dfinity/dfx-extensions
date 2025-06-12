@@ -8016,7 +8016,7 @@ dependencies = [
 
 [[package]]
 name = "nns"
-version = "0.5.4-do-not-use-this-7"
+version = "0.5.4-do-not-use-this-8"
 dependencies = [
  "anyhow",
  "backoff",
@@ -10449,7 +10449,7 @@ dependencies = [
 
 [[package]]
 name = "sns"
-version = "0.5.4-do-not-use-this-7"
+version = "0.5.4-do-not-use-this-8"
 dependencies = [
  "anyhow",
  "candid",

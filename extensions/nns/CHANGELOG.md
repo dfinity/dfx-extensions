@@ -2,7 +2,7 @@
 
 ## [Unreleased] - ReleaseDate
 
-## [0.5.4-do-not-use-this-7] - 2025-06-11
+## [0.5.4-do-not-use-this-8] - 2025-06-11
 - Bump the IC commit so that we are ready for large/chunked Registry values. We might not actually need such support, but it is safer to upgrade.
 
 ## [0.5.2] - 2025-05-23
@@ -66,7 +66,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
-[0.5.4-do-not-use-this-7]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
+[0.5.4-do-not-use-this-8]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.2]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.1]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

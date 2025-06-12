@@ -1,6 +1,6 @@
 [package]
 name = "sns"
-version = "0.5.4-do-not-use-this-5"
+version = "0.5.4-do-not-use-this-6"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -33,7 +33,7 @@ publish = false
 
 [package.metadata.dist]
 include = ["extension.json"]
-allow-dirty = ["github-workflow"]
+allow-dirty = ["ci"]
 
 [package.metadata.dist.system-dependencies]
 ubuntu = [

@@ -1,6 +1,6 @@
 [package]
 name = "nns"
-version = "0.5.4-do-not-use-this-6"
+version = "0.5.4-do-not-use-this-7"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -45,7 +45,6 @@ tokio.workspace = true
 
 [package.metadata.dist]
 include = ["extension.json", "ic-admin", "ic-nns-init"]
-allow-dirty = ["ci"]
 
 [package.metadata.dist.system-dependencies]
 ubuntu = [

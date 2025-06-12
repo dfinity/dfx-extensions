@@ -44,6 +44,8 @@ ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "02571e8215fa
 ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "02571e8215fa3e77da791e693cc238b2de3beae9" }
 ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "02571e8215fa3e77da791e693cc238b2de3beae9" }
 
+[workspace.metadata.dist]
+allow-dirty = ["ci", "msi"]
 
 # The profile that 'cargo dist' will build with
 [profile.dist]

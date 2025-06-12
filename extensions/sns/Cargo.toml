@@ -33,15 +33,3 @@ publish = false
 
 [package.metadata.dist]
 include = ["extension.json"]
-
-[package.metadata.dist.system-dependencies]
-ubuntu = [
-    "protobuf-compiler",
-    "liblmdb-dev",
-    "libunwind-dev",
-]
-
-macos = [
-    "protobuf",
-    "lmdb",
-]

@@ -45,15 +45,3 @@ tokio.workspace = true
 
 [package.metadata.dist]
 include = ["extension.json", "ic-admin", "ic-nns-init"]
-
-[package.metadata.dist.system-dependencies]
-ubuntu = [
-    "protobuf-compiler",
-    "liblmdb-dev",
-    "libunwind-dev",
-]
-
-macos = [
-    "protobuf",
-    "lmdb",
-]

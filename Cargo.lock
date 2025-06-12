@@ -8016,7 +8016,7 @@ dependencies = [
 
 [[package]]
 name = "nns"
-version = "0.5.4"
+version = "0.5.3"
 dependencies = [
  "anyhow",
  "backoff",
@@ -10449,7 +10449,7 @@ dependencies = [
 
 [[package]]
 name = "sns"
-version = "0.5.4"
+version = "0.5.3"
 dependencies = [
  "anyhow",
  "candid",

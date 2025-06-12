@@ -136,6 +136,20 @@ jobs:
       - name: Install dependencies
         run: |
           ${{ matrix.packages_install }}
+
+      - name: Install System Dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          echo INSTALLING protobuf AND lmdb (VIA BREW)
+          brew install protobuf lmdb
+
+      - name: Install System Dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          echo INSTALLING protobuf-compiler, liblmdb-dev, AND libunwind-dev (VIA apt-get)
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler liblmdb-dev libunwind-dev
+
       - name: Build artifacts
         run: |
           # Actually do builds and make zips and whatnot

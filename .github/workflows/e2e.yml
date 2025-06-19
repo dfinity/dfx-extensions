@@ -18,7 +18,6 @@ jobs:
       matrix:
         os: [ macos-14, ubuntu-22.04 ]
         extension: [ nns, sns ]
-        pocketic: [ "", "pocketic" ]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -53,7 +52,7 @@ jobs:
       - name: Install IC SDK (dfx)
         uses: dfinity/setup-dfx@main
         with:
-          dfx-version: "0.24.2"
+          dfx-version: "0.27.0"
       - name: Set prebuilt extensions directory
         run: echo "PREBUILT_EXTENSIONS_DIR=$HOME/prebuilt-extensions" >> $GITHUB_ENV
       - name: Build extension manually
@@ -63,8 +62,6 @@ jobs:
         if: matrix.extension == 'sns'
       - name: run test
         run: timeout 2400 e2e/bats/bin/bats extensions/${{ matrix.extension }}/e2e/tests/*.bash
-        env:
-          USE_POCKET_IC: ${{ matrix.pocketic }}
 
   aggregate:
     name: e2e:required

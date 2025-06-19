@@ -155,12 +155,7 @@ determine_network_directory() {
 # - It may also be that ic-nns-install, if used on a non-standard port, installs only the core canisters not the UI.
 # - However until we have implemented good solutions, all tests on ic-nns-install must run on port 8080.
 dfx_start_for_nns_install() {
-    if [ "$USE_POCKET_IC" ]
-    then
-        DFX_START="dfx start --pocketic"
-    else
-        DFX_START="dfx start"
-    fi
+    DFX_START="dfx start"
 
     # TODO: When nns-dapp supports dynamic ports, this wait can be removed.
     timeout 300 sh -c \

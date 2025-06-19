@@ -7,6 +7,7 @@ use std::path::Path;
 use std::process::Command;
 
 /// The replica revision of the NNS/SNS canisters which might have dependencies among each other.
+/// It is highly recommended that this be kept in sync with the commit mentioned in the root Cargo.toml file.
 pub const NNS_SNS_REPLICA_REV: &str = "02571e8215fa3e77da791e693cc238b2de3beae9";
 
 /// Calls a binary from dfx cache.

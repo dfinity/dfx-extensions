@@ -140,6 +140,13 @@
           "short": null,
           "multiple": false,
           "values": 0
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
         }
       },
       "subcommands": null
@@ -185,6 +192,13 @@
           "short": null,
           "multiple": false,
           "values": 0
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
         }
       },
       "subcommands": null
@@ -345,6 +359,13 @@
         "wasm_path": {
           "about": "Path to a ICP WASM module file (may be gzipped)",
           "long": "wasm-path",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
           "short": null,
           "multiple": false,
           "values": 1

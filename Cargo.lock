@@ -1020,9 +1020,9 @@ dependencies = [
 
 [[package]]
 name = "candid"
-version = "0.10.13"
+version = "0.10.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a253bab4a9be502c82332b60cbeee6202ad0692834efeec95fae9f29db33d692"
+checksum = "3ea81e16df186fae1979175058f05dfbfac6e2fdf3b161edcbdc440ef09232cf"
 dependencies = [
  "anyhow",
  "binread",
@@ -1052,9 +1052,9 @@ dependencies = [
 
 [[package]]
 name = "candid_derive"
-version = "0.6.6"
+version = "0.10.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3de398570c386726e7a59d9887b68763c481477f9a043fb998a2e09d428df1a9"
+checksum = "2e6d499625531c41f474e55160a40313b33d002262ddaae40cade71bcc3bc75a"
 dependencies = [
  "lazy_static",
  "proc-macro2",
@@ -3322,7 +3322,7 @@ dependencies = [
  "http 1.3.1",
  "http-body 1.0.1",
  "ic-certification 3.0.2",
- "ic-transport-types 0.40.1",
+ "ic-transport-types",
  "ic-verify-bls-signature",
  "k256 0.13.4",
  "leb128",
@@ -3650,18 +3650,6 @@ dependencies = [
  "serde",
  "serde_cbor",
  "tree-deserializer",
-]
-
-[[package]]
-name = "ic-certification"
-version = "2.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e64ee3d8b6e81b51f245716d3e0badb63c283c00f3c9fb5d5219afc30b5bf821"
-dependencies = [
- "hex",
- "serde",
- "serde_bytes",
- "sha2 0.10.9",
 ]
 
 [[package]]
@@ -6615,23 +6603,6 @@ dependencies = [
 
 [[package]]
 name = "ic-transport-types"
-version = "0.37.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "875dc4704780383112e8e8b5063a1b98de114321d0c7d3e7f635dcf360a57fba"
-dependencies = [
- "candid",
- "hex",
- "ic-certification 2.6.0",
- "leb128",
- "serde",
- "serde_bytes",
- "serde_repr",
- "sha2 0.10.9",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "ic-transport-types"
 version = "0.40.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2e7706e55836e8104c98149ec0796d20d5213fef972ac01b544657d410f1883"
@@ -8035,7 +8006,7 @@ dependencies = [
  "ic-icrc1-ledger",
  "ic-sns-cli",
  "ic-utils 0.40.1",
- "pocket-ic 6.0.0",
+ "pocket-ic 10.0.0",
  "reqwest 0.11.27",
  "rust_decimal",
  "serde",
@@ -8669,35 +8640,6 @@ dependencies = [
 
 [[package]]
 name = "pocket-ic"
-version = "6.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "124a2380ca6f557adf8b02517cbfd2f564113230e14cda6f6aadd3dfe156293c"
-dependencies = [
- "base64 0.13.1",
- "candid",
- "hex",
- "ic-certification 2.6.0",
- "ic-transport-types 0.37.1",
- "reqwest 0.12.20",
- "schemars",
- "serde",
- "serde_bytes",
- "serde_cbor",
- "serde_json",
- "sha2 0.10.9",
- "slog",
- "strum",
- "strum_macros",
- "thiserror 1.0.69",
- "tokio",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "wslpath",
-]
-
-[[package]]
-name = "pocket-ic"
 version = "9.0.2"
 source = "git+https://github.com/dfinity/ic?rev=02571e8215fa3e77da791e693cc238b2de3beae9#02571e8215fa3e77da791e693cc238b2de3beae9"
 dependencies = [
@@ -8708,7 +8650,40 @@ dependencies = [
  "hex",
  "ic-certification 3.0.2",
  "ic-management-canister-types",
- "ic-transport-types 0.40.1",
+ "ic-transport-types",
+ "reqwest 0.12.20",
+ "schemars",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "serde_json",
+ "sha2 0.10.9",
+ "slog",
+ "strum",
+ "strum_macros",
+ "tempfile",
+ "thiserror 2.0.12",
+ "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "wslpath",
+]
+
+[[package]]
+name = "pocket-ic"
+version = "10.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4c9b78f339182efb981ceca2ac360aa280609f8d8c785e5a7eeda488f53497a8"
+dependencies = [
+ "backoff",
+ "base64 0.13.1",
+ "candid",
+ "flate2",
+ "hex",
+ "ic-certification 3.0.2",
+ "ic-management-canister-types",
+ "ic-transport-types",
  "reqwest 0.12.20",
  "schemars",
  "serde",
@@ -10782,15 +10757,14 @@ dependencies = [
 
 [[package]]
 name = "tempfile"
-version = "3.16.0"
+version = "3.22.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38c246215d7d24f48ae091a2902398798e05d978b24315d6efbc00ede9a8bb91"
+checksum = "84fa4d11fadde498443cca10fd3ac23c951f0dc59e080e9f4b93d4df4e4eea53"
 dependencies = [
- "cfg-if 1.0.0",
  "fastrand",
  "getrandom 0.3.1",
  "once_cell",
- "rustix 0.38.44",
+ "rustix 1.0.7",
  "windows-sys 0.59.0",
 ]
 

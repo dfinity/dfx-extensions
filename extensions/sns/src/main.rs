@@ -21,6 +21,7 @@ use ic_sns_cli::{
     neuron_id_to_candid_subaccount::{self, NeuronIdToCandidSubaccountArgs},
     prepare_canisters::{self, PrepareCanistersArgs},
     propose::{self, ProposeArgs},
+    register_extension::{self, RegisterExtensionArgs},
     upgrade_sns_controlled_canister::{self, UpgradeSnsControlledCanisterArgs},
     AddSnsWasmForTestsArgs, DeployTestflightArgs, SubCommand as SnsLibSubCommand,
 };
@@ -110,6 +111,9 @@ enum SubCommand {
     /// Downloads SNS canister versions that are specified in your dfx.json (which probably got there through the `Import` command).
     #[command()]
     Download(SnsDownloadOpts),
+    /// Downloads SNS canister versions that are specified in your dfx.json (which probably got there through the `Import` command).
+    #[command()]
+    ProposeToRegisterExtension(RegisterExtensionArgs),
 }
 
 impl NetworkOpt {
@@ -184,6 +188,7 @@ async fn main() -> anyhow::Result<()> {
         SubCommand::Download(v) => {
             return commands::download::exec(v).await;
         }
+        SubCommand::ProposeToRegisterExtension(v) => SnsLibSubCommand::RegisterExtension(v),
     };
 
     match subcommand {
@@ -216,6 +221,15 @@ async fn main() -> anyhow::Result<()> {
         SnsLibSubCommand::RefundAfterSnsControlledCanisterUpgrade(args) => {
             let agent = agent(opts.network, opts.identity).await?;
             match upgrade_sns_controlled_canister::refund(args, &agent).await {
+                Ok(_) => Ok(()),
+                Err(err) => {
+                    anyhow::bail!("{}", err)
+                }
+            }
+        }
+        SnsLibSubCommand::RegisterExtension(args) => {
+            let agent = agent(opts.network, opts.identity).await?;
+            match register_extension::exec(args, &agent).await {
                 Ok(_) => Ok(()),
                 Err(err) => {
                     anyhow::bail!("{}", err)

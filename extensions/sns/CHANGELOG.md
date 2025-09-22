@@ -3,6 +3,7 @@
 ## [Unreleased] - ReleaseDate
 
 ## [0.6.0] - 2025-09-22
+- Added `ProposeToRegisterExtension` command.
 
 ## [0.5.4] - 2025-06-18
 - Overlooked ic binaries in the previous release (a different thing needs to be modified to upgrade binaries).

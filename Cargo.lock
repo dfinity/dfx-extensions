@@ -3333,7 +3333,7 @@ dependencies = [
  "http 1.3.1",
  "http-body 1.0.1",
  "ic-certification 3.0.3",
- "ic-transport-types 0.40.1",
+ "ic-transport-types",
  "ic-verify-bls-signature",
  "k256 0.13.4",
  "leb128",
@@ -3665,18 +3665,6 @@ dependencies = [
  "serde",
  "serde_cbor",
  "tree-deserializer",
-]
-
-[[package]]
-name = "ic-certification"
-version = "2.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e64ee3d8b6e81b51f245716d3e0badb63c283c00f3c9fb5d5219afc30b5bf821"
-dependencies = [
- "hex",
- "serde",
- "serde_bytes",
- "sha2 0.10.9",
 ]
 
 [[package]]
@@ -5330,7 +5318,7 @@ dependencies = [
  "icp-ledger",
  "icrc-ledger-types",
  "itertools 0.12.1",
- "pocket-ic 10.0.0",
+ "pocket-ic 10.0.0 (git+https://github.com/dfinity/ic?rev=ca94383ba3df22dacf7a005186b67303548eb144)",
  "pretty_assertions",
  "registry-canister",
  "serde",
@@ -6368,9 +6356,9 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.7.0"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e54aeb082293c69def5ab34c70593ba85ff000386f7d0eacdf73514daaeca031"
+checksum = "8ee3372ddc0cf2a747fc26ce2d075a240ed6bfab151e63bc70109e8967f7ce6f"
 dependencies = [
  "ic_principal",
 ]
@@ -6729,23 +6717,6 @@ dependencies = [
 
 [[package]]
 name = "ic-transport-types"
-version = "0.37.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "875dc4704780383112e8e8b5063a1b98de114321d0c7d3e7f635dcf360a57fba"
-dependencies = [
- "candid",
- "hex",
- "ic-certification 2.6.0",
- "leb128",
- "serde",
- "serde_bytes",
- "serde_repr",
- "sha2 0.10.9",
- "thiserror 1.0.69",
-]
-
-[[package]]
-name = "ic-transport-types"
 version = "0.40.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2e7706e55836e8104c98149ec0796d20d5213fef972ac01b544657d410f1883"
@@ -6935,7 +6906,7 @@ dependencies = [
  "hkdf",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-stable-structures 0.7.0",
+ "ic-stable-structures 0.7.2",
  "ic_bls12_381",
  "lazy_static",
  "pairing",
@@ -8131,7 +8102,7 @@ dependencies = [
  "ic-icrc1-ledger",
  "ic-sns-cli",
  "ic-utils 0.40.1",
- "pocket-ic 6.0.0",
+ "pocket-ic 10.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "reqwest 0.11.27",
  "rust_decimal",
  "serde",
@@ -8734,15 +8705,18 @@ dependencies = [
 
 [[package]]
 name = "pocket-ic"
-version = "6.0.0"
+version = "10.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "124a2380ca6f557adf8b02517cbfd2f564113230e14cda6f6aadd3dfe156293c"
+checksum = "4c9b78f339182efb981ceca2ac360aa280609f8d8c785e5a7eeda488f53497a8"
 dependencies = [
+ "backoff",
  "base64 0.13.1",
  "candid",
+ "flate2",
  "hex",
- "ic-certification 2.6.0",
- "ic-transport-types 0.37.1",
+ "ic-certification 3.0.3",
+ "ic-management-canister-types",
+ "ic-transport-types",
  "reqwest 0.12.23",
  "schemars",
  "serde",
@@ -8753,7 +8727,8 @@ dependencies = [
  "slog",
  "strum 0.26.3",
  "strum_macros 0.26.4",
- "thiserror 1.0.69",
+ "tempfile",
+ "thiserror 2.0.16",
  "tokio",
  "tracing",
  "tracing-appender",
@@ -8773,7 +8748,7 @@ dependencies = [
  "hex",
  "ic-certification 3.0.3",
  "ic-management-canister-types",
- "ic-transport-types 0.40.1",
+ "ic-transport-types",
  "reqwest 0.12.23",
  "schemars",
  "serde",

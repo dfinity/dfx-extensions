@@ -1,6 +1,6 @@
 {
   "name": "sns",
-  "version": "0.5.4",
+  "version": "0.6.0",
   "homepage": "https://github.com/dfinity/dfx-extensions",
   "authors": "DFINITY",
   "summary": "Initialize, deploy and interact with an SNS",

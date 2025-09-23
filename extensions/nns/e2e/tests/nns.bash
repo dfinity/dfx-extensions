@@ -191,7 +191,7 @@ assert_nns_canister_id_matches() {
     assert_output --partial "subnet_id = opt principal"
     run dfx canister call rwlgt-iiaaa-aaaaa-aaaaa-cai get_subnet_for_canister '(record {"principal"=opt principal"aaaaa-aa"})'
     assert_success
-    assert_output --partial "Err = \"Canister is not assigned to any subnet.\""
+    assert_output --partial "Err = \"Invalid canister ID.\""
 
     sleep 10 # In slow CI the last upgrade proposal has not finished executing yet. Need to give a little spare time to restart all canisters
     run dfx --identity ident-1 ledger transfer 4b37224c5ed36e8a28ae39af482f5f858104f0a2285d100e67cf029ff07d948e --amount 10 --memo 1414416717

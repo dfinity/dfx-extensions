@@ -46,7 +46,7 @@ pub struct SnsOpts {
 
     /// Override the compute network to connect to. By default, the local network is used.
     /// Can either be a network name like `ic` or `local`, or a URL (starting with `http:` or `https:`).
-    #[arg(long, global = true)]
+    #[arg(long, global = true, env = "DFX_NETWORK")]
     network: Option<String>,
 }
 

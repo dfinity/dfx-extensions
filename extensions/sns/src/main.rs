@@ -11,7 +11,7 @@ use std::path::PathBuf;
 // #![warn(clippy::missing_docs_in_private_items)]
 use crate::commands::{download::SnsDownloadOpts, import::SnsImportOpts};
 
-use clap::{ArgGroup, Args, Parser};
+use clap::Parser;
 use ic_agent::Agent;
 use ic_sns_cli::{
     add_sns_wasm_for_tests, deploy_testflight,
@@ -26,28 +26,6 @@ use ic_sns_cli::{
     AddSnsWasmForTestsArgs, DeployTestflightArgs, SubCommand as SnsLibSubCommand,
 };
 mod utils;
-
-#[derive(Args, Clone, Debug, Default)]
-#[clap(
-group(ArgGroup::new("network-select").multiple(false)),
-)]
-pub struct NetworkOpt {
-    /// Override the compute network to connect to. By default, the local network is used.
-    /// A valid URL (starting with `http:` or `https:`) can be used here, and a special
-    /// ephemeral network will be created specifically for this request. E.g.
-    /// "http://localhost:12345/" is a valid network name.
-    #[arg(long, global(true), group = "network-select")]
-    network: Option<String>,
-
-    /// Shorthand for --network=playground.
-    /// Borrows short-lived canisters on the real IC network instead of creating normal canisters.
-    #[clap(long, global(true), group = "network-select")]
-    playground: bool,
-
-    /// Shorthand for --network=ic.
-    #[clap(long, global(true), group = "network-select")]
-    ic: bool,
-}
 
 /// Options for `dfx sns`.
 #[derive(Parser)]
@@ -66,8 +44,10 @@ pub struct SnsOpts {
     #[arg(long, global = true)]
     identity: Option<String>,
 
-    #[command(flatten)]
-    network: NetworkOpt,
+    /// Override the compute network to connect to. By default, the local network is used.
+    /// Can either be a network name like `ic` or `local`, or a URL (starting with `http:` or `https:`).
+    #[arg(long, global = true)]
+    network: Option<String>,
 }
 
 /// Initialize, deploy and interact with an SNS.
@@ -116,29 +96,7 @@ enum SubCommand {
     ProposeToRegisterExtension(RegisterExtensionArgs),
 }
 
-impl NetworkOpt {
-    pub fn to_network_name(&self) -> Option<String> {
-        if self.playground {
-            Some("playground".to_string())
-        } else if self.ic {
-            Some("ic".to_string())
-        } else {
-            self.network.clone()
-        }
-    }
-}
-
-pub async fn agent(network: NetworkOpt, identity: Option<String>) -> anyhow::Result<Agent> {
-    let network = match network.to_network_name() {
-        Some(network) => network,
-        None => {
-            eprintln!(
-                "No network specified. Defaulting to the local network. To connect to the mainnet IC instead, try passing `--network=ic`"
-            );
-            "local".to_string()
-        }
-    };
-
+pub async fn agent(network: String, identity: Option<String>) -> anyhow::Result<Agent> {
     match utils::get_agent(&network, identity.clone()).await {
         Ok(agent) => Ok(agent),
         Err(err) => {
@@ -155,6 +113,16 @@ pub async fn agent(network: NetworkOpt, identity: Option<String>) -> anyhow::Res
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let opts = SnsOpts::parse();
+
+    let network = match opts.network.as_deref() {
+        Some("ic") => "ic".to_string(),
+        Some("local") => "local".to_string(),
+        Some(url) if url.starts_with("http:") || url.starts_with("https:") => url.to_string(),
+        Some(_) | None => {
+            eprintln!("Warning: Unrecognized network format. Defaulting to the local network. To connect to the mainnet IC instead, try passing `--network ic`");
+            "local".to_string()
+        }
+    };
 
     // Most of the branches in here convert SubCommand to SnsLibSubCommand.
     // The purpose of this is to allow us to match on SnsLibSubCommand. This causes
@@ -201,16 +169,16 @@ async fn main() -> anyhow::Result<()> {
         }
         SnsLibSubCommand::AddSnsWasmForTests(args) => add_sns_wasm_for_tests(args),
         SnsLibSubCommand::List(args) => {
-            let agent = agent(opts.network, opts.identity).await?;
+            let agent = agent(network, opts.identity).await?;
             list::exec(args, &agent).await
         }
         SnsLibSubCommand::Health(args) => {
-            let agent = agent(opts.network, opts.identity).await?;
+            let agent = agent(network, opts.identity).await?;
 
             health::exec(args, &agent).await
         }
         SnsLibSubCommand::UpgradeSnsControlledCanister(args) => {
-            let agent = agent(opts.network, opts.identity).await?;
+            let agent = agent(network, opts.identity).await?;
             match upgrade_sns_controlled_canister::exec(args, &agent).await {
                 Ok(_) => Ok(()),
                 Err(err) => {
@@ -219,7 +187,7 @@ async fn main() -> anyhow::Result<()> {
             }
         }
         SnsLibSubCommand::RefundAfterSnsControlledCanisterUpgrade(args) => {
-            let agent = agent(opts.network, opts.identity).await?;
+            let agent = agent(network, opts.identity).await?;
             match upgrade_sns_controlled_canister::refund(args, &agent).await {
                 Ok(_) => Ok(()),
                 Err(err) => {
@@ -228,7 +196,7 @@ async fn main() -> anyhow::Result<()> {
             }
         }
         SnsLibSubCommand::RegisterExtension(args) => {
-            let agent = agent(opts.network, opts.identity).await?;
+            let agent = agent(network, opts.identity).await?;
             match register_extension::exec(args, &agent).await {
                 Ok(_) => Ok(()),
                 Err(err) => {

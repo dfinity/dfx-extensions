@@ -109,12 +109,8 @@ pub async fn agent(network: String, identity: Option<String>) -> anyhow::Result<
     }
 }
 
-/// Executes `dfx sns` and its subcommands.
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-    let opts = SnsOpts::parse();
-
-    let network = match opts.network.as_deref() {
+fn get_network(network: Option<String>) -> String {
+    match network.as_deref() {
         Some("ic") => "ic".to_string(),
         Some("local") => "local".to_string(),
         Some(url) if url.starts_with("http:") || url.starts_with("https:") => url.to_string(),
@@ -122,7 +118,15 @@ async fn main() -> anyhow::Result<()> {
             eprintln!("Warning: Unrecognized network format. Defaulting to the local network. To connect to the mainnet IC instead, try passing `--network ic`");
             "local".to_string()
         }
-    };
+    }
+}
+
+/// Executes `dfx sns` and its subcommands.
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
+    let opts = SnsOpts::parse();
+
+    let network = get_network(opts.network.clone());
 
     // Most of the branches in here convert SubCommand to SnsLibSubCommand.
     // The purpose of this is to allow us to match on SnsLibSubCommand. This causes
@@ -196,6 +200,10 @@ async fn main() -> anyhow::Result<()> {
             }
         }
         SnsLibSubCommand::RegisterExtension(args) => {
+            // TODO[NNS1-4150]: Currently, dfx doesn't pass the network to extensions.
+            // Once it does, we should remove the next line and rely on `opts.network`.
+            let network = get_network(args.network.clone()); // Remove once NNS1-4150 is done.
+
             let agent = agent(network, opts.identity).await?;
             match register_extension::exec(args, &agent).await {
                 Ok(_) => Ok(()),

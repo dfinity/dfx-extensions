@@ -39,11 +39,11 @@ url = "^2.4.1"
 serde_json = { version = "=1.0.107" }
 
 # It is strongly recommended that NNS_SNS_REPLICA_REV be set to the same rev value used below.
-ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "7e0d882fbcaf290802cf3deeb58d400be5161258" }
-ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "7e0d882fbcaf290802cf3deeb58d400be5161258" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "7e0d882fbcaf290802cf3deeb58d400be5161258" }
-ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "7e0d882fbcaf290802cf3deeb58d400be5161258" }
-ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "7e0d882fbcaf290802cf3deeb58d400be5161258" }
+ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "721df73b943e87e2dad1d931819a2051401209a6" }
+ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "721df73b943e87e2dad1d931819a2051401209a6" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "721df73b943e87e2dad1d931819a2051401209a6" }
+ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "721df73b943e87e2dad1d931819a2051401209a6" }
+ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "721df73b943e87e2dad1d931819a2051401209a6" }
 
 
 # The profile that 'cargo dist' will build with

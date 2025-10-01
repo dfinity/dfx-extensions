@@ -116,6 +116,15 @@ pub const NNS_SNS_WASM: IcNnsInitCanister = IcNnsInitCanister {
     test_wasm_name: None,
     canister_id: "qaa6y-5yaaa-aaaaa-aaafa-cai",
 };
+
+/// An empty canister.
+pub const NNS_MIGRATION_CANISTER: IcNnsInitCanister = IcNnsInitCanister {
+    canister_name: "nns-migration",
+    wasm_name: "migration-canister.wasm",
+    test_wasm_name: None,
+    canister_id: "sbzkb-zqaaa-aaaaa-aaaiq-cai",
+};
+
 /// Canister that converts between bitcoin and ckBTC.
 pub const NNS_IC_CKBTC_MINTER: IcNnsInitCanister = IcNnsInitCanister {
     canister_name: "nns-ic-ckbtc-minter",

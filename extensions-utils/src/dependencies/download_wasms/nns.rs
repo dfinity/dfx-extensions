@@ -63,7 +63,7 @@ pub const NNS_GOVERNANCE: IcNnsInitCanister = IcNnsInitCanister {
 /// Canister that holds ICP account balances.
 pub const NNS_LEDGER: IcNnsInitCanister = IcNnsInitCanister {
     canister_name: "nns-ledger",
-    wasm_name: "ledger-canister_notify-method.wasm",
+    wasm_name: "ledger-canister",
     test_wasm_name: None,
     canister_id: "ryjl3-tyaaa-aaaaa-aaaba-cai",
 };

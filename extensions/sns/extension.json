@@ -372,6 +372,68 @@
         }
       },
       "subcommands": null
+    },
+    "propose-to-register-extension": {
+      "about": "Submits an SNS proposal to register this extension into the SNS-DAO",
+      "args": {
+        "proposal_url": {
+          "about": "URL (starting with https://) of a web page with a public announcement of this upgrade",
+          "long": "proposal-url",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "sns_neuron_id": {
+          "about": "SNS neuron ID (subaccount) to be used for proposing the upgrade",
+          "long": "sns-neuron-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "subnet_id": {
+          "about": "The ID of the subnet on which the extension canister will be created.",
+          "long": "subnet-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "summary": {
+          "about": "Human-readable text explaining why this upgrade is being done (may be markdown)",
+          "long": "summary",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "sns_root_canister_id": {
+          "about": "The Root canister ID of the SNS to which the extension is being registered",
+          "long": "sns-root-canister-id",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "wasm_path": {
+          "about": "Path to a ICP WASM module file (may be gzipped)",
+          "long": "wasm-path",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "extension_init": {
+          "about": "Path to a JSON file containing the initialization argument for the extension canister",
+          "long": "extension-init",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        },
+        "network": {
+          "about": "The network to deploy to. This can be \"local\", \"ic\", or the URL of an IC network",
+          "long": "network",
+          "short": null,
+          "multiple": false,
+          "values": 1
+        }
+      },
+      "subcommands": null
     }
   },
   "dependencies": {

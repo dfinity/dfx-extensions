@@ -153,7 +153,7 @@ assert_nns_canister_id_matches() {
     }
     wasm_matches nns-registry registry-canister.wasm
     wasm_matches nns-governance governance-canister_test.wasm
-    wasm_matches nns-ledger ledger-canister_notify-method.wasm
+    wasm_matches nns-ledger ledger-canister.wasm
     wasm_matches nns-root root-canister.wasm
     wasm_matches nns-cycles-minting cycles-minting-canister.wasm
     wasm_matches nns-lifeline lifeline_canister.wasm

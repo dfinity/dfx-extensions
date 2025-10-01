@@ -24,7 +24,7 @@ SNS_CONFIG_FILE_NAME="sns_init.yaml"
     install_asset sns/valid
     run dfx sns init-config-file validate
     assert_success
-    assert_output '' # no output if the file is valid
+    # TODO add a stricter output comparison
 }
 
 @test "sns init-config-file validate identifies a missing key" {

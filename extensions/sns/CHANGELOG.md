@@ -3,6 +3,7 @@
 ## [Unreleased] - ReleaseDate
 
 ## [0.7.0] - 2025-11-07
+- Use newer code from `ic` repository, namely commit 1bc0a59539613f6ec273a59a172ae43dfabb1ce0 (Oct 31, 2025 2:33 PM GMT+1).
 
 ## [0.6.0] - 2025-09-22
 - Added `ProposeToRegisterExtension` command.

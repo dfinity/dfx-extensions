@@ -31,19 +31,19 @@ reqwest = { version = "^0.11.22", default-features = false, features = [
     "native-tls-vendored",
 ] }
 serde = { version = "=1.0.217", features = ["derive"] }
+serde_json = { version = "1.0.121" }
 sha2 = "^0.10.9"
 slog = "^2.7.0"
 tempfile = "3.12.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
-serde_json = { version = "=1.0.107" }
 
 # It is strongly recommended that NNS_SNS_REPLICA_REV be set to the same rev value used below.
-ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "03b997c92cac6680c975ffe8eb80874768363d24" }
-ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "03b997c92cac6680c975ffe8eb80874768363d24" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "03b997c92cac6680c975ffe8eb80874768363d24" }
-ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "03b997c92cac6680c975ffe8eb80874768363d24" }
-ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "03b997c92cac6680c975ffe8eb80874768363d24" }
+ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "1bc0a59539613f6ec273a59a172ae43dfabb1ce0" }
+ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "1bc0a59539613f6ec273a59a172ae43dfabb1ce0" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "1bc0a59539613f6ec273a59a172ae43dfabb1ce0" }
+ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "1bc0a59539613f6ec273a59a172ae43dfabb1ce0" }
+ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "1bc0a59539613f6ec273a59a172ae43dfabb1ce0" }
 
 
 # The profile that 'cargo dist' will build with

@@ -50,7 +50,7 @@ pub struct IcNnsInitCanister {
 pub const NNS_REGISTRY: IcNnsInitCanister = IcNnsInitCanister {
     canister_name: "nns-registry",
     wasm_name: "registry-canister.wasm",
-    test_wasm_name: None,
+    test_wasm_name: Some("registry-canister-test.wasm"),
     canister_id: "rwlgt-iiaaa-aaaaa-aaaaa-cai",
 };
 /// Canister used to hold referanda and execute NNS proposals.

@@ -2,6 +2,9 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.8.0] - 2026-01-26
+- Use newer code from `ic` repository, namely commit 11cd53599b79ea96e651ab7d3a12d5562fb48a83 (Fri Jan 23, 2026 15:05:56 GMT+1).
+
 ## [0.7.0] - 2025-11-07
 - Use newer code from `ic` repository, namely commit 1bc0a59539613f6ec273a59a172ae43dfabb1ce0 (Oct 31, 2025 2:33 PM GMT+1).
 

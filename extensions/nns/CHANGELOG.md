@@ -3,7 +3,7 @@
 ## [Unreleased] - ReleaseDate
 
 ## [0.8.0] - 2026-01-26
-- Use newer code from `ic` repository, namely commit 11cd53599b79ea96e651ab7d3a12d5562fb48a83 (Fri Jan 23, 2026 15:05:56 GMT+1).
+- Use newer code from `ic` repository, namely commit b291fd30707aeee276cdae62c35b404adcb9f11a (Mon Jan 26 16:39:47 2026 +0100).
 - The main thing we want from that commit is increasing maximum the number of initial dapp canisters to 100 (from 25 previously).
 
 ## [0.7.0] - 2025-11-07

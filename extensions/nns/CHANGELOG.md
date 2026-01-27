@@ -2,6 +2,10 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.8.0] - 2026-01-26
+- Use newer code from `ic` repository, namely commit b291fd30707aeee276cdae62c35b404adcb9f11a (Mon Jan 26 16:39:47 2026 +0100).
+- The main thing we want from that commit is increasing maximum the number of initial dapp canisters to 100 (from 25 previously).
+
 ## [0.7.0] - 2025-11-07
 - Use newer code from `ic` repository, namely commit 1bc0a59539613f6ec273a59a172ae43dfabb1ce0 (Oct 31, 2025 2:33 PM GMT+1).
 
@@ -75,6 +79,7 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.8.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.7.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.6.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.4]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}

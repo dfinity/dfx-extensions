@@ -151,7 +151,7 @@ assert_nns_canister_id_matches() {
                 exit 1
         }>&2
     }
-    wasm_matches nns-registry registry-canister.wasm
+    wasm_matches nns-registry registry-canister_test.wasm
     wasm_matches nns-governance governance-canister_test.wasm
     wasm_matches nns-ledger ledger-canister.wasm
     wasm_matches nns-root root-canister.wasm

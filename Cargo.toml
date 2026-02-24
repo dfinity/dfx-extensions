@@ -10,7 +10,7 @@ license = "Apache-2.0"
 repository = "https://github.com/dfinity/dfx-extensions"
 
 [workspace.dependencies]
-dfx-core = "0.1.2"
+dfx-core = "0.3.0"
 dfx-extensions-utils.path = "./extensions-utils"
 
 anyhow = "^1"
@@ -21,8 +21,8 @@ flate2 = { version = "1.0.25", default-features = false, features = [
 ] }
 fn-error-context = "0.2.1"
 futures-util = "0.3.28"
-ic-agent = "0.40"
-ic-utils = "0.40"
+ic-agent = "0.45"
+ic-utils = "0.45"
 pocket-ic = "10.0.0"
 reqwest = { version = "^0.11.22", default-features = false, features = [
     "blocking",
@@ -37,13 +37,14 @@ slog = "^2.7.0"
 tempfile = "3.12.0"
 tokio = { version = "^1.36.0", features = ["rt-multi-thread"] }
 url = "^2.4.1"
+wirm = "=2.1.0"
 
 # It is strongly recommended that NNS_SNS_REPLICA_REV be set to the same rev value used below.
-ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "b291fd30707aeee276cdae62c35b404adcb9f11a" }
-ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "b291fd30707aeee276cdae62c35b404adcb9f11a" }
-ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "b291fd30707aeee276cdae62c35b404adcb9f11a" }
-ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "b291fd30707aeee276cdae62c35b404adcb9f11a" }
-ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "b291fd30707aeee276cdae62c35b404adcb9f11a" }
+ic-http-utils     = { git = "https://github.com/dfinity/ic", rev = "007c473c9c7fc820c49eea5c823cdd4b9404119d" }
+ic-icp-index      = { git = "https://github.com/dfinity/ic", rev = "007c473c9c7fc820c49eea5c823cdd4b9404119d" }
+ic-icrc1-index-ng = { git = "https://github.com/dfinity/ic", rev = "007c473c9c7fc820c49eea5c823cdd4b9404119d" }
+ic-icrc1-ledger   = { git = "https://github.com/dfinity/ic", rev = "007c473c9c7fc820c49eea5c823cdd4b9404119d" }
+ic-sns-cli        = { git = "https://github.com/dfinity/ic", rev = "007c473c9c7fc820c49eea5c823cdd4b9404119d" }
 
 
 # The profile that 'cargo dist' will build with

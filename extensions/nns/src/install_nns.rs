@@ -6,10 +6,10 @@
 #![warn(missing_docs)]
 #![warn(clippy::missing_docs_in_private_items)]
 
-use dfx_core::{error::cli::UserConsent, canister::install_canister_wasm};
 use dfx_core::config::model::dfinity::{NetworksConfig, ReplicaSubnetType};
 use dfx_core::config::model::network_descriptor::NetworkDescriptor;
 use dfx_core::identity::CallSender;
+use dfx_core::{canister::install_canister_wasm, error::cli::UserConsent};
 use dfx_extensions_utils::dependencies::download_wasms::nns::{
     ICP_INDEX, ICRC1_INDEX, ICRC1_LEDGER, INTERNET_IDENTITY, NNS_DAPP, NNS_LEDGER, SNS_AGGREGATOR,
 };
@@ -28,10 +28,10 @@ use fn_error_context::context;
 use futures_util::future::try_join_all;
 use ic_agent::export::Principal;
 use ic_agent::Agent;
-use ic_icp_index::InitArg;
+use ic_icp_index::{IndexArg as IcpIndexArg, InitArg as IcpInitArg};
 use ic_icrc1_index_ng::{IndexArg, InitArg as IndexInitArg};
 use ic_icrc1_ledger::{InitArgsBuilder, LedgerArgument};
-use ic_utils::interfaces::management_canister::builders::InstallMode;
+use ic_utils::interfaces::management_canister::builders::CanisterInstallMode;
 use ic_utils::interfaces::ManagementCanister;
 use pocket_ic::common::rest::Topology;
 use reqwest::Url;
@@ -168,10 +168,11 @@ pub async fn install_nns(
             });
             Some(Encode!(&Some(cketh_index_args)).unwrap())
         } else if *canister_id == ICP_INDEX.canister_id {
-            let icp_index_args = InitArg {
+            let icp_index_args = IcpIndexArg::Init(IcpInitArg {
                 ledger_id: Principal::from_str(NNS_LEDGER.canister_id).unwrap(),
-            };
-            Some(Encode!(&icp_index_args).unwrap())
+                retrieve_blocks_from_ledger_interval_seconds: None,
+            });
+            Some(Encode!(&Some(icp_index_args)).unwrap())
         } else {
             None
         };
@@ -656,7 +657,7 @@ pub async fn install_canister(
 
     let unit_args = Encode!(&())?;
     let install_args = init_arg.unwrap_or(&unit_args);
-    let install_mode = InstallMode::Install;
+    let install_mode = CanisterInstallMode::Install;
     let call_sender = CallSender::SelectedId;
     fn ask_for_consent(_: &str) -> Result<(), UserConsent> {
         Ok(())

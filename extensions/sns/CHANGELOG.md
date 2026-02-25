@@ -2,6 +2,7 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.9.0] - 2026-02-25
 - Use newer code from `ic` repository, namely commit 007c473c9c7fc820c49eea5c823cdd4b9404119d.
 
 ## [0.8.0] - 2026-01-26
@@ -93,6 +94,8 @@
 
 <!-- next-url -->
 [Unreleased]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...HEAD
+[0.9.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
+[0.8.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.7.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.6.0]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
 [0.5.4]: https://github.com/dfinity/dfx-extensions/compare/{{tag_name}}...{{tag_name}}
